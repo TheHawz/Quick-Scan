@@ -4,9 +4,8 @@ import sys
 from PySide2.QtWidgets import QApplication
 from PySide2 import QtCore
 
-from package.Model import Model
 from package.models.NewProjectModel import NewProjectModel
-from package.Controllers import MainController
+from package.controllers.Navigator import Navigator
 from package.controllers.NewProjectController import NewProjectController
 from package.views.MainWindow import MainWindow
 from package.views.NewProjectView import NewProjectView
@@ -20,17 +19,16 @@ class App(QApplication):
         # Diccionario que mapea nombres con Vistas
         self._views = {}
 
-        self.model = Model()
         self.new_project_model = NewProjectModel()
 
-        self.main_controller = MainController(self.model)
-        self.main_controller.navigator.connect(self.change_view)
+        self.navigator = Navigator()
+        self.navigator.navigator.connect(self.change_view)
         
         self.new_project_controller = NewProjectController(self.new_project_model)
         
-        self.main_view = MainWindow(self.model, self.main_controller)
-        self.second_view = DataAcquisition(self.model, self.main_controller)
-        self.new_project_view = NewProjectView(self.new_project_model, self.new_project_controller)
+        self.main_view = MainWindow(None, self.navigator)
+        self.second_view = DataAcquisition(None, self.navigator)
+        self.new_project_view = NewProjectView(self.new_project_model, self.navigator, self.new_project_controller)
         
         self._views['main_view'] = self.main_view
         self._views['second_view'] = self.second_view
