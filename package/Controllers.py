@@ -12,5 +12,5 @@ class MainController(QObject):
 
     @Slot(str)
     def navigate(self, value):
-        print(f'value: {value}')
+        # print(f'value: {value}')
         self.navigator.emit(value)

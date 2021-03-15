@@ -30,5 +30,5 @@ class MainWindow(QMainWindow):
         ui_file.close()
 
     def connect_elements(self):
-        self.window.nav_but_1.clicked.connect(lambda: self._main_controller.navigate('second_view'))
+        self.window.nav_but_1.clicked.connect(lambda: self._main_controller.navigate('new_project'))
 

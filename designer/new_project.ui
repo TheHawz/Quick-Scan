@@ -146,6 +146,7 @@
             </property>
             <property name="styleSheet">
              <string notr="true">QPushButton {	
+	color: rgb(0,0,0);
 	border: none;
 	background-color: transparent;
 }
@@ -190,6 +191,7 @@ QPushButton:pressed {
             </property>
             <property name="styleSheet">
              <string notr="true">QPushButton {	
+	color: rgb(0,0,0);
 	border: none;
 	background-color: transparent;
 }
@@ -230,6 +232,7 @@ QPushButton:pressed {
             </property>
             <property name="styleSheet">
              <string notr="true">QPushButton {	
+	color: rgb(0,0,0);
 	border: none;
 	background-color: transparent;
 }
@@ -408,7 +411,7 @@ QPushButton:pressed {
                           </widget>
                          </item>
                          <item>
-                          <widget class="QComboBox" name="comboBox">
+                          <widget class="QComboBox" name="cb_audio_driver">
                            <property name="enabled">
                             <bool>true</bool>
                            </property>
@@ -473,7 +476,7 @@ QPushButton:pressed {
                           </widget>
                          </item>
                          <item>
-                          <widget class="QComboBox" name="comboBox_2">
+                          <widget class="QComboBox" name="cb_audio_device">
                            <property name="enabled">
                             <bool>true</bool>
                            </property>
@@ -594,7 +597,7 @@ QPushButton:pressed {
                           </widget>
                          </item>
                          <item>
-                          <widget class="QComboBox" name="comboBox_3"/>
+                          <widget class="QComboBox" name="cb_video_device"/>
                          </item>
                          <item>
                           <spacer name="verticalSpacer">
@@ -683,7 +686,7 @@ QPushButton:pressed {
                        </widget>
                       </item>
                       <item>
-                       <widget class="QLineEdit" name="lineEdit"/>
+                       <widget class="QLineEdit" name="line_project_name"/>
                       </item>
                      </layout>
                     </widget>
@@ -732,10 +735,10 @@ QPushButton:pressed {
                        </widget>
                       </item>
                       <item>
-                       <widget class="QLineEdit" name="lineEdit_2"/>
+                       <widget class="QLineEdit" name="line_project_location"/>
                       </item>
                       <item>
-                       <widget class="QToolButton" name="toolButton">
+                       <widget class="QToolButton" name="open_location">
                         <property name="text">
                          <string>...</string>
                         </property>
@@ -825,7 +828,7 @@ QPushButton:pressed {
                     </spacer>
                    </item>
                    <item>
-                    <widget class="QPushButton" name="pushButton_4">
+                    <widget class="QPushButton" name="but_create">
                      <property name="enabled">
                       <bool>true</bool>
                      </property>
