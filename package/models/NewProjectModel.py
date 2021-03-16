@@ -2,7 +2,6 @@ import sounddevice as sd
 
 from PySide2.QtCore import QObject, Signal
 
-
 class NewProjectModel(QObject):
     """
     The model class stores program data and state and some minimal logic for 
@@ -15,6 +14,8 @@ class NewProjectModel(QObject):
     audio_drivers_set = Signal(object)
     audio_device_changed = Signal(int)
     audio_devices_set = Signal(object)
+    video_devices_set = Signal(object)
+    video_device_changed = Signal(int)
 
     def __init__(self):
         super().__init__()
@@ -27,7 +28,7 @@ class NewProjectModel(QObject):
         self._audio_driver = ''
         self._audio_devices = ''
         self._audio_device = ''
-        self._video_devices = ''
+        self._video_devices = {}
         self._video_device = ''
     
     @property
@@ -36,7 +37,6 @@ class NewProjectModel(QObject):
 
     @project_name.setter
     def project_name(self, value):
-        # print('[MODEL] cambiando project name')
         self._project_name = value
         self.project_name_changed.emit(value)
             
@@ -46,7 +46,6 @@ class NewProjectModel(QObject):
 
     @project_location.setter
     def project_location(self, value):
-        # print('[MODEL] cambiando project location')
         self._project_location = value
         self.project_location_changed.emit(value)
 
@@ -65,7 +64,6 @@ class NewProjectModel(QObject):
 
     @audio_driver.setter
     def audio_driver(self, value):
-        # print(f'[MODEL] cambiando audio driver index: {value}')
         self._audio_driver = value
         self.audio_driver_changed.emit(value)
         
@@ -84,6 +82,23 @@ class NewProjectModel(QObject):
 
     @audio_device.setter
     def audio_device(self, value):
-        # print(f'[MODEL] cambiando audio driver index: {value}')
         self._audio_device = value
         self.audio_device_changed.emit(value)
+        
+    @property
+    def video_devices(self):
+        return self._video_devices.values()
+    
+    @video_devices.setter
+    def video_devices(self, value):
+        self._video_devices = value
+        self.video_devices_set.emit(value)
+        
+    @property
+    def video_device(self):
+        return self._video_device
+    
+    @video_device.setter
+    def video_device(self, value):
+        self._video_device = value
+        self.video_device_changed.emit(value)

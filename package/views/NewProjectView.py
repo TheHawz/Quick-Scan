@@ -8,20 +8,15 @@ from PySide2.QtUiTools import QUiLoader
 
 class NewProjectView(QMainWindow):
 
-    def __init__(self, model, navigator, controller):
+    def __init__(self, model, controller):
         super(NewProjectView, self).__init__()
         self._model = model
         self._controller = controller
-        self._navigator = navigator
 
         self.load_ui()
         self.connect_to_controller()
         self.connect_to_model()
-
-        # Set Default Values
-        self._controller.change_project_location(os.path.expanduser("~"))
-        self._controller.change_project_name('New Project')
-        self._controller.set_audio_drivers()
+        self.set_default_values()
 
     def open(self):
         self.window.show()
@@ -38,13 +33,13 @@ class NewProjectView(QMainWindow):
         ui_file.close()
 
     def connect_to_controller(self):
-        self.window.but_create.clicked.connect(lambda: self._controller.navigate('new_project'))
         self.window.line_project_name.textChanged.connect(self._controller.change_project_name)
         self.window.line_project_location.textChanged.connect(self._controller.change_project_location)
         self.window.open_location.clicked.connect(self.open_location_dialog)
         self.window.cb_audio_driver.currentIndexChanged.connect(self._controller.change_audio_driver)
         self.window.cb_audio_device.currentIndexChanged.connect(self._controller.change_audio_device)
-        self.window.but_create.clicked.connect(lambda: print(f' {self._model.audio_device}, {self._model.audio_driver}'))
+        self.window.but_create.clicked.connect(self._controller.create_new_project)
+        self.window.cb_video_devices.currentIndexChanged.connect(self._controller.change_video_device)
 
     def connect_to_model(self):
         self._model.project_name_changed.connect(self.on_project_name_changed)
@@ -53,6 +48,14 @@ class NewProjectView(QMainWindow):
         self._model.audio_driver_changed.connect(self.on_audio_driver_changed)
         self._model.audio_devices_set.connect(self.on_audio_devices_set)
         self._model.audio_device_changed.connect(self.on_audio_device_changed)
+        self._model.video_devices_set.connect(self.on_video_devices_set)
+        self._model.video_device_changed.connect(self.on_video_device_changed)
+
+    def set_default_values(self):
+        self._controller.change_project_location(os.path.expanduser("~"))
+        self._controller.change_project_name('New Project')
+        self._controller.set_audio_drivers()
+        self._controller.set_video_devices()
 
     def open_location_dialog(self):
         _dir = str(QFileDialog.getExistingDirectory(self, "Choose a location.", str(self._model.project_location)))
@@ -82,4 +85,13 @@ class NewProjectView(QMainWindow):
         
     @Slot(int)
     def on_audio_device_changed(self, value):
-        print(f'[VIEW]: Device changed: {value}')
+        print(f'[VIEW]: Audio Device changed: {value}')
+
+    @Slot(object)
+    def on_video_devices_set(self, value):
+        self.window.cb_video_devices.clear()
+        self.window.cb_video_devices.addItems(list(value.values()))
+
+    @Slot(int)
+    def on_video_device_changed(self, value):
+        print(f'[VIEW]: Video Device changed: {value}')

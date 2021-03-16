@@ -6,14 +6,17 @@ from PySide2.QtCore import QFile
 from PySide2.QtUiTools import QUiLoader
 
 
-class MainWindow(QMainWindow):
+class DataAcquisitionView(QMainWindow):
 
     def __init__(self, model, controller):
-        super(MainWindow, self).__init__()
+        super(DataAcquisitionView, self).__init__()
         self._model = model
-        self._main_controller = controller
+        self._controller = controller
+
         self.load_ui()
-        self.connect_elements()
+        self.connect_to_controller()
+        self.connect_to_model()
+        self.set_default_values()
 
     def open(self):
         self.window.show()
@@ -23,13 +26,17 @@ class MainWindow(QMainWindow):
 
     def load_ui(self):
         loader = QUiLoader()
-        path = os.path.join('designer', "form.ui")
+        path = os.path.join('designer', "data_acquisition.ui")
         ui_file = QFile(path)
         ui_file.open(QFile.ReadOnly)
-        self.window = loader.load(ui_file, self)
+        self.window = loader.load(ui_file)
         ui_file.close()
 
-    def connect_elements(self):
+    def connect_to_controller(self):
         pass
-        # self.window.nav_but_1.clicked.connect(lambda: self._main_controller.navigate('new_project'))
 
+    def connect_to_model(self):
+        pass
+    
+    def set_default_values(self):
+        pass

@@ -8,6 +8,6 @@ class Navigator(QObject):
     def __init__(self):
         super().__init__()
 
-    @Slot(str)
+    # @Slot(str)
     def navigate(self, value): 
         self.navigator.emit(value)
