@@ -3,7 +3,7 @@ import sounddevice as sd
 from PySide2.QtCore import QObject, Slot
 from PySide2 import QtMultimedia
 
-from ..models import ActualProjectModel
+from ..models.ActualProjectModel import ActualProjectModel
 
 
 class NewProjectController(QObject):
