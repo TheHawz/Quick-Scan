@@ -25,7 +25,7 @@
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
-        <widget class="QFrame" name="frame_3">
+        <widget class="QFrame" name="top_frame">
          <property name="frameShape">
           <enum>QFrame::StyledPanel</enum>
          </property>
@@ -35,7 +35,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QFrame" name="frame_2">
+        <widget class="QFrame" name="bottom_frame">
          <property name="frameShape">
           <enum>QFrame::StyledPanel</enum>
          </property>
@@ -44,7 +44,7 @@
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout">
           <item>
-           <widget class="QFrame" name="frame_5">
+           <widget class="QFrame" name="left_frame">
             <property name="frameShape">
              <enum>QFrame::StyledPanel</enum>
             </property>
@@ -54,17 +54,26 @@
            </widget>
           </item>
           <item>
-           <widget class="QFrame" name="frame_4">
+           <widget class="QFrame" name="mid_frame">
             <property name="frameShape">
              <enum>QFrame::StyledPanel</enum>
             </property>
             <property name="frameShadow">
              <enum>QFrame::Raised</enum>
             </property>
+            <layout class="QHBoxLayout" name="horizontalLayout_3">
+             <item>
+              <widget class="QLabel" name="cam_view">
+               <property name="text">
+                <string/>
+               </property>
+              </widget>
+             </item>
+            </layout>
            </widget>
           </item>
           <item>
-           <widget class="QFrame" name="frame_6">
+           <widget class="QFrame" name="right_frame">
             <property name="frameShape">
              <enum>QFrame::StyledPanel</enum>
             </property>
