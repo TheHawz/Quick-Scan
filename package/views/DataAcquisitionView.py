@@ -6,7 +6,7 @@ import numpy as np
 from PySide2.QtCore import QEvent, QFile, QThread, Qt, Signal, Slot
 from PySide2.QtGui import QImage, QPixmap
 from PySide2.QtUiTools import QUiLoader
-from PySide2.QtWidgets import QMainWindow
+from PySide2.QtWidgets import QMainWindow, QWidget
 
 from ..models.ActualProjectModel import ActualProjectModel
 
@@ -90,8 +90,8 @@ class MicThread(QThread):
         
 class DataAcquisitionView(QMainWindow):
 
-    def __init__(self, model, controller):
-        super(DataAcquisitionView, self).__init__()
+    def __init__(self, model, controller, parent=None):
+        super(DataAcquisitionView, self).__init__(parent)
         self._model = model
         self._controller = controller
 
@@ -100,15 +100,20 @@ class DataAcquisitionView(QMainWindow):
         self.connect_to_model()
         self.set_default_values()
         self.start_threads()
-
+        self.installEventFilter(self)
+    
     def open(self):
         self.window.show()
-        self.cameraThread.start()
-        self.micThread.start()
+        self.start_thread()
 
     def close(self):
+        self.stop_thread()
         self.window.hide()
         
+    def start_thread(self):
+        self.cameraThread.start()
+        self.micThread.start()  
+
     def stop_thread(self):
         self.cameraThread.running = False
 
