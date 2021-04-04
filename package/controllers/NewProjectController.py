@@ -20,7 +20,7 @@ class NewProjectController(QObject):
         ActualProjectModel.audio_driver = self._model.audio_driver
         ActualProjectModel.audio_device = self._model.audio_device
         ActualProjectModel.video_device = self._model.video_device
-        
+
         self._navigator.navigate('data_acquisition')
 
     @Slot(str)
@@ -30,29 +30,34 @@ class NewProjectController(QObject):
     @Slot(str)
     def change_project_location(self, value):
         self._model.project_location = value
-        
+
     @Slot(int)
     def change_audio_driver(self, value):
-        self._model.audio_driver = value 
-               
+        self._model.audio_driver = value
+
     @Slot(int)
     def change_audio_device(self, value):
-        self._model.audio_device = value
-        
+        self._model.audio_device = self._model.audio_devices_index[value]
+
     def set_audio_drivers(self):
         hostapis = sd.query_hostapis()
-        drivers = [hostapi['name'] for hostapi in hostapis]
-        self._model.audio_drivers = drivers
-        
+        self._model.audio_drivers = hostapis
+
     def set_audio_devices(self, driver):
         all_devices = sd.query_devices()
-        devices = []
-        for device in all_devices:
-            if (device['hostapi'] == driver):
-                if (device['max_input_channels'] > 0):
-                    devices.append(device['name'])
-                    
-        self._model.audio_devices = devices
+        actual_driver = self._model.audio_drivers[driver]
+        actual_devices_index = actual_driver['devices']
+        input_devices_index = []
+
+        input_devices = []
+        for i in actual_devices_index:
+            device = all_devices[i]
+            if (device['max_input_channels'] > 0):
+                input_devices.append(device['name'])
+                input_devices_index.append(i)
+
+        self._model.audio_devices_index = input_devices_index
+        self._model.audio_devices = input_devices
 
     def set_video_devices(self):
         cameras = QtMultimedia.QCameraInfo.availableCameras()

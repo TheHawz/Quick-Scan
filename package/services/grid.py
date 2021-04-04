@@ -12,11 +12,31 @@ import cv2
 class Grid:
 
     def __init__(self, size_of_frame, number_of_rows, number_of_cols, padding=0):
+        """Constructor
+
+        Args:
+            size_of_frame (numpy.array): (horizontal, vertical)
+            number_of_rows (int): 
+            number_of_cols (int): 
+            padding (int, optional): Padding arround the border. Defaults to 0.
+        """
         self.size_of_frame = size_of_frame
+        self.config(number_of_rows, number_of_cols, padding)
+
+    def config(self,  number_of_rows, number_of_cols, padding=0):
         self.number_of_rows = number_of_rows
         self.number_of_cols = number_of_cols
         self.padding = padding
         self.padding_coords = np.array([self.padding, self.padding])
+
+        # 1. APPLY PADDING
+        self.real_size = self.size_of_frame - (self.padding_coords * 2)
+
+        # 2. GET DIVISIONS
+        self.hor_div = [int(self.real_size[1] / self.number_of_rows * i + padding)
+                        for i in range(self.number_of_rows + 1)]
+        self.ver_div = [int(self.real_size[0] / self.number_of_cols * i + padding)
+                        for i in range(self.number_of_cols + 1)]
 
     def locate_point(self, point):
         x_size, y_size = self.size_of_frame
@@ -29,6 +49,26 @@ class Grid:
         point_grid_coords = np.array(point) - self.padding_coords
 
         return np.ceil(point_grid_coords / np.array([grid_size_y, grid_size_x]))
+
+    def draw_grid(self, frame, color=(180, 180, 180), thickness=1):
+        """ 
+            TODO: se puede optimizar mucho: 
+            crear una mascara que luego se reutilice para colorear todos 
+            los frames siguientes
+        """
+        # DRAW HORIZONTAL DIVISIONS
+        for div in self.hor_div:
+            start_point = (self.padding, div)
+            end_point = (self.size_of_frame[0] - self.padding, div)
+            cv2.line(frame, start_point, end_point, color, thickness)
+
+        # DRAW VERTICAL DIVISIONS
+        for div in self.ver_div:
+            start_point = (div, self.padding)
+            end_point = (div, self.size_of_frame[1] - self.padding)
+            cv2.line(frame, start_point, end_point, color, thickness)
+
+        return frame
 
 
 def draw_grid(frame, rows, cols, padding, color=(180, 180, 180), thickness=1):

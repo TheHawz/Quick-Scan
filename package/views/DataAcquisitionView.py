@@ -1,7 +1,7 @@
 # This Python file uses the following encoding: utf-8
 import tempfile
 import numpy  # Make sure NumPy is loaded before it is used in the callback
-import soundfile as sf
+# import soundfile as sf
 import sounddevice as sd
 import sys
 import queue
@@ -17,7 +17,7 @@ from PySide2.QtWidgets import QMainWindow, QWidget
 from ..models.ActualProjectModel import ActualProjectModel
 
 # from ..services import colorSegmentation as cs  # Credits to Lara!
-from ..services.grid import Grid, draw_grid
+from ..services.grid import Grid
 from ..services import imbasic as imb
 from ..services import colorSegmentation as cs
 from ..services.path import interpolate_nan
@@ -42,13 +42,25 @@ class CameraThread(QThread):
         self.y_data = []
 
     def run(self):
+        """Callback function executed whenever someone starts the QThreat (thread.start())
+        """
         self._running = True
+        self._rec = False
+
         cap = cv2.VideoCapture(ActualProjectModel.video_device)
+
+        self.frame_size = np.array([int(cap.get(3)), int(cap.get(4))])
+        self._grid = Grid(self.frame_size, NUMBER_OF_ROWS,
+                          NUMBER_OF_COLS, padding=20)
 
         while self._running:
             ret, frame = cap.read()
+
             if not ret:
                 break
+
+            if not self._rec:
+                self._grid.config(NUMBER_OF_ROWS, NUMBER_OF_COLS, padding=20)
 
             processed_frame = self.process_frame(frame)
             self.update_frame.emit(processed_frame)
@@ -91,6 +103,7 @@ class CameraThread(QThread):
         # mask = get_mask(frame)
         # circles = get_circles(mask)
         # draw_grid(frame, NUMBER_OF_ROWS, NUMBER_OF_COLS, PADDING)
+        self._grid.draw_grid(frame)
         # self.process_circles(frame, circles)
 
         return frame
@@ -123,16 +136,18 @@ class MicThread(QThread):
 
     def run(self):
         self._running = True
-        print(sd.query_devices())
+
         try:
-            with stream:
+            with self.stream:
                 pass
         except KeyboardInterrupt:
+            print("[MICTHREAD] KeyboardInterrupt")
             self.stop()
         except Exception as e:
+            print("[MICTHREAD] Exception: ", e)
             self.stop()
 
-        print("Finished!")
+        print("[MICTHREAD] Finished!")
 
     def stop(self):
         self._running = False

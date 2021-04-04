@@ -1,7 +1,7 @@
 # This Python file uses the following encoding: utf-8
 import os
 
-from PySide2.QtWidgets import  QMainWindow, QFileDialog
+from PySide2.QtWidgets import QMainWindow, QFileDialog
 from PySide2.QtCore import QFile, Slot
 from PySide2.QtUiTools import QUiLoader
 
@@ -33,17 +33,24 @@ class NewProjectView(QMainWindow):
         ui_file.close()
 
     def connect_to_controller(self):
-        self.window.line_project_name.textChanged.connect(self._controller.change_project_name)
-        self.window.line_project_location.textChanged.connect(self._controller.change_project_location)
+        self.window.line_project_name.textChanged.connect(
+            self._controller.change_project_name)
+        self.window.line_project_location.textChanged.connect(
+            self._controller.change_project_location)
         self.window.open_location.clicked.connect(self.open_location_dialog)
-        self.window.cb_audio_driver.currentIndexChanged.connect(self._controller.change_audio_driver)
-        self.window.cb_audio_device.currentIndexChanged.connect(self._controller.change_audio_device)
-        self.window.but_create.clicked.connect(self._controller.create_new_project)
-        self.window.cb_video_devices.currentIndexChanged.connect(self._controller.change_video_device)
+        self.window.cb_audio_driver.currentIndexChanged.connect(
+            self._controller.change_audio_driver)
+        self.window.cb_audio_device.currentIndexChanged.connect(
+            self._controller.change_audio_device)
+        self.window.but_create.clicked.connect(
+            self._controller.create_new_project)
+        self.window.cb_video_devices.currentIndexChanged.connect(
+            self._controller.change_video_device)
 
     def connect_to_model(self):
         self._model.project_name_changed.connect(self.on_project_name_changed)
-        self._model.project_location_changed.connect(self.on_project_location_changed)
+        self._model.project_location_changed.connect(
+            self.on_project_location_changed)
         self._model.audio_drivers_set.connect(self.on_audio_drivers_set)
         self._model.audio_driver_changed.connect(self.on_audio_driver_changed)
         self._model.audio_devices_set.connect(self.on_audio_devices_set)
@@ -58,7 +65,8 @@ class NewProjectView(QMainWindow):
         self._controller.set_video_devices()
 
     def open_location_dialog(self):
-        _dir = str(QFileDialog.getExistingDirectory(self, "Choose a location.", str(self._model.project_location)))
+        _dir = str(QFileDialog.getExistingDirectory(
+            self, "Choose a location.", str(self._model.project_location)))
         self._controller.change_project_location(_dir)
 
     @Slot(str)
@@ -71,8 +79,11 @@ class NewProjectView(QMainWindow):
 
     @Slot(object)
     def on_audio_drivers_set(self, value):
+        # driver_names = [*value]  # Unpacking dict keys
+        names = [v['name'] for v in value]
+        print(names)
         self.window.cb_audio_driver.clear()
-        self.window.cb_audio_driver.addItems(value)
+        self.window.cb_audio_driver.addItems(names)
 
     @Slot(int)
     def on_audio_driver_changed(self, value):
@@ -82,7 +93,7 @@ class NewProjectView(QMainWindow):
     def on_audio_devices_set(self, value):
         self.window.cb_audio_device.clear()
         self.window.cb_audio_device.addItems(value)
-        
+
     @Slot(int)
     def on_audio_device_changed(self, value):
         print(f'[VIEW]: Audio Device changed: {value}')
