@@ -1,4 +1,5 @@
 # This Python file uses the following encoding: utf-8
+from pstats import SortKey
 import sys
 
 from PySide2.QtWidgets import QApplication
@@ -71,7 +72,25 @@ def exception_hook(exctype, value, traceback):
 
 sys.excepthook = exception_hook
 
-if __name__ == "__main__":
+
+def main():
     QtCore.QCoreApplication.setAttribute(QtCore.Qt.AA_ShareOpenGLContexts)
     app = App()
     sys.exit(app.exec_())
+
+
+if __name__ == "__main__":
+    import cProfile
+
+    cProfile.run('main()', 'output.dat')
+
+    import pstats
+    from pstats import SortKey
+
+    with open("output_time.dat", "w") as f:
+        p = pstats.Stats("output.dat", stream=f)
+        p.sort_stats("time").print_stats()
+
+    with open("output_calls.dat", "w") as f:
+        p = pstats.Stats("output.dat", stream=f)
+        p.sort_stats("calls").print_stats()

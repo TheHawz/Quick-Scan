@@ -17,8 +17,7 @@ class NewProjectController(QObject):
         # Pushing info to ActualProject Global Model
         ActualProjectModel.project_name = self._model.project_name
         ActualProjectModel.project_location = self._model.project_location
-        ActualProjectModel.audio_driver = self._model.audio_driver
-        ActualProjectModel.audio_device = self._model.audio_device
+        ActualProjectModel.audio_device_index = self._model.audio_device
         ActualProjectModel.video_device = self._model.video_device
 
         self._navigator.navigate('data_acquisition')

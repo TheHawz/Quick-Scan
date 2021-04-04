@@ -29,26 +29,20 @@ class Grid:
         self.padding = padding
         self.padding_coords = np.array([self.padding, self.padding])
 
-        # 1. APPLY PADDING
         self.real_size = self.size_of_frame - (self.padding_coords * 2)
 
-        # 2. GET DIVISIONS
+        self.grid_size = np.array(
+            [self.real_size[0] / self.number_of_rows,
+             self.real_size[1] / self.number_of_cols])
+
         self.hor_div = [int(self.real_size[1] / self.number_of_rows * i + padding)
                         for i in range(self.number_of_rows + 1)]
         self.ver_div = [int(self.real_size[0] / self.number_of_cols * i + padding)
                         for i in range(self.number_of_cols + 1)]
 
     def locate_point(self, point):
-        x_size, y_size = self.size_of_frame
-        real_x_size = x_size - (self.padding * 2)
-        real_y_size = y_size - (self.padding * 2)
-
-        grid_size_x = real_x_size / self.number_of_rows
-        grid_size_y = real_y_size / self.number_of_cols
-
         point_grid_coords = np.array(point) - self.padding_coords
-
-        return np.ceil(point_grid_coords / np.array([grid_size_y, grid_size_x]))
+        return np.floor(point_grid_coords / self.grid_size).astype(int)
 
     def draw_grid(self, frame, color=(180, 180, 180), thickness=1):
         """ 

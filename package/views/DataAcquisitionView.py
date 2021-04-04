@@ -8,6 +8,7 @@ import queue
 import os
 import cv2
 import numpy as np
+import time
 
 from PySide2.QtCore import QEvent, QFile, QThread, Qt, Signal, Slot
 from PySide2.QtGui import QImage, QPixmap
@@ -28,8 +29,8 @@ q = queue.Queue()
 
 # TODO: move to own file
 # GRID DEFINITION
-NUMBER_OF_ROWS = 8
-NUMBER_OF_COLS = 8
+NUMBER_OF_ROWS = 4
+NUMBER_OF_COLS = 4
 PADDING = 100
 
 
@@ -40,18 +41,27 @@ class CameraThread(QThread):
         super().__init__(*args, **kwargs)
         self.x_data = []
         self.y_data = []
+        self.x = -1
+        self.y = -1
 
     def run(self):
-        """Callback function executed whenever someone starts the QThreat (thread.start())
+        """ 
+            Callback function executed whenever someone starts the QThreat 
+            (thread.start())
         """
         self._running = True
         self._rec = False
 
-        cap = cv2.VideoCapture(ActualProjectModel.video_device)
+        cap = cv2.VideoCapture(ActualProjectModel.video_device + cv2.CAP_DSHOW)
 
         self.frame_size = np.array([int(cap.get(3)), int(cap.get(4))])
         self._grid = Grid(self.frame_size, NUMBER_OF_ROWS,
-                          NUMBER_OF_COLS, padding=20)
+                          NUMBER_OF_COLS, padding=60)
+
+        # TODO: move this to "if not self._rec:"
+        self.times = np.zeros((NUMBER_OF_ROWS, NUMBER_OF_COLS))
+
+        self.time = time.time()
 
         while self._running:
             ret, frame = cap.read()
@@ -59,13 +69,14 @@ class CameraThread(QThread):
             if not ret:
                 break
 
-            if not self._rec:
-                self._grid.config(NUMBER_OF_ROWS, NUMBER_OF_COLS, padding=20)
+            # if not self._rec:
+            #     self._grid.config(NUMBER_OF_ROWS, NUMBER_OF_COLS, padding=20)
 
             processed_frame = self.process_frame(frame)
             self.update_frame.emit(processed_frame)
 
         print('Stopping Camera Thread!')
+        cv2.destroyAllWindows()
         cap.release()
 
     def process_circles(self, frame, circles):
@@ -82,13 +93,14 @@ class CameraThread(QThread):
         else:
             circles = np.round(circles[0, :]).astype("int")
 
-            for (x, y, r) in circles:
-                self.x_data.append(x)
-                self.y_data.append(y)
-                frame = cv2.circle(frame, (x, y), r, (0, 255, 0), 4)
-                frame = cv2.rectangle(
-                    frame, (x - 5, y - 5), (x + 5, y + 5), (0, 128, 255), -1)
-                break
+            x, y, r = circles[0]
+            self.x_data.append(x)
+            self.y_data.append(y)
+            self.x = x
+            self.y = y
+            frame = cv2.circle(frame, (x, y), r, (0, 255, 0), 4)
+            frame = cv2.rectangle(
+                frame, (x - 5, y - 5), (x + 5, y + 5), (0, 128, 255), -1)
 
     def process_frame(self, frame):
         """Process each frame
@@ -99,12 +111,25 @@ class CameraThread(QThread):
         Returns:
             [type]: [description]
         """
-
-        # mask = get_mask(frame)
-        # circles = get_circles(mask)
-        # draw_grid(frame, NUMBER_OF_ROWS, NUMBER_OF_COLS, PADDING)
+        frame = cv2.flip(frame, 1)
+        mask = get_mask(frame)
+        circles = get_circles(mask)
         self._grid.draw_grid(frame)
-        # self.process_circles(frame, circles)
+        self.process_circles(frame, circles)
+
+        # rgb_times = (self.times*255).astype(np.uint8)
+        # frame = cv2.resize(
+        #     rgb_times, (self._grid.size_of_frame[0], self._grid.size_of_frame[1]))
+
+        delta = time.time() - self.time
+        self.time = time.time()
+
+        if self.x != -1 and self.y != -1:
+            grid = self._grid.locate_point((self.x, self.y))
+            # self.times[grid] += delta
+            imb.draw_text(frame, f'({grid[0],grid[1]})', 15, 15)
+
+        # print(self.times)
 
         return frame
 
@@ -189,8 +214,8 @@ class DataAcquisitionView(QMainWindow):
             self.stop_thread()
             event.accept()
             return True
-
-        return super(DataAcquisitionView, self).eventFilter(obj, event)
+        else:
+            return super(DataAcquisitionView, self).eventFilter(obj, event)
 
     def load_ui(self):
         loader = QUiLoader()
