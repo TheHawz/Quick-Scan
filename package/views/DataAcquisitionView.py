@@ -36,6 +36,7 @@ PADDING = 100
 
 class CameraThread(QThread):
     update_frame = Signal(np.ndarray)
+    on_stop_recording = Signal()
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -75,7 +76,8 @@ class CameraThread(QThread):
             processed_frame = self.process_frame(frame)
             self.update_frame.emit(processed_frame)
 
-        print('Stopping Camera Thread!')
+        # print('Stopping Camera Thread!')
+        self.on_stop_recording.emit()
         cv2.destroyAllWindows()
         cap.release()
 
@@ -132,6 +134,15 @@ class CameraThread(QThread):
         # print(self.times)
 
         return frame
+
+    def toogleRec(self):
+        if not self._rec:
+            self._rec = True
+            print("Start recording!")
+        else:
+            self._rec = False
+            self._running = False
+            print("Stop recording!")
 
     def stop(self):
         """Sets run flag to False and waits for thread to finish"""
@@ -226,7 +237,7 @@ class DataAcquisitionView(QMainWindow):
         ui_file.close()
 
     def connect_to_controller(self):
-        pass
+        self.window.start_stop_button.clicked.connect(self.start_stop)
 
     def connect_to_model(self):
         pass
@@ -237,6 +248,8 @@ class DataAcquisitionView(QMainWindow):
     def start_threads(self):
         self.cameraThread = CameraThread(self)
         self.cameraThread.update_frame.connect(self.set_image)
+        self.cameraThread.on_stop_recording.connect(
+            lambda: self._controller.navigate('display_results'))
         self.micThread = MicThread(self)
         self.micThread.update_volume.connect(self.set_volume)
         self.window.installEventFilter(self)
@@ -262,3 +275,6 @@ class DataAcquisitionView(QMainWindow):
     def set_volume(self, value):
         if value:
             print(value)
+
+    def start_stop(self):
+        self.cameraThread.toogleRec()

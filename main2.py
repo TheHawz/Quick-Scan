@@ -74,12 +74,16 @@ def main(file=None):
     cap.release()
 
     # Interpolate missed frames
-    # if len(x_data) != 0 and len(y_data) != 0:
-    #     x_data = interpolate_nan(x_data)
-    #     y_data = interpolate_nan(y_data)
-    #     np.savetxt(os.path.join("data", "x_data.txt"), x_data)
-    #     np.savetxt(os.path.join("data", "y_data.txt"), y_data)
-    #     np.savetxt(os.path.join('data', 'size_of_frame.txt'), size_of_frame)
+    if len(x_data) != 0 and len(y_data) != 0:
+        x_data = interpolate_nan(x_data)
+        y_data = interpolate_nan(y_data)
+        
+        if not os.path.exists('data'):
+            os.makedirs('data')
+
+        np.savetxt(os.path.join("data", "x_data.txt"), x_data)
+        np.savetxt(os.path.join("data", "y_data.txt"), y_data)
+        np.savetxt(os.path.join('data', 'size_of_frame.txt'), size_of_frame)
 
 
 def audio_video_segmentation():

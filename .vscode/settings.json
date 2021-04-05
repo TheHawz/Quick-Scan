@@ -1,3 +1,4 @@
 {
-    "terminal.integrated.shellArgs.windows": null
+  "terminal.integrated.shellArgs.windows": null,
+  "python.pythonPath": "C:\\Users\\Pablo\\miniconda3\\envs\\tfg\\python.exe"
 }

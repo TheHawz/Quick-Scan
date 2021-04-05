@@ -1,7 +1,8 @@
+
 from PySide2.QtCore import QObject, Slot
 
 
-class DataAcquisitionController(QObject):
+class DisplayResultsController(QObject):
 
     def __init__(self, model, navigator):
         super().__init__()

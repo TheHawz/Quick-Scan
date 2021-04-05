@@ -81,7 +81,6 @@ class NewProjectView(QMainWindow):
     def on_audio_drivers_set(self, value):
         # driver_names = [*value]  # Unpacking dict keys
         names = [v['name'] for v in value]
-        print(names)
         self.window.cb_audio_driver.clear()
         self.window.cb_audio_driver.addItems(names)
 

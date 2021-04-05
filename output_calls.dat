@@ -1,149 +1,161 @@
-Sun Apr  4 17:31:42 2021    output.dat
+Mon Apr  5 20:10:27 2021    output.dat
 
-         5740 function calls (5651 primitive calls) in 5.438 seconds
+         1589 function calls (1553 primitive calls) in 13.117 seconds
 
    Ordered by: call count
 
    ncalls  tottime  percall  cumtime  percall filename:lineno(function)
-     1526    0.007    0.000    0.058    0.000 D:\Bibliotecas\Code\Projects\2021\Python\01 Working Projects\TFG\tfg-Scan-Paint-clone\package\views\DataAcquisitionView.py:210(eventFilter)
-     1525    0.002    0.000    0.002    0.000 {function DataAcquisitionView.eventFilter at 0x000001B5313EC4C0}
-     1448    0.003    0.000    0.003    0.000 {method 'type' of 'PySide2.QtCore.QEvent' objects}
-      145    0.000    0.000    0.000    0.000 {built-in method builtins.isinstance}
-       83    0.000    0.000    0.000    0.000 {method 'decode' of 'bytes' objects}
-       76    0.002    0.000    0.057    0.001 D:\Bibliotecas\Code\Projects\2021\Python\01 Working Projects\TFG\tfg-Scan-Paint-clone\package\views\DataAcquisitionView.py:248(convert_cv_qt)
-       76    0.002    0.000    0.068    0.001 D:\Bibliotecas\Code\Projects\2021\Python\01 Working Projects\TFG\tfg-Scan-Paint-clone\package\views\DataAcquisitionView.py:242(set_image)
-       76    0.031    0.000    0.031    0.000 {built-in method fromImage}
-       76    0.010    0.000    0.010    0.000 {method 'setPixmap' of 'PySide2.QtWidgets.QLabel' objects}
-       76    0.023    0.000    0.023    0.000 {cvtColor}
-       70    0.000    0.000    0.000    0.000 {method 'string' of '_cffi_backend.FFI' objects}
-     67/3    0.000    0.000    0.001    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\site-packages\sounddevice.py:450(query_devices)
-       66    0.000    0.000    0.001    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\site-packages\sounddevice.py:559(<genexpr>)
-       66    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\site-packages\sounddevice.py:2699(_split)
-       66    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\site-packages\sounddevice.py:2741(_get_device_id)
-       18    0.001    0.000    0.001    0.000 {method 'connect' of 'PySide2.QtCore.SignalInstance' objects}
-       16    0.000    0.000    0.000    0.000 {method 'append' of 'list' objects}
-     16/6    0.000    0.000    0.334    0.056 {method 'emit' of 'PySide2.QtCore.SignalInstance' objects}
-       10    0.000    0.000    0.000    0.000 {built-in method nt.fspath}
-        9    0.000    0.000    0.000    0.000 {method 'get' of 'dict' objects}
-        7    0.000    0.000    0.000    0.000 {built-in method builtins.len}
-        6    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\ntpath.py:124(splitdrive)
-        6    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\site-packages\sounddevice.py:636(<genexpr>)
-      6/1    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\site-packages\sounddevice.py:598(query_hostapis)
-        6    0.000    0.000    0.000    0.000 {method 'replace' of 'str' objects}
+      317    0.004    0.000    0.006    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\DataAcquisitionView.py:223(eventFilter)
+      317    0.001    0.000    0.001    0.000 {function DataAcquisitionView.eventFilter at 0x0000021E763B2670}
+      315    0.001    0.000    0.001    0.000 {method 'type' of 'PySide2.QtCore.QEvent' objects}
+       48    0.000    0.000    0.000    0.000 {built-in method builtins.isinstance}
+       34    0.002    0.000    0.048    0.001 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\DataAcquisitionView.py:257(set_image)
+       34    0.002    0.000    0.039    0.001 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\DataAcquisitionView.py:263(convert_cv_qt)
+       34    0.019    0.001    0.019    0.001 {cvtColor}
+       34    0.008    0.000    0.008    0.000 {method 'setPixmap' of 'PySide2.QtWidgets.QLabel' objects}
+       34    0.018    0.001    0.018    0.001 {built-in method fromImage}
+       20    0.001    0.000    0.001    0.000 {method 'connect' of 'PySide2.QtCore.SignalInstance' objects}
+     17/3    0.000    0.000    0.000    0.000 C:\Users\Pablo\miniconda3\envs\tfg\lib\site-packages\sounddevice.py:450(query_devices)
+       17    0.000    0.000    0.000    0.000 {method 'decode' of 'bytes' objects}
+       17    0.000    0.000    0.000    0.000 {method 'string' of '_cffi_backend.FFI' objects}
+       16    0.000    0.000    0.000    0.000 C:\Users\Pablo\miniconda3\envs\tfg\lib\site-packages\sounddevice.py:559(<genexpr>)
+       16    0.000    0.000    0.000    0.000 C:\Users\Pablo\miniconda3\envs\tfg\lib\site-packages\sounddevice.py:2699(_split)
+       16    0.000    0.000    0.000    0.000 C:\Users\Pablo\miniconda3\envs\tfg\lib\site-packages\sounddevice.py:2741(_get_device_id)
+     16/6    0.001    0.000    0.667    0.111 {method 'emit' of 'PySide2.QtCore.SignalInstance' objects}
+       15    0.000    0.000    0.000    0.000 {method 'get' of 'dict' objects}
+       13    0.000    0.000    0.000    0.000 {built-in method nt.fspath}
+        9    0.004    0.000    0.004    0.000 {method 'hide' of 'PySide2.QtWidgets.QWidget' objects}
+        9    0.000    0.000    0.000    0.000 {built-in method builtins.len}
+        8    0.000    0.000    0.000    0.000 C:\Users\Pablo\miniconda3\envs\tfg\lib\ntpath.py:124(splitdrive)
+        8    0.000    0.000    0.000    0.000 {method 'append' of 'list' objects}
+        8    0.000    0.000    0.000    0.000 {method 'replace' of 'str' objects}
         6    0.001    0.000    0.001    0.000 {built-in method builtins.print}
-        5    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\site-packages\sounddevice.py:644(<listcomp>)
-        5    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\site-packages\sounddevice.py:2718(_check)
-      4/3    0.000    0.000    0.001    0.000 {method 'addItems' of 'PySide2.QtWidgets.QComboBox' objects}
+        5    0.000    0.000    0.000    0.000 C:\Users\Pablo\miniconda3\envs\tfg\lib\site-packages\sounddevice.py:2718(_check)
+        4    0.000    0.000    0.000    0.000 C:\Users\Pablo\miniconda3\envs\tfg\lib\ntpath.py:77(join)
+      4/3    0.000    0.000    0.002    0.001 {method 'addItems' of 'PySide2.QtWidgets.QComboBox' objects}
       4/3    0.000    0.000    0.001    0.000 {method 'clear' of 'PySide2.QtWidgets.QComboBox' objects}
-      4/2    0.317    0.079    0.317    0.159 {method 'setText' of 'PySide2.QtWidgets.QLineEdit' objects}
-        4    0.002    0.001    0.002    0.001 {method 'hide' of 'PySide2.QtWidgets.QWidget' objects}
+      4/2    0.376    0.094    0.377    0.188 {method 'setText' of 'PySide2.QtWidgets.QLineEdit' objects}
+        4    0.000    0.000    0.000    0.000 {method 'open' of 'PySide2.QtCore.QFile' objects}
+        4    0.000    0.000    0.000    0.000 {method 'close' of 'PySide2.QtCore.QFileDevice' objects}
+        4    0.259    0.065    0.259    0.065 {method 'wait' of 'PySide2.QtCore.QThread' objects}
         4    0.000    0.000    0.000    0.000 {built-in method builtins.issubclass}
-        4    0.046    0.012    0.046    0.012 {method 'wait' of 'PySide2.QtCore.QThread' objects}
-        3    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\ntpath.py:77(join)
-        3    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Projects\2021\Python\01 Working Projects\TFG\tfg-Scan-Paint-clone\package\models\NewProjectModel.py:85(audio_device)
-        3    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\site-packages\sounddevice.py:1994(__getitem__)
-        3    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Projects\2021\Python\01 Working Projects\TFG\tfg-Scan-Paint-clone\package\controllers\NewProjectController.py:37(change_audio_device)
-        3    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Projects\2021\Python\01 Working Projects\TFG\tfg-Scan-Paint-clone\package\views\NewProjectView.py:97(on_audio_device_changed)
-        3    0.095    0.032    0.095    0.032 {method 'load' of 'PySide2.QtUiTools.QUiLoader' objects}
-        3    0.000    0.000    0.000    0.000 {method 'description' of 'PySide2.QtMultimedia.QCameraInfo' objects}
+        4    0.161    0.040    0.161    0.040 {method 'load' of 'PySide2.QtUiTools.QUiLoader' objects}
+        3    0.000    0.000    0.411    0.137 main.py:63(change_view)
+        3    0.000    0.000    0.001    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\models\NewProjectModel.py:85(audio_device)
+        3    0.000    0.000    0.000    0.000 C:\Users\Pablo\miniconda3\envs\tfg\lib\site-packages\sounddevice.py:636(<genexpr>)
+      3/1    0.000    0.000    0.000    0.000 C:\Users\Pablo\miniconda3\envs\tfg\lib\site-packages\sounddevice.py:598(query_hostapis)
+        3    0.000    0.000    0.000    0.000 C:\Users\Pablo\miniconda3\envs\tfg\lib\site-packages\sounddevice.py:1994(__getitem__)
+        3    0.000    0.000    0.001    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\controllers\NewProjectController.py:37(change_audio_device)
+        3    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\MainWindow.py:21(close)
+        3    0.000    0.000    0.001    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\NewProjectView.py:96(on_audio_device_changed)
+        3    0.148    0.049    0.148    0.049 {method 'show' of 'PySide2.QtWidgets.QWidget' objects}
         3    0.000    0.000    0.000    0.000 {built-in method builtins.getattr}
-        3    0.000    0.000    0.000    0.000 {method 'open' of 'PySide2.QtCore.QFile' objects}
-        3    0.000    0.000    0.000    0.000 {method 'close' of 'PySide2.QtCore.QFileDevice' objects}
-        2    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\os.py:670(__getitem__)
-        2    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\os.py:734(check_str)
-        2    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\os.py:740(encodekey)
-        2    0.000    0.000    0.074    0.037 main.py:54(change_view)
-      2/1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Projects\2021\Python\01 Working Projects\TFG\tfg-Scan-Paint-clone\package\models\NewProjectModel.py:40(project_name)
-      2/1    0.000    0.000    0.317    0.317 D:\Bibliotecas\Code\Projects\2021\Python\01 Working Projects\TFG\tfg-Scan-Paint-clone\package\models\NewProjectModel.py:49(project_location)
-        2    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Projects\2021\Python\01 Working Projects\TFG\tfg-Scan-Paint-clone\package\models\NewProjectModel.py:54(audio_drivers)
-        2    0.000    0.000    0.001    0.001 D:\Bibliotecas\Code\Projects\2021\Python\01 Working Projects\TFG\tfg-Scan-Paint-clone\package\models\NewProjectModel.py:67(audio_driver)
-        2    0.000    0.000    0.001    0.000 D:\Bibliotecas\Code\Projects\2021\Python\01 Working Projects\TFG\tfg-Scan-Paint-clone\package\models\NewProjectModel.py:76(audio_devices)
-        2    0.000    0.000    0.001    0.000 D:\Bibliotecas\Code\Projects\2021\Python\01 Working Projects\TFG\tfg-Scan-Paint-clone\package\models\NewProjectModel.py:103(video_device)
-      2/1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Projects\2021\Python\01 Working Projects\TFG\tfg-Scan-Paint-clone\package\controllers\NewProjectController.py:25(change_project_name)
-      2/1    0.000    0.000    0.317    0.317 D:\Bibliotecas\Code\Projects\2021\Python\01 Working Projects\TFG\tfg-Scan-Paint-clone\package\controllers\NewProjectController.py:29(change_project_location)
-        2    0.000    0.000    0.001    0.001 D:\Bibliotecas\Code\Projects\2021\Python\01 Working Projects\TFG\tfg-Scan-Paint-clone\package\controllers\NewProjectController.py:33(change_audio_driver)
-        2    0.000    0.000    0.001    0.001 D:\Bibliotecas\Code\Projects\2021\Python\01 Working Projects\TFG\tfg-Scan-Paint-clone\package\controllers\NewProjectController.py:45(set_audio_devices)
-        2    0.000    0.000    0.001    0.000 D:\Bibliotecas\Code\Projects\2021\Python\01 Working Projects\TFG\tfg-Scan-Paint-clone\package\controllers\NewProjectController.py:71(change_video_device)
-        2    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Projects\2021\Python\01 Working Projects\TFG\tfg-Scan-Paint-clone\package\views\DataAcquisitionView.py:175(stop)
-        2    0.000    0.000    0.046    0.023 D:\Bibliotecas\Code\Projects\2021\Python\01 Working Projects\TFG\tfg-Scan-Paint-clone\package\views\DataAcquisitionView.py:206(stop_thread)
-        2    0.000    0.000    0.046    0.023 D:\Bibliotecas\Code\Projects\2021\Python\01 Working Projects\TFG\tfg-Scan-Paint-clone\package\views\DataAcquisitionView.py:134(stop)
-        2    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\site-packages\numpy\core\numerictypes.py:285(issubclass_)
-        2    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Projects\2021\Python\01 Working Projects\TFG\tfg-Scan-Paint-clone\package\views\MainWindow.py:21(close)
-      2/1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Projects\2021\Python\01 Working Projects\TFG\tfg-Scan-Paint-clone\package\views\NewProjectView.py:72(on_project_name_changed)
-      2/1    0.000    0.000    0.317    0.317 D:\Bibliotecas\Code\Projects\2021\Python\01 Working Projects\TFG\tfg-Scan-Paint-clone\package\views\NewProjectView.py:76(on_project_location_changed)
-        2    0.000    0.000    0.001    0.001 D:\Bibliotecas\Code\Projects\2021\Python\01 Working Projects\TFG\tfg-Scan-Paint-clone\package\views\NewProjectView.py:88(on_audio_driver_changed)
-        2    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Projects\2021\Python\01 Working Projects\TFG\tfg-Scan-Paint-clone\package\views\NewProjectView.py:92(on_audio_devices_set)
-        2    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Projects\2021\Python\01 Working Projects\TFG\tfg-Scan-Paint-clone\package\views\NewProjectView.py:106(on_video_device_changed)
-        2    0.071    0.036    0.071    0.036 {method 'show' of 'PySide2.QtWidgets.QWidget' objects}
-        2    0.000    0.000    0.000    0.000 {method 'upper' of 'str' objects}
-        2    0.000    0.000    0.000    0.000 {method 'format' of 'str' objects}
+        2    0.000    0.000    0.000    0.000 C:\Users\Pablo\miniconda3\envs\tfg\lib\os.py:670(__getitem__)
+        2    0.000    0.000    0.000    0.000 C:\Users\Pablo\miniconda3\envs\tfg\lib\os.py:734(check_str)
+        2    0.000    0.000    0.000    0.000 C:\Users\Pablo\miniconda3\envs\tfg\lib\os.py:740(encodekey)
+      2/1    0.000    0.000    0.001    0.001 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\models\NewProjectModel.py:40(project_name)
+      2/1    0.000    0.000    0.376    0.376 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\models\NewProjectModel.py:49(project_location)
+        2    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\models\NewProjectModel.py:54(audio_drivers)
+        2    0.000    0.000    0.002    0.001 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\models\NewProjectModel.py:67(audio_driver)
+        2    0.000    0.000    0.001    0.001 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\models\NewProjectModel.py:76(audio_devices)
+        2    0.000    0.000    0.000    0.000 C:\Users\Pablo\miniconda3\envs\tfg\lib\site-packages\sounddevice.py:644(<listcomp>)
+      2/1    0.000    0.000    0.001    0.001 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\controllers\NewProjectController.py:25(change_project_name)
+      2/1    0.000    0.000    0.376    0.376 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\controllers\NewProjectController.py:29(change_project_location)
+        2    0.000    0.000    0.002    0.001 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\controllers\NewProjectController.py:33(change_audio_driver)
+        2    0.000    0.000    0.002    0.001 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\controllers\NewProjectController.py:45(set_audio_devices)
+        2    0.000    0.000    0.002    0.001 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\NewProjectView.py:24(close)
+      2/1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\NewProjectView.py:72(on_project_name_changed)
+      2/1    0.000    0.000    0.376    0.376 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\NewProjectView.py:76(on_project_location_changed)
+        2    0.000    0.000    0.002    0.001 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\NewProjectView.py:87(on_audio_driver_changed)
+        2    0.000    0.000    0.001    0.001 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\NewProjectView.py:91(on_audio_devices_set)
+        2    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\DataAcquisitionView.py:138(toogleRec)
+        2    0.000    0.000    0.259    0.129 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\DataAcquisitionView.py:147(stop)
+        2    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\DataAcquisitionView.py:188(stop)
+        2    0.000    0.000    0.261    0.130 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\DataAcquisitionView.py:211(close)
+        2    0.000    0.000    0.259    0.129 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\DataAcquisitionView.py:219(stop_thread)
+        2    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\DataAcquisitionView.py:279(start_stop)
+        2    0.000    0.000    0.000    0.000 C:\Users\Pablo\miniconda3\envs\tfg\lib\site-packages\numpy\core\numerictypes.py:286(issubclass_)
+        2    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\DisplayResultsView.py:23(close)
         2    0.000    0.000    0.000    0.000 {method 'installEventFilter' of 'PySide2.QtCore.QObject' objects}
         2    0.000    0.000    0.000    0.000 {method 'start' of 'PySide2.QtCore.QThread' objects}
+        2    0.000    0.000    0.000    0.000 {method 'upper' of 'str' objects}
+        2    0.000    0.000    0.000    0.000 {method 'format' of 'str' objects}
+        2    0.000    0.000    0.000    0.000 {method 'description' of 'PySide2.QtMultimedia.QCameraInfo' objects}
         2    0.000    0.000    0.000    0.000 {method 'new' of '_cffi_backend.FFI' objects}
-        1    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\ntpath.py:289(expanduser)
-        1    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\_collections_abc.py:664(__contains__)
-        1    0.197    0.197    0.739    0.739 main.py:25(__init__)
-        1    0.000    0.000    5.438    5.438 main.py:76(main)
-        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Projects\2021\Python\01 Working Projects\TFG\tfg-Scan-Paint-clone\package\models\NewProjectModel.py:21(__init__)
-        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Projects\2021\Python\01 Working Projects\TFG\tfg-Scan-Paint-clone\package\models\NewProjectModel.py:25(clear_state)
-        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Projects\2021\Python\01 Working Projects\TFG\tfg-Scan-Paint-clone\package\models\NewProjectModel.py:36(project_name)
-        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Projects\2021\Python\01 Working Projects\TFG\tfg-Scan-Paint-clone\package\models\NewProjectModel.py:45(project_location)
-        1    0.000    0.000    0.001    0.001 D:\Bibliotecas\Code\Projects\2021\Python\01 Working Projects\TFG\tfg-Scan-Paint-clone\package\models\NewProjectModel.py:58(audio_drivers)
-        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Projects\2021\Python\01 Working Projects\TFG\tfg-Scan-Paint-clone\package\models\NewProjectModel.py:81(audio_device)
-        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Projects\2021\Python\01 Working Projects\TFG\tfg-Scan-Paint-clone\package\models\NewProjectModel.py:94(video_devices)
-        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Projects\2021\Python\01 Working Projects\TFG\tfg-Scan-Paint-clone\package\models\NewProjectModel.py:99(video_device)
-        1    0.042    0.042    0.042    0.042 C:\Users\pablo\anaconda3\envs\tfg\lib\site-packages\sounddevice.py:719(__init__)
-        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Projects\2021\Python\01 Working Projects\TFG\tfg-Scan-Paint-clone\package\models\DataAcquisitionModel.py:8(__init__)
-        1    0.000    0.000    0.042    0.042 C:\Users\pablo\anaconda3\envs\tfg\lib\site-packages\sounddevice.py:1385(__init__)
-        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Projects\2021\Python\01 Working Projects\TFG\tfg-Scan-Paint-clone\package\controllers\Navigator.py:8(__init__)
-        1    0.000    0.000    0.015    0.015 D:\Bibliotecas\Code\Projects\2021\Python\01 Working Projects\TFG\tfg-Scan-Paint-clone\package\controllers\Navigator.py:12(navigate)
-        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Projects\2021\Python\01 Working Projects\TFG\tfg-Scan-Paint-clone\package\controllers\DataAcquisitionController.py:9(__init__)
-        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Projects\2021\Python\01 Working Projects\TFG\tfg-Scan-Paint-clone\package\controllers\NewProjectController.py:11(__init__)
-        1    0.000    0.000    0.015    0.015 D:\Bibliotecas\Code\Projects\2021\Python\01 Working Projects\TFG\tfg-Scan-Paint-clone\package\controllers\NewProjectController.py:16(create_new_project)
-        1    0.000    0.000    0.002    0.002 D:\Bibliotecas\Code\Projects\2021\Python\01 Working Projects\TFG\tfg-Scan-Paint-clone\package\controllers\NewProjectController.py:41(set_audio_drivers)
-        1    0.000    0.000    0.007    0.007 D:\Bibliotecas\Code\Projects\2021\Python\01 Working Projects\TFG\tfg-Scan-Paint-clone\package\controllers\NewProjectController.py:61(set_video_devices)
-        1    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\site-packages\sounddevice.py:2598(_remove_self)
-        1    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\site-packages\sounddevice.py:2633(_get_stream_parameters)
-        1    0.000    0.000    0.042    0.042 D:\Bibliotecas\Code\Projects\2021\Python\01 Working Projects\TFG\tfg-Scan-Paint-clone\package\views\DataAcquisitionView.py:151(__init__)
-        1    0.000    0.000    5.438    5.438 <string>:1(<module>)
-        1    0.000    0.000    0.042    0.042 D:\Bibliotecas\Code\Projects\2021\Python\01 Working Projects\TFG\tfg-Scan-Paint-clone\package\views\DataAcquisitionView.py:235(start_threads)
-        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Projects\2021\Python\01 Working Projects\TFG\tfg-Scan-Paint-clone\package\views\DataAcquisitionView.py:232(set_default_values)
-        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Projects\2021\Python\01 Working Projects\TFG\tfg-Scan-Paint-clone\package\views\DataAcquisitionView.py:229(connect_to_model)
-        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Projects\2021\Python\01 Working Projects\TFG\tfg-Scan-Paint-clone\package\views\DataAcquisitionView.py:226(connect_to_controller)
-        1    0.001    0.001    0.002    0.002 D:\Bibliotecas\Code\Projects\2021\Python\01 Working Projects\TFG\tfg-Scan-Paint-clone\package\views\DataAcquisitionView.py:218(load_ui)
-        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Projects\2021\Python\01 Working Projects\TFG\tfg-Scan-Paint-clone\package\views\DataAcquisitionView.py:202(start_thread)
-        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Projects\2021\Python\01 Working Projects\TFG\tfg-Scan-Paint-clone\package\views\DataAcquisitionView.py:198(close)
-        1    0.000    0.000    0.012    0.012 D:\Bibliotecas\Code\Projects\2021\Python\01 Working Projects\TFG\tfg-Scan-Paint-clone\package\views\DataAcquisitionView.py:194(open)
-        1    0.000    0.000    0.045    0.045 D:\Bibliotecas\Code\Projects\2021\Python\01 Working Projects\TFG\tfg-Scan-Paint-clone\package\views\DataAcquisitionView.py:182(__init__)
-        1    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\site-packages\numpy\core\numerictypes.py:359(issubdtype)
-        1    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\site-packages\numpy\core\_dtype.py:24(_kind_name)
-        1    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\site-packages\numpy\core\_dtype.py:307(_name_includes_bit_suffix)
-        1    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\site-packages\numpy\core\_dtype.py:321(_name_get)
-        1    0.000    0.000    0.100    0.100 D:\Bibliotecas\Code\Projects\2021\Python\01 Working Projects\TFG\tfg-Scan-Paint-clone\package\views\MainWindow.py:11(__init__)
-        1    0.016    0.016    0.099    0.099 D:\Bibliotecas\Code\Projects\2021\Python\01 Working Projects\TFG\tfg-Scan-Paint-clone\package\views\MainWindow.py:24(load_ui)
-        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Projects\2021\Python\01 Working Projects\TFG\tfg-Scan-Paint-clone\package\views\MainWindow.py:32(connect_elements)
-        1    0.000    0.000    0.338    0.338 D:\Bibliotecas\Code\Projects\2021\Python\01 Working Projects\TFG\tfg-Scan-Paint-clone\package\views\NewProjectView.py:11(__init__)
-        1    0.000    0.000    0.059    0.059 D:\Bibliotecas\Code\Projects\2021\Python\01 Working Projects\TFG\tfg-Scan-Paint-clone\package\views\NewProjectView.py:21(open)
-        1    0.000    0.000    0.002    0.002 D:\Bibliotecas\Code\Projects\2021\Python\01 Working Projects\TFG\tfg-Scan-Paint-clone\package\views\NewProjectView.py:24(close)
-        1    0.001    0.001    0.012    0.012 D:\Bibliotecas\Code\Projects\2021\Python\01 Working Projects\TFG\tfg-Scan-Paint-clone\package\views\NewProjectView.py:27(load_ui)
-        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Projects\2021\Python\01 Working Projects\TFG\tfg-Scan-Paint-clone\package\views\NewProjectView.py:35(connect_to_controller)
-        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Projects\2021\Python\01 Working Projects\TFG\tfg-Scan-Paint-clone\package\views\NewProjectView.py:50(connect_to_model)
-        1    0.000    0.000    0.326    0.326 D:\Bibliotecas\Code\Projects\2021\Python\01 Working Projects\TFG\tfg-Scan-Paint-clone\package\views\NewProjectView.py:61(set_default_values)
-        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Projects\2021\Python\01 Working Projects\TFG\tfg-Scan-Paint-clone\package\views\NewProjectView.py:83(<listcomp>)
-        1    0.000    0.000    0.001    0.001 D:\Bibliotecas\Code\Projects\2021\Python\01 Working Projects\TFG\tfg-Scan-Paint-clone\package\views\NewProjectView.py:80(on_audio_drivers_set)
-        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Projects\2021\Python\01 Working Projects\TFG\tfg-Scan-Paint-clone\package\views\NewProjectView.py:101(on_video_devices_set)
-        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Projects\2021\Python\01 Working Projects\TFG\tfg-Scan-Paint-clone\package\views\DataAcquisitionView.py:40(__init__)
-        1    4.558    4.558    4.699    4.699 {built-in method exec_}
-        1    0.007    0.007    0.007    0.007 {built-in method availableCameras}
+        1    0.000    0.000    0.000    0.000 C:\Users\Pablo\miniconda3\envs\tfg\lib\ntpath.py:289(expanduser)
+        1    0.000    0.000    0.000    0.000 C:\Users\Pablo\miniconda3\envs\tfg\lib\_collections_abc.py:664(__contains__)
+        1    0.111    0.111    1.013    1.013 main.py:28(__init__)
+        1    0.000    0.000   13.117   13.117 main.py:85(main)
+        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\models\NewProjectModel.py:21(__init__)
+        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\models\NewProjectModel.py:25(clear_state)
+        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\models\NewProjectModel.py:36(project_name)
+        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\models\NewProjectModel.py:45(project_location)
+        1    0.000    0.000    0.002    0.002 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\models\NewProjectModel.py:58(audio_drivers)
+        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\models\NewProjectModel.py:81(audio_device)
+        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\models\NewProjectModel.py:94(video_devices)
+        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\models\NewProjectModel.py:99(video_device)
+        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\models\NewProjectModel.py:103(video_device)
+        1    0.202    0.202    0.203    0.203 C:\Users\Pablo\miniconda3\envs\tfg\lib\site-packages\sounddevice.py:719(__init__)
+        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\models\DisplayResultsModel.py:6(__init__)
+        1    0.000    0.000    0.203    0.203 C:\Users\Pablo\miniconda3\envs\tfg\lib\site-packages\sounddevice.py:1385(__init__)
+        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\controllers\Navigator.py:8(__init__)
+        1    0.000    0.000    0.015    0.015 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\controllers\Navigator.py:12(navigate)
+        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\controllers\NewProjectController.py:11(__init__)
+        1    0.000    0.000    0.015    0.015 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\controllers\NewProjectController.py:16(create_new_project)
+        1    0.000    0.000    0.002    0.002 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\controllers\NewProjectController.py:41(set_audio_drivers)
+        1    0.000    0.000    0.000    0.000 C:\Users\Pablo\miniconda3\envs\tfg\lib\site-packages\sounddevice.py:2598(_remove_self)
+        1    0.000    0.000    0.000    0.000 C:\Users\Pablo\miniconda3\envs\tfg\lib\site-packages\sounddevice.py:2633(_get_stream_parameters)
+        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\models\DataAcquisitionModel.py:6(__init__)
+        1    0.000    0.000    0.010    0.010 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\controllers\NewProjectController.py:61(set_video_devices)
+        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\controllers\NewProjectController.py:71(change_video_device)
+        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\controllers\DataAcquisitionController.py:6(__init__)
+        1    0.000    0.000    0.273    0.273 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\controllers\DataAcquisitionController.py:11(navigate)
+        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\controllers\DisplayResultsController.py:7(__init__)
+        1    0.000    0.000    0.159    0.159 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\MainWindow.py:11(__init__)
+        1    0.018    0.018    0.159    0.159 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\MainWindow.py:24(load_ui)
+        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\MainWindow.py:32(connect_elements)
+        1    0.000    0.000    0.408    0.408 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\NewProjectView.py:11(__init__)
+        1    0.000    0.000    0.123    0.123 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\NewProjectView.py:21(open)
+        1    0.001    0.001    0.019    0.019 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\NewProjectView.py:27(load_ui)
+        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\NewProjectView.py:35(connect_to_controller)
+        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\NewProjectView.py:50(connect_to_model)
+        1    0.000    0.000    0.389    0.389 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\NewProjectView.py:61(set_default_values)
+        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\NewProjectView.py:83(<listcomp>)
+        1    0.000    0.000    0.002    0.002 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\NewProjectView.py:80(on_audio_drivers_set)
+        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\NewProjectView.py:100(on_video_devices_set)
+        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\NewProjectView.py:105(on_video_device_changed)
+        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\DataAcquisitionView.py:41(__init__)
+        1    0.000    0.000    0.203    0.203 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\DataAcquisitionView.py:164(__init__)
+        1    0.000    0.000    0.209    0.209 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\DataAcquisitionView.py:195(__init__)
+        1    0.000    0.000    0.013    0.013 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\DataAcquisitionView.py:207(open)
+        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\DataAcquisitionView.py:215(start_thread)
+        1    0.002    0.002    0.005    0.005 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\DataAcquisitionView.py:231(load_ui)
+        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\DataAcquisitionView.py:239(connect_to_controller)
+        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\DataAcquisitionView.py:242(connect_to_model)
+        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\DataAcquisitionView.py:245(set_default_values)
+        1    0.000    0.000    0.273    0.273 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\DataAcquisitionView.py:252(<lambda>)
+        1    0.000    0.000    0.204    0.204 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\DataAcquisitionView.py:248(start_threads)
+        1    0.000    0.000    0.000    0.000 C:\Users\Pablo\miniconda3\envs\tfg\lib\site-packages\numpy\core\numerictypes.py:360(issubdtype)
+        1    0.000    0.000    0.000    0.000 C:\Users\Pablo\miniconda3\envs\tfg\lib\site-packages\numpy\core\_dtype.py:24(_kind_name)
+        1    0.000    0.000    0.000    0.000 C:\Users\Pablo\miniconda3\envs\tfg\lib\site-packages\numpy\core\_dtype.py:307(_name_includes_bit_suffix)
+        1    0.000    0.000    0.000    0.000 C:\Users\Pablo\miniconda3\envs\tfg\lib\site-packages\numpy\core\_dtype.py:321(_name_get)
+        1    0.000    0.000   13.117   13.117 <string>:1(<module>)
+        1    0.000    0.000    0.003    0.003 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\DisplayResultsView.py:10(__init__)
+        1    0.000    0.000    0.012    0.012 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\DisplayResultsView.py:20(open)
+        1    0.002    0.002    0.003    0.003 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\DisplayResultsView.py:26(load_ui)
+        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\DisplayResultsView.py:34(connect_to_controller)
+        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\DisplayResultsView.py:37(connect_to_model)
+        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\DisplayResultsView.py:40(set_default_values)
+        1   11.763   11.763   12.105   12.105 {built-in method exec_}
+        1    0.000    0.000    0.000    0.000 {built-in method setAttribute}
         1    0.000    0.000    0.000    0.000 {method 'values' of 'dict' objects}
         1    0.000    0.000    0.000    0.000 {method 'copy' of 'dict' objects}
         1    0.000    0.000    0.000    0.000 {method 'startswith' of 'str' objects}
-        1    0.000    0.000    5.438    5.438 {built-in method builtins.exec}
+        1    0.000    0.000   13.117   13.117 {built-in method builtins.exec}
         1    0.000    0.000    0.000    0.000 {built-in method builtins.locals}
         1    0.000    0.000    0.000    0.000 {built-in method sys.exit}
         1    0.000    0.000    0.000    0.000 {method 'disable' of '_lsprof.Profiler' objects}
-        1    0.000    0.000    0.000    0.000 {built-in method setAttribute}
-        1    0.000    0.000    0.000    0.000 {method 'accept' of 'PySide2.QtCore.QEvent' objects}
+        1    0.009    0.009    0.009    0.009 {built-in method availableCameras}
         1    0.000    0.000    0.000    0.000 {method 'callback' of '_cffi_backend.FFI' objects}
         1    0.000    0.000    0.000    0.000 {built-in method callback_decorator}
 
