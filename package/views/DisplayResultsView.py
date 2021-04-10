@@ -5,6 +5,8 @@ from PySide2.QtWidgets import QMainWindow, QFileDialog
 from PySide2.QtCore import QFile, Slot
 from PySide2.QtUiTools import QUiLoader
 
+from ..models.ActualProjectModel import ActualProjectModel
+
 
 class DisplayResultsView(QMainWindow):
     def __init__(self, model, controller):
@@ -19,9 +21,12 @@ class DisplayResultsView(QMainWindow):
 
     def open(self):
         self.window.show()
+        self.onOpen()
 
     def close(self):
         self.window.hide()
+
+    # region HELPER FUNCTIONS AND CALLBACKS
 
     def load_ui(self):
         loader = QUiLoader()
@@ -39,3 +44,10 @@ class DisplayResultsView(QMainWindow):
 
     def set_default_values(self):
         pass
+
+    def onOpen(self):
+        self._controller.setData(ActualProjectModel.data_x,
+                                 ActualProjectModel.data_y)
+        pass
+
+    # endregion

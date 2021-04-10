@@ -69,6 +69,8 @@ class MicThread(QThread):
         print('.')
         q.put(indata.copy())
 
+# TODO: add regions
+
 
 class DataAcquisitionView(QMainWindow):
 
