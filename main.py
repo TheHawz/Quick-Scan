@@ -89,17 +89,20 @@ def main():
 
 
 if __name__ == "__main__":
-    import cProfile
+    main()
 
-    cProfile.run('main()', 'output.dat')
+# if __name__ == "__main__":
+#     import cProfile
 
-    import pstats
-    from pstats import SortKey
+#     cProfile.run('main()', 'output.dat')
 
-    with open("output_time.dat", "w") as f:
-        p = pstats.Stats("output.dat", stream=f)
-        p.sort_stats("time").print_stats()
+#     import pstats
+#     from pstats import SortKey
 
-    with open("output_calls.dat", "w") as f:
-        p = pstats.Stats("output.dat", stream=f)
-        p.sort_stats("calls").print_stats()
+#     with open("output_time.dat", "w") as f:
+#         p = pstats.Stats("output.dat", stream=f)
+#         p.sort_stats("time").print_stats()
+
+#     with open("output_calls.dat", "w") as f:
+#         p = pstats.Stats("output.dat", stream=f)
+#         p.sort_stats("calls").print_stats()

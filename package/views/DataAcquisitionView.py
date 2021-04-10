@@ -29,14 +29,6 @@ assert numpy  # avoid "imported but unused" message (W0611)
 q = queue.Queue()
 
 
-def callback(indata, frames, time, status):
-    """This is called (from a separate thread) for each audio block."""
-    if status:
-        print(status, file=sys.stderr)
-    print('.')
-    q.put(indata.copy())
-
-
 class MicThread(QThread):
     update_volume = Signal(int)
 
@@ -47,12 +39,13 @@ class MicThread(QThread):
         self.device = ""
         self.stream = sd.InputStream(
             device=(1, 3), channels=2,
-            samplerate=44100, callback=callback)
+            samplerate=44100, callback=MicThread.callback)
 
     def run(self):
         self._running = True
 
         try:
+            print("Trying...")
             with self.stream:
                 pass
         except KeyboardInterrupt:
@@ -67,6 +60,14 @@ class MicThread(QThread):
     def stop(self):
         self._running = False
         self.wait()
+
+    @staticmethod
+    def callback(indata, frames, time, status):
+        """This is called (from a separate thread) for each audio block."""
+        if status:
+            print(status, file=sys.stderr)
+        print('.')
+        q.put(indata.copy())
 
 
 class DataAcquisitionView(QMainWindow):
