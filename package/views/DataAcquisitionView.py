@@ -139,6 +139,7 @@ class DataAcquisitionView(QMainWindow):
 
     @Slot(object)
     def stop_recording_handler(self, value):
+        self.stop_thread() # change
         ActualProjectModel.data_x = value["x_data"]
         ActualProjectModel.data_y = value["y_data"]
         self._controller.navigate('display_results')

@@ -1,5 +1,6 @@
 # This Python file uses the following encoding: utf-8
 import os
+from package.models.ActualProjectModel import ActualProjectModel
 
 from PySide2.QtWidgets import QMainWindow, QFileDialog
 from PySide2.QtCore import QFile, Slot
@@ -19,6 +20,7 @@ class DisplayResultsView(QMainWindow):
 
     def open(self):
         self.window.show()
+        self.onOpen()
 
     def close(self):
         self.window.hide()
@@ -35,7 +37,19 @@ class DisplayResultsView(QMainWindow):
         pass
 
     def connect_to_model(self):
+        self._model.data_x_changed.connect(self.on_data_x_changed)
+        self._model.data_y_changed.connect(self.on_data_y_changed)
         pass
 
     def set_default_values(self):
+        pass
+
+    def onOpen(self):
+        self._controller.set_data_x(ActualProjectModel.data_x)
+        self._controller.set_data_y(ActualProjectModel.data_y)
+
+    def on_data_x_changed(self):
+        pass
+
+    def on_data_y_changed(self):
         pass
