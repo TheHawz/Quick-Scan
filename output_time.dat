@@ -1,161 +1,233 @@
-Sat Apr 10 11:05:44 2021    output.dat
+Sun Apr 11 10:59:12 2021    output.dat
 
-         1137 function calls (1101 primitive calls) in 11.955 seconds
+         6733 function calls (6730 primitive calls) in 0.071 seconds
 
    Ordered by: internal time
 
    ncalls  tottime  percall  cumtime  percall filename:lineno(function)
-        1   10.547   10.547   10.924   10.924 {built-in method exec_}
-      4/2    0.387    0.097    0.388    0.194 {method 'setText' of 'PySide2.QtWidgets.QLineEdit' objects}
-        6    0.276    0.046    0.276    0.046 {method 'wait' of 'PySide2.QtCore.QThread' objects}
-        3    0.198    0.066    0.198    0.066 {method 'show' of 'PySide2.QtWidgets.QWidget' objects}
-        1    0.180    0.180    0.180    0.180 C:\Users\Pablo\miniconda3\envs\tfg\lib\site-packages\sounddevice.py:719(__init__)
-        4    0.152    0.038    0.152    0.038 {method 'load' of 'PySide2.QtUiTools.QUiLoader' objects}
-        1    0.131    0.131    1.030    1.030 main.py:28(__init__)
-        1    0.023    0.023    0.156    0.156 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\MainWindow.py:24(load_ui)
-       29    0.015    0.001    0.015    0.001 {built-in method fromImage}
-       29    0.012    0.000    0.012    0.000 {cvtColor}
-        1    0.011    0.011    0.011    0.011 {built-in method availableCameras}
-       29    0.006    0.000    0.006    0.000 {method 'setPixmap' of 'PySide2.QtWidgets.QLabel' objects}
-        9    0.002    0.000    0.002    0.000 {method 'hide' of 'PySide2.QtWidgets.QWidget' objects}
-       29    0.002    0.000    0.035    0.001 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\DataAcquisitionView.py:146(set_image)
-      175    0.002    0.000    0.279    0.002 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\DataAcquisitionView.py:103(eventFilter)
-        1    0.002    0.002    0.004    0.004 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\DataAcquisitionView.py:111(load_ui)
-       29    0.001    0.000    0.028    0.001 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\DataAcquisitionView.py:152(convert_cv_qt)
-        1    0.001    0.001    0.017    0.017 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\NewProjectView.py:27(load_ui)
-        1    0.001    0.001    0.002    0.002 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\DisplayResultsView.py:26(load_ui)
-       20    0.001    0.000    0.001    0.000 {method 'connect' of 'PySide2.QtCore.SignalInstance' objects}
-      173    0.001    0.000    0.001    0.000 {method 'type' of 'PySide2.QtCore.QEvent' objects}
-      174    0.001    0.000    0.001    0.000 {function DataAcquisitionView.eventFilter at 0x0000027F946E6820}
-     16/6    0.001    0.000    0.451    0.075 {method 'emit' of 'PySide2.QtCore.SignalInstance' objects}
-        4    0.000    0.000    0.000    0.000 {built-in method builtins.print}
-        4    0.000    0.000    0.000    0.000 {method 'open' of 'PySide2.QtCore.QFile' objects}
-        2    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\DataAcquisitionView.py:91(close)
-        1    0.000    0.000    0.157    0.157 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\MainWindow.py:11(__init__)
-        2    0.000    0.000    0.000    0.000 {method 'start' of 'PySide2.QtCore.QThread' objects}
-        4    0.000    0.000    0.000    0.000 {method 'close' of 'PySide2.QtCore.QFileDevice' objects}
-      4/3    0.000    0.000    0.001    0.000 {method 'addItems' of 'PySide2.QtWidgets.QComboBox' objects}
-        3    0.000    0.000    0.201    0.067 main.py:63(change_view)
-        1    0.000    0.000    0.000    0.000 C:\Users\Pablo\miniconda3\envs\tfg\lib\site-packages\sounddevice.py:2633(_get_stream_parameters)
-     17/3    0.000    0.000    0.000    0.000 C:\Users\Pablo\miniconda3\envs\tfg\lib\site-packages\sounddevice.py:450(query_devices)
-      3/1    0.000    0.000    0.000    0.000 C:\Users\Pablo\miniconda3\envs\tfg\lib\site-packages\sounddevice.py:598(query_hostapis)
-        1    0.000    0.000    0.185    0.185 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\DataAcquisitionView.py:75(__init__)
-      2/1    0.000    0.000    0.387    0.387 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\controllers\NewProjectController.py:29(change_project_location)
-      4/3    0.000    0.000    0.000    0.000 {method 'clear' of 'PySide2.QtWidgets.QComboBox' objects}
-        1    0.000    0.000   11.955   11.955 {built-in method builtins.exec}
-        1    0.000    0.000    0.002    0.002 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\DisplayResultsView.py:10(__init__)
-        1    0.000    0.000    0.417    0.417 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\NewProjectView.py:11(__init__)
-        4    0.000    0.000    0.000    0.000 C:\Users\Pablo\miniconda3\envs\tfg\lib\ntpath.py:77(join)
-        2    0.000    0.000    0.000    0.000 {method 'new' of '_cffi_backend.FFI' objects}
-        3    0.000    0.000    0.276    0.092 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\DataAcquisitionView.py:99(stop_thread)
-        8    0.000    0.000    0.000    0.000 C:\Users\Pablo\miniconda3\envs\tfg\lib\ntpath.py:124(splitdrive)
-        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\NewProjectView.py:35(connect_to_controller)
-        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\services\CameraThread.py:38(__init__)
-        3    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\DataAcquisitionView.py:60(stop)
-        1    0.000    0.000    0.180    0.180 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\DataAcquisitionView.py:35(__init__)
-        1    0.000    0.000   11.955   11.955 main.py:85(main)
-        3    0.000    0.000    0.276    0.092 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\services\CameraThread.py:166(stop)
-        1    0.000    0.000    0.000    0.000 {built-in method callback_decorator}
-       16    0.000    0.000    0.000    0.000 C:\Users\Pablo\miniconda3\envs\tfg\lib\site-packages\sounddevice.py:2699(_split)
-        1    0.000    0.000    0.181    0.181 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\DataAcquisitionView.py:128(start_threads)
-        1    0.000    0.000    0.011    0.011 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\controllers\NewProjectController.py:61(set_video_devices)
-        1    0.000    0.000    0.400    0.400 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\NewProjectView.py:61(set_default_values)
-        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\controllers\Navigator.py:8(__init__)
-        3    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\MainWindow.py:21(close)
-       16    0.000    0.000    0.000    0.000 C:\Users\Pablo\miniconda3\envs\tfg\lib\site-packages\sounddevice.py:2741(_get_device_id)
-        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\models\NewProjectModel.py:21(__init__)
-       16    0.000    0.000    0.000    0.000 C:\Users\Pablo\miniconda3\envs\tfg\lib\site-packages\sounddevice.py:559(<genexpr>)
-        1    0.000    0.000    0.180    0.180 C:\Users\Pablo\miniconda3\envs\tfg\lib\site-packages\sounddevice.py:1385(__init__)
-        2    0.000    0.000    0.001    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\controllers\NewProjectController.py:45(set_audio_devices)
-        1    0.000    0.000    0.043    0.043 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\DataAcquisitionView.py:140(stop_recording_handler)
-        1    0.000    0.000    0.020    0.020 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\controllers\NewProjectController.py:16(create_new_project)
-        1    0.000    0.000    0.000    0.000 C:\Users\Pablo\miniconda3\envs\tfg\lib\site-packages\numpy\core\_dtype.py:321(_name_get)
-        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\DataAcquisitionView.py:95(start_thread)
-        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\DataAcquisitionView.py:119(connect_to_controller)
-        1    0.000    0.000    0.000    0.000 {method 'callback' of '_cffi_backend.FFI' objects}
-        1    0.000    0.000    0.000    0.000 {built-in method setAttribute}
-        3    0.000    0.000    0.000    0.000 C:\Users\Pablo\miniconda3\envs\tfg\lib\site-packages\sounddevice.py:1994(__getitem__)
-       48    0.000    0.000    0.000    0.000 {built-in method builtins.isinstance}
-        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\NewProjectView.py:100(on_video_devices_set)
-       15    0.000    0.000    0.000    0.000 {method 'get' of 'dict' objects}
-        1    0.000    0.000    0.000    0.000 C:\Users\Pablo\miniconda3\envs\tfg\lib\ntpath.py:289(expanduser)
-        2    0.000    0.000    0.000    0.000 {method 'installEventFilter' of 'PySide2.QtCore.QObject' objects}
-        3    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\NewProjectView.py:96(on_audio_device_changed)
-       17    0.000    0.000    0.000    0.000 {method 'string' of '_cffi_backend.FFI' objects}
-        2    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\NewProjectView.py:91(on_audio_devices_set)
-      2/1    0.000    0.000    0.001    0.001 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\NewProjectView.py:72(on_project_name_changed)
-      2/1    0.000    0.000    0.387    0.387 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\NewProjectView.py:76(on_project_location_changed)
-        1    0.000    0.000    0.001    0.001 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\NewProjectView.py:80(on_audio_drivers_set)
-       17    0.000    0.000    0.000    0.000 {method 'decode' of 'bytes' objects}
-        2    0.000    0.000    0.000    0.000 C:\Users\Pablo\miniconda3\envs\tfg\lib\site-packages\sounddevice.py:644(<listcomp>)
-      2/1    0.000    0.000    0.001    0.001 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\models\NewProjectModel.py:40(project_name)
-      2/1    0.000    0.000    0.387    0.387 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\models\NewProjectModel.py:49(project_location)
-        3    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\controllers\NewProjectController.py:37(change_audio_device)
-        1    0.000    0.000    0.001    0.001 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\controllers\NewProjectController.py:41(set_audio_drivers)
-        2    0.000    0.000    0.001    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\NewProjectView.py:87(on_audio_driver_changed)
-        2    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\DisplayResultsView.py:23(close)
-      2/1    0.000    0.000    0.001    0.001 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\controllers\NewProjectController.py:25(change_project_name)
-        1    0.000    0.000    0.018    0.018 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\DataAcquisitionView.py:87(open)
-        1    0.000    0.000    0.043    0.043 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\DisplayResultsView.py:20(open)
-        1    0.000    0.000    0.138    0.138 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\NewProjectView.py:21(open)
-        2    0.000    0.000    0.002    0.001 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\NewProjectView.py:24(close)
-        3    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\models\NewProjectModel.py:85(audio_device)
-        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\NewProjectView.py:50(connect_to_model)
-       13    0.000    0.000    0.000    0.000 {built-in method nt.fspath}
-        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\models\NewProjectModel.py:25(clear_state)
-        2    0.000    0.000    0.000    0.000 {method 'format' of 'str' objects}
-        1    0.000    0.000    0.000    0.000 C:\Users\Pablo\miniconda3\envs\tfg\lib\site-packages\sounddevice.py:2598(_remove_self)
-        1    0.000    0.000    0.043    0.043 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\controllers\DataAcquisitionController.py:11(navigate)
-        9    0.000    0.000    0.000    0.000 {built-in method builtins.len}
-        1    0.000    0.000    0.000    0.000 {built-in method builtins.locals}
-        2    0.000    0.000    0.000    0.000 C:\Users\Pablo\miniconda3\envs\tfg\lib\os.py:670(__getitem__)
-        2    0.000    0.000    0.001    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\models\NewProjectModel.py:67(audio_driver)
-        2    0.000    0.000    0.001    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\controllers\NewProjectController.py:33(change_audio_driver)
-        2    0.000    0.000    0.000    0.000 {method 'description' of 'PySide2.QtMultimedia.QCameraInfo' objects}
-        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\models\NewProjectModel.py:94(video_devices)
-        1    0.000    0.000    0.000    0.000 C:\Users\Pablo\miniconda3\envs\tfg\lib\site-packages\numpy\core\_dtype.py:307(_name_includes_bit_suffix)
-        8    0.000    0.000    0.000    0.000 {method 'replace' of 'str' objects}
-        4    0.000    0.000    0.000    0.000 {built-in method builtins.issubclass}
-        1    0.000    0.000    0.020    0.020 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\controllers\Navigator.py:12(navigate)
-        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\NewProjectView.py:105(on_video_device_changed)
-        2    0.000    0.000    0.000    0.000 C:\Users\Pablo\miniconda3\envs\tfg\lib\os.py:740(encodekey)
-        1    0.000    0.000   11.955   11.955 <string>:1(<module>)
-        3    0.000    0.000    0.000    0.000 {built-in method builtins.getattr}
-        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\controllers\NewProjectController.py:11(__init__)
-        2    0.000    0.000    0.000    0.000 C:\Users\Pablo\miniconda3\envs\tfg\lib\site-packages\numpy\core\numerictypes.py:286(issubclass_)
-        1    0.000    0.000    0.000    0.000 C:\Users\Pablo\miniconda3\envs\tfg\lib\site-packages\numpy\core\numerictypes.py:360(issubdtype)
-        5    0.000    0.000    0.000    0.000 C:\Users\Pablo\miniconda3\envs\tfg\lib\site-packages\sounddevice.py:2718(_check)
-        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\controllers\NewProjectController.py:71(change_video_device)
-        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\controllers\DisplayResultsController.py:7(__init__)
-        1    0.000    0.000    0.000    0.000 {method 'accept' of 'PySide2.QtCore.QEvent' objects}
-        2    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\models\NewProjectModel.py:76(audio_devices)
-        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\controllers\DataAcquisitionController.py:6(__init__)
-        1    0.000    0.000    0.001    0.001 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\models\NewProjectModel.py:58(audio_drivers)
-        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\models\NewProjectModel.py:103(video_device)
-        3    0.000    0.000    0.000    0.000 C:\Users\Pablo\miniconda3\envs\tfg\lib\site-packages\sounddevice.py:636(<genexpr>)
-        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\models\DisplayResultsModel.py:6(__init__)
-        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\models\DataAcquisitionModel.py:6(__init__)
-        1    0.000    0.000    0.000    0.000 C:\Users\Pablo\miniconda3\envs\tfg\lib\_collections_abc.py:664(__contains__)
-        8    0.000    0.000    0.000    0.000 {method 'append' of 'list' objects}
-        1    0.000    0.000    0.000    0.000 C:\Users\Pablo\miniconda3\envs\tfg\lib\site-packages\numpy\core\_dtype.py:24(_kind_name)
-        1    0.000    0.000    0.000    0.000 {built-in method sys.exit}
-        2    0.000    0.000    0.000    0.000 C:\Users\Pablo\miniconda3\envs\tfg\lib\os.py:734(check_str)
-        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\NewProjectView.py:83(<listcomp>)
-        1    0.000    0.000    0.000    0.000 {method 'copy' of 'dict' objects}
+      315    0.058    0.000    0.058    0.000 {built-in method builtins.print}
+      157    0.004    0.000    0.004    0.000 main2.py:102(<listcomp>)
+        1    0.002    0.002    0.071    0.071 main2.py:90(audio_video_segmentation)
+      157    0.002    0.000    0.004    0.000 D:\Bibliotecas\Code\Projects\2021\Python\01 Working Projects\TFG\tfg-Scan-Paint-clone\package\services\grid.py:45(locate_point)
+      159    0.001    0.000    0.001    0.000 {method 'astype' of 'numpy.ndarray' objects}
+      163    0.001    0.000    0.001    0.000 {built-in method numpy.array}
+        6    0.001    0.000    0.002    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\site-packages\numpy\lib\npyio.py:970(read_data)
+      319    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\site-packages\numpy\lib\npyio.py:961(split_line)
+        8    0.000    0.000    0.000    0.000 {built-in method nt.stat}
+        1    0.000    0.000    0.000    0.000 {built-in method io.open_code}
+      316    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\site-packages\numpy\lib\npyio.py:730(floatconv)
+        3    0.000    0.000    0.000    0.000 {built-in method io.open}
+      319    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\site-packages\numpy\core\_internal.py:871(__call__)
+      316    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\site-packages\numpy\lib\npyio.py:997(<listcomp>)
+      513    0.000    0.000    0.000    0.000 {method 'append' of 'list' objects}
+        1    0.000    0.000    0.000    0.000 {built-in method marshal.loads}
+      319    0.000    0.000    0.000    0.000 {method 'split' of 're.Pattern' objects}
+1059/1058    0.000    0.000    0.000    0.000 {built-in method builtins.len}
+        3    0.000    0.000    0.003    0.001 C:\Users\pablo\anaconda3\envs\tfg\lib\site-packages\numpy\lib\npyio.py:769(loadtxt)
+        3    0.000    0.000    0.000    0.000 {built-in method builtins.next}
+      322    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\site-packages\numpy\lib\_iotools.py:11(_decode_line)
+      331    0.000    0.000    0.000    0.000 {method 'split' of 'str' objects}
+       17    0.000    0.000    0.000    0.000 {built-in method __new__ of type object at 0x00007FFD9672C810}
+       33    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\ntpath.py:124(splitdrive)
+        9    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\ntpath.py:450(normpath)
+      319    0.000    0.000    0.000    0.000 {method 'strip' of 'str' objects}
+      316    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\site-packages\numpy\lib\npyio.py:944(pack_items)
+        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Projects\2021\Python\01 Working Projects\TFG\tfg-Scan-Paint-clone\package\services\grid.py:26(config)
+      316    0.000    0.000    0.000    0.000 {method 'lower' of 'str' objects}
+        1    0.000    0.000    0.000    0.000 {method 'read' of '_io.BufferedReader' objects}
+        4    0.000    0.000    0.000    0.000 {built-in method builtins.__build_class__}
+        3    0.000    0.000    0.000    0.000 {method 'close' of '_io.TextIOWrapper' objects}
+       12    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\urllib\parse.py:417(urlsplit)
+      2/1    0.000    0.000    0.071    0.071 {built-in method builtins.exec}
+       12    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\urllib\parse.py:366(urlparse)
+        9    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\site-packages\numpy\lib\_datasource.py:301(_isurl)
+        6    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\ntpath.py:77(join)
+        3    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap_external>:1431(find_spec)
+        6    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\site-packages\numpy\lib\_datasource.py:415(_sanitize_relative_path)
+       94    0.000    0.000    0.000    0.000 {built-in method builtins.isinstance}
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap_external>:969(get_data)
+        9    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\genericpath.py:121(_splitext)
+       24    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\urllib\parse.py:110(_coerce_args)
+       15    0.000    0.000    0.001    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\site-packages\numpy\lib\_datasource.py:131(keys)
+        6    0.000    0.000    0.000    0.000 {built-in method _codecs.charmap_decode}
+        6    0.000    0.000    0.001    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\site-packages\numpy\lib\_datasource.py:292(_possible_names)
+        3    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\site-packages\numpy\lib\_datasource.py:373(abspath)
+        1    0.000    0.000    0.071    0.071 <string>:1(<module>)
+        3    0.000    0.000    0.001    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\site-packages\numpy\lib\_datasource.py:342(_findfile)
+        9    0.000    0.000    0.001    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\site-packages\numpy\lib\_datasource.py:262(_iszip)
+        1    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\gzip.py:1(<module>)
+        3    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\re.py:289(_compile)
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap_external>:849(get_code)
+        3    0.000    0.000    0.001    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\site-packages\numpy\lib\_datasource.py:485(open)
+        1    0.000    0.000    0.000    0.000 {method 'round' of 'numpy.ndarray' objects}
+        3    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\site-packages\numpy\lib\npyio.py:727(_getconv)
+        6    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\encodings\cp1252.py:22(decode)
+       18    0.000    0.000    0.001    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\site-packages\numpy\lib\_datasource.py:104(_load)
+       15    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap_external>:64(<listcomp>)
+        9    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\ntpath.py:203(splitext)
+        2    0.000    0.000    0.000    0.000 {built-in method _abc._abc_init}
+       29    0.000    0.000    0.000    0.000 {method 'join' of 'str' objects}
+       15    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap_external>:62(_path_join)
+       27    0.000    0.000    0.000    0.000 {method 'rfind' of 'str' objects}
+        2    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap_external>:294(cache_from_source)
+        3    0.000    0.000    0.000    0.000 {built-in method _locale._getdefaultlocale}
+        1    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\sre_compile.py:536(_compile_info)
+        1    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\sre_parse.py:493(_parse)
+        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Projects\2021\Python\01 Working Projects\TFG\tfg-Scan-Paint-clone\package\services\grid.py:40(<listcomp>)
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:477(_init_module_attrs)
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:890(_find_spec)
+        1    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\sre_compile.py:759(compile)
+        1    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\sre_parse.py:937(parse)
+        3    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap_external>:51(_unpack_uint32)
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap_external>:1302(_get_spec)
+       60    0.000    0.000    0.000    0.000 {built-in method nt.fspath}
+        1    0.000    0.000    0.001    0.001 <frozen importlib._bootstrap>:986(_find_and_load)
+        1    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\gzip.py:120(GzipFile)
+        3    0.000    0.000    0.001    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\site-packages\numpy\lib\_datasource.py:156(open)
+        3    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\_bootlocale.py:11(getpreferredencoding)
+        1    0.000    0.000    0.000    0.000 {method 'transpose' of 'numpy.ndarray' objects}
+       11    0.000    0.000    0.000    0.000 {built-in method builtins.getattr}
+        3    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\site-packages\numpy\lib\_datasource.py:247(__init__)
+        3    0.000    0.000    0.000    0.000 <__array_function__ internals>:2(squeeze)
+        3    0.000    0.000    0.000    0.000 <string>:1(__new__)
+      6/5    0.000    0.000    0.000    0.000 {built-in method numpy.core._multiarray_umath.implement_array_function}
+        1    0.000    0.000    0.001    0.001 <frozen importlib._bootstrap>:650(_load_unlocked)
+        1    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\sre_parse.py:355(_escape)
+       39    0.000    0.000    0.000    0.000 {method 'lstrip' of 'str' objects}
+       18    0.000    0.000    0.000    0.000 {method 'startswith' of 'str' objects}
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:157(_get_module_lock)
+       16    0.000    0.000    0.000    0.000 {method 'get' of 'dict' objects}
+        3    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\ntpath.py:524(abspath)
+        3    0.000    0.000    0.000    0.000 {built-in method nt._getfullpathname}
+        2    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\site-packages\numpy\core\fromnumeric.py:52(_wrapfunc)
+       30    0.000    0.000    0.000    0.000 {method 'replace' of 'str' objects}
+        2    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap_external>:68(_path_split)
+        1    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\enum.py:933(__and__)
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap_external>:578(_compile_bytecode)
+        3    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\site-packages\numpy\lib\npyio.py:914(flatten_dtype_internal)
+        3    0.000    0.000    0.000    0.000 {built-in method _abc._abc_instancecheck}
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:211(_call_with_frames_removed)
+        2    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\abc.py:84(__new__)
+       16    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:222(_verbose_message)
+        3    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\genericpath.py:16(exists)
+        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Projects\2021\Python\01 Working Projects\TFG\tfg-Scan-Paint-clone\package\services\grid.py:42(<listcomp>)
+        5    0.000    0.000    0.000    0.000 {built-in method _imp.acquire_lock}
+        5    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap_external>:80(_path_stat)
+        1    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\sre_parse.py:435(_parse_sub)
+        3    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\site-packages\numpy\core\fromnumeric.py:1439(squeeze)
+        2    0.000    0.000    0.000    0.000 {built-in method _thread.allocate_lock}
+       32    0.000    0.000    0.000    0.000 {method 'rstrip' of 'str' objects}
+        9    0.000    0.000    0.000    0.000 {built-in method builtins.max}
+        3    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\re.py:270(escape)
+        1    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\sre_parse.py:174(getwidth)
+        6    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\site-packages\numpy\lib\npyio.py:1022(<genexpr>)
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap_external>:777(exec_module)
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:147(__enter__)
+        1    0.000    0.000    0.000    0.000 {built-in method _abc._abc_subclasscheck}
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:78(acquire)
+        2    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\sre_parse.py:233(__next)
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap_external>:629(spec_from_file_location)
+       24    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\urllib\parse.py:99(_noop)
+        3    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\site-packages\numpy\lib\npyio.py:1020(<listcomp>)
+        3    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\site-packages\numpy\lib\_datasource.py:429(exists)
+        1    0.000    0.000    0.000    0.000 {built-in method _sre.compile}
+        3    0.000    0.000    0.000    0.000 {method 'translate' of 'str' objects}
+        1    0.000    0.000    0.001    0.001 <frozen importlib._bootstrap>:956(_find_and_load_unlocked)
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap_external>:493(_classify_pyc)
+        1    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\sre_parse.py:224(__init__)
+       15    0.000    0.000    0.000    0.000 {method 'keys' of 'dict' objects}
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:103(release)
+        3    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\abc.py:96(__instancecheck__)
+       18    0.000    0.000    0.000    0.000 {built-in method builtins.issubclass}
+        1    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\site-packages\numpy\core\fromnumeric.py:3709(round_)
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:58(__init__)
+        2    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\enum.py:313(__call__)
+        6    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\site-packages\numpy\core\_internal.py:869(__init__)
+        7    0.000    0.000    0.000    0.000 {method 'rpartition' of 'str' objects}
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap_external>:424(_get_cached)
+        1    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\sre_compile.py:598(_code)
+        8    0.000    0.000    0.000    0.000 {built-in method builtins.hasattr}
+        3    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\site-packages\numpy\lib\_datasource.py:257(__del__)
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:549(module_from_spec)
+        4    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap_external>:1265(_path_importer_cache)
+        1    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\_collections_abc.py:72(_check_methods)
+        3    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\site-packages\numpy\lib\_datasource.py:279(_splitzipext)
+        3    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\re.py:250(compile)
+        1    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\sre_compile.py:461(_get_literal_prefix)
+        1    0.000    0.000    0.000    0.000 <__array_function__ internals>:2(round_)
+        1    0.000    0.000    0.000    0.000 {built-in method _imp._fix_co_filename}
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:176(cb)
+        2    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:376(cached)
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap_external>:526(_validate_timestamp_pyc)
+        3    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\codecs.py:260(__init__)
+        1    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\sre_compile.py:71(_compile)
+        1    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\sre_compile.py:432(_generate_overlap_table)
+        1    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\sre_parse.py:172(append)
+        1    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\sre_parse.py:921(fix_flags)
+        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Projects\2021\Python\01 Working Projects\TFG\tfg-Scan-Paint-clone\package\services\grid.py:14(__init__)
+        3    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap_external>:36(_relax_case)
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap_external>:1426(_get_spec)
+        2    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\enum.py:631(__new__)
+        1    0.000    0.000    0.000    0.000 <__array_function__ internals>:2(transpose)
+        3    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\site-packages\numpy\lib\_datasource.py:150(__getitem__)
+        1    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\gzip.py:393(_GzipReader)
+        1    0.000    0.000    0.000    0.000 {built-in method _imp.is_builtin}
+        3    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:867(__exit__)
+        1    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\os.py:1073(__subclasshook__)
+        3    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\site-packages\numpy\lib\npyio.py:1114(<listcomp>)
+        3    0.000    0.000    0.000    0.000 {built-in method builtins.iter}
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap_external>:1334(find_spec)
+        1    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\site-packages\numpy\core\fromnumeric.py:602(transpose)
+        1    0.000    0.000    0.000    0.000 <__array_function__ internals>:2(around)
+        3    0.000    0.000    0.000    0.000 {method 'find' of 'str' objects}
+        3    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:863(__enter__)
+        1    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\sre_parse.py:76(__init__)
+        1    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\sre_parse.py:111(__init__)
+        3    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\site-packages\numpy\lib\npyio.py:1138(<listcomp>)
+        1    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\gzip.py:74(_PaddedFile)
+        3    0.000    0.000    0.000    0.000 {method 'squeeze' of 'numpy.ndarray' objects}
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:725(find_spec)
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap_external>:456(_check_name_wrapper)
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap_external>:1010(path_stats)
+        1    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\site-packages\numpy\core\fromnumeric.py:3199(around)
+        3    0.000    0.000    0.000    0.000 {built-in method builtins.min}
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:35(_new_module)
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:800(find_spec)
+        2    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\sre_compile.py:595(isstring)
+        2    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\sre_parse.py:81(groups)
+        3    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\site-packages\numpy\lib\_iotools.py:38(_is_string_like)
+        4    0.000    0.000    0.000    0.000 {method 'items' of 'dict' objects}
+        2    0.000    0.000    0.000    0.000 {method 'rsplit' of 'str' objects}
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap_external>:90(_path_is_mode_type)
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap_external>:99(_path_isfile)
+        1    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\abc.py:100(__subclasscheck__)
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:151(__exit__)
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:342(__init__)
+        1    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\sre_parse.py:164(__getitem__)
+        1    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\sre_parse.py:254(get)
+        1    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\sre_parse.py:286(tell)
+        3    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\urllib\parse.py:399(_checknetloc)
+        3    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\site-packages\numpy\core\fromnumeric.py:1435(_squeeze_dispatcher)
+        1    0.000    0.000    0.000    0.000 {method 'endswith' of 'str' objects}
+        5    0.000    0.000    0.000    0.000 {built-in method _imp.release_lock}
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:389(parent)
+        1    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\sre_parse.py:160(__len__)
+        2    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\site-packages\numpy\core\fromnumeric.py:3195(_around_dispatcher)
+        3    0.000    0.000    0.000    0.000 {built-in method from_bytes}
         1    0.000    0.000    0.000    0.000 {method 'disable' of '_lsprof.Profiler' objects}
-        2    0.000    0.000    0.000    0.000 {method 'upper' of 'str' objects}
-        1    0.000    0.000    0.000    0.000 {method 'startswith' of 'str' objects}
-        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\models\NewProjectModel.py:36(project_name)
-        2    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\models\NewProjectModel.py:54(audio_drivers)
-        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\MainWindow.py:32(connect_elements)
-        1    0.000    0.000    0.000    0.000 {method 'values' of 'dict' objects}
-        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\DataAcquisitionView.py:122(connect_to_model)
-        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\DisplayResultsView.py:34(connect_to_controller)
-        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\models\NewProjectModel.py:45(project_location)
-        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\models\NewProjectModel.py:81(audio_device)
-        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\DisplayResultsView.py:37(connect_to_model)
-        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\models\NewProjectModel.py:99(video_device)
-        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\DataAcquisitionView.py:125(set_default_values)
-        1    0.000    0.000    0.000    0.000 D:\Bibliotecas\Code\Python\tfg-Scan-Paint-clone\package\views\DisplayResultsView.py:40(set_default_values)
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:143(__init__)
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap_external>:939(__init__)
+        2    0.000    0.000    0.000    0.000 {built-in method _thread.get_ident}
+        1    0.000    0.000    0.000    0.000 {method 'pop' of 'dict' objects}
+        2    0.000    0.000    0.000    0.000 {method 'extend' of 'list' objects}
+        1    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\gzip.py:116(BadGzipFile)
+        1    0.000    0.000    0.000    0.000 {built-in method _imp.is_frozen}
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap_external>:774(create_module)
+        1    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\sre_compile.py:453(_get_iscased)
+        1    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\sre_parse.py:249(match)
+        1    0.000    0.000    0.000    0.000 C:\Users\pablo\anaconda3\envs\tfg\lib\site-packages\numpy\core\fromnumeric.py:598(_transpose_dispatcher)
+        1    0.000    0.000    0.000    0.000 {built-in method builtins.ord}
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:397(has_location)
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap_external>:964(get_filename)
 
 

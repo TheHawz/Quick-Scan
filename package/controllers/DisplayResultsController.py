@@ -14,10 +14,10 @@ class DisplayResultsController(QObject):
     def navigate(self, value):
         self._navigator.navigator.emit(value)
 
-    @Slot(np.array)
+    @Slot(np.ndarray)
     def set_data_x(self, value):
         self._model.data_x = value
 
-    @Slot(np.array)
+    @Slot(np.ndarray)
     def set_data_y(self, value):
         self._model.data_y = value

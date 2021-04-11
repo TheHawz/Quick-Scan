@@ -25,49 +25,54 @@ from ..services import colorSegmentation as cs
 from ..services.path import interpolate_nan
 from ..services.mask import get_mask, get_circles
 
-assert numpy  # avoid "imported but unused" message (W0611)
-q = queue.Queue()
+# assert numpy  # avoid "imported but unused" message (W0611)
 
 
 class MicThread(QThread):
-    update_volume = Signal(int)
+    update_volume = Signal(object)
 
-    def __init__(self, rate=4000, chunksize=1024, *args, **kwargs):
+    def __init__(self, rate=44100, chunksize=1024, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rate = rate
         self.chunksize = chunksize
         self.device = ""
+        self.q = queue.Queue()
+
         self.stream = sd.InputStream(
-            device=(1, 3), channels=2,
-            samplerate=44100, callback=MicThread.callback)
+            device=(1, 3), channels=2, samplerate=44100, callback=self.callback, blocksize=1024)
 
     def run(self):
         self._running = True
 
         try:
-            print("Trying...")
+            print("[MICTHREAD] Trying...")
             with self.stream:
-                pass
+                if not self._running:
+                    raise KeyboardInterrupt()
+
         except KeyboardInterrupt:
             print("[MICTHREAD] KeyboardInterrupt")
-            self.stop()
+            # self.stop()
         except Exception as e:
             print("[MICTHREAD] Exception: ", e)
-            self.stop()
+            # self.stop()
 
         print("[MICTHREAD] Finished!")
 
     def stop(self):
+        print("Stopping audio stream")
+        self.stream.stop()
         self._running = False
         self.wait()
+        # return KeyboardInterrupt()
 
-    @staticmethod
-    def callback(indata, frames, time, status):
+    def callback(self, indata, frames, time, status):
         """This is called (from a separate thread) for each audio block."""
         if status:
             print(status, file=sys.stderr)
-        print('.')
-        q.put(indata.copy())
+        # print('.')
+        self.q.put(indata.copy())
+        self.update_volume.emit(indata.copy())
 
 
 class DataAcquisitionView(QMainWindow):
@@ -139,7 +144,7 @@ class DataAcquisitionView(QMainWindow):
 
     @Slot(object)
     def stop_recording_handler(self, value):
-        self.stop_thread() # change
+        self.stop_thread()  # change
         ActualProjectModel.data_x = value["x_data"]
         ActualProjectModel.data_y = value["y_data"]
         self._controller.navigate('display_results')
@@ -163,8 +168,8 @@ class DataAcquisitionView(QMainWindow):
 
     @Slot(int)
     def set_volume(self, value):
-        if value:
-            print(value)
+        pass
+        # print(len(value))
 
     def start_stop(self):
         self.cameraThread.toogleRec()

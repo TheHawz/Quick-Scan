@@ -5,7 +5,7 @@ import numpy as np
 from package.services import imbasic as imb
 from package.services import colorSegmentation as cs
 from package.services.path import interpolate_nan
-from package.services.mask import improve_mask
+from package.services.mask import get_mask, get_circles
 from package.services.grid import Grid, draw_grid
 
 # TODO: move to own file
@@ -15,8 +15,8 @@ TOP_HSV_THRES = (130, 255, 255)
 
 # TODO: move to own file
 # GRID DEFINITION
-NUMBER_OF_ROWS = 8
-NUMBER_OF_COLS = 8
+NUMBER_OF_ROWS = 4
+NUMBER_OF_COLS = 4
 PADDING = 100
 
 
@@ -28,9 +28,9 @@ def main(file=None):
     else:
         cap = cv2.VideoCapture(file)
 
-    width = cap.get(3)
-    height = cap.get(4)
-    size_of_frame = np.array([height, width])
+    size_of_frame = np.array([int(cap.get(3)), int(cap.get(4))])
+
+    grid = Grid(size_of_frame, NUMBER_OF_ROWS, NUMBER_OF_COLS, PADDING)
 
     x_data = []
     y_data = []
@@ -41,27 +41,28 @@ def main(file=None):
         if not success:
             break
 
-        mask = cs.getColorMask(frame, BOTTOM_HSV_THRES, TOP_HSV_THRES)
-        mask = improve_mask(mask, cv2.MORPH_ELLIPSE, (7, 7))
+        frame = cv2.flip(frame, 1)
 
-        circles = cv2.HoughCircles(mask, cv2.HOUGH_GRADIENT, dp=3, minDist=150)
+        mask = get_mask(frame)
+        circles = get_circles(mask)
 
-        frame = draw_grid(frame, NUMBER_OF_ROWS, NUMBER_OF_COLS, PADDING)
+        frame = grid.draw_grid(frame)
 
         if circles is None:
             if len(x_data) != 0:
                 x_data.append(np.nan)
                 y_data.append(np.nan)
         else:
-            circles = np.round(circles[0, :]).astype("int")
+            x, y, r = np.round(circles[0, :]).astype("int")[0]
+            x_data.append(x)
+            y_data.append(y)
+            frame = cv2.circle(frame, (x, y), r, (0, 255, 0), 4)
+            frame = cv2.rectangle(
+                frame, (x - 5, y - 5), (x + 5, y + 5), (0, 128, 255), -1)
 
-            for (x, y, r) in circles:
-                frame = cv2.circle(frame, (x, y), r, (0, 255, 0), 4)
-                x_data.append(x)
-                y_data.append(y)
-                frame = cv2.rectangle(
-                    frame, (x - 5, y - 5), (x + 5, y + 5), (0, 128, 255), -1)
-                break
+        if len(x_data) != 0:
+            grid_coords = grid.locate_point((x_data[-1], y_data[-1]))
+            imb.draw_text(frame, f'{grid_coords[0], grid_coords[1]}', 15, 15)
 
         imb.imshow(frame, win_name="frame")
         imb.imshow(mask, win_name="mask")
@@ -77,7 +78,7 @@ def main(file=None):
     if len(x_data) != 0 and len(y_data) != 0:
         x_data = interpolate_nan(x_data)
         y_data = interpolate_nan(y_data)
-        
+
         if not os.path.exists('data'):
             os.makedirs('data')
 
@@ -87,6 +88,24 @@ def main(file=None):
 
 
 def audio_video_segmentation():
+    """Esta función se encarga de recibir las listas de X_DATA & Y_DATA y de calcular
+    los intervalos entre los que se ha detectado el micrófono en una región
+    De esta forma si obtenemos: 
+    regions = {
+    ...,
+    (28, 50): [1, 1],
+    (51, 67): [0, 1],
+    (68, 83): [0, 0], ...
+    }
+    
+    Esto quiere decir que entre los frames 28 y 50 el microfono 
+    se ha detectado en la región (1, 1). 
+    entre los frames 51 y 67 en la region (0, 1).
+    y entre los frames 68 y 83 en la region (0, 0).
+    
+    Con esta información podremos segmentar a posteriori el vector de audio.
+ 
+    """
     size_of_frame = np.loadtxt(os.path.join('data', 'size_of_frame.txt'))
     x_data = np.loadtxt(os.path.join('data', 'x_data.txt'))
     y_data = np.loadtxt(os.path.join('data', 'y_data.txt'))
@@ -97,7 +116,7 @@ def audio_video_segmentation():
     grid_list = []
     for x, y in data:
         grid_id = grid.locate_point((x, y))
-        grid_id = [int(i) for i in grid_id]
+        grid_id = [int(i) for i in grid_id] # np.array to python list
         grid_list.append(grid_id)
 
     start = 0
@@ -123,7 +142,7 @@ def audio_video_segmentation():
 if __name__ == "__main__":
     import cProfile
 
-    cProfile.run('main()', 'output.dat')
+    cProfile.run('audio_video_segmentation()', 'output.dat')
 
     import pstats
     from pstats import SortKey
