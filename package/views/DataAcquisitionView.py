@@ -1,31 +1,19 @@
 # This Python file uses the following encoding: utf-8
-import tempfile
-import numpy  # Make sure NumPy is loaded before it is used in the callback
-# import soundfile as sf
-import sounddevice as sd
-import sys
-import queue
-import os
-import cv2
 import numpy as np
-import time
+import cv2
+import os
+import queue
+import sys
+import sounddevice as sd
+import soundfile as sf
 
-from PySide2.QtCore import QEvent, QFile, QThread, Qt, Signal, Slot
-from PySide2.QtGui import QImage, QPixmap
+from PySide2.QtWidgets import QMainWindow
 from PySide2.QtUiTools import QUiLoader
-from PySide2.QtWidgets import QMainWindow, QWidget
+from PySide2.QtGui import QImage, QPixmap
+from PySide2.QtCore import QEvent, QFile, QThread,  Signal, Slot
 
-from ..models.ActualProjectModel import ActualProjectModel
-
-# from ..services import colorSegmentation as cs  # Credits to Lara!
 from ..services.CameraThread import CameraThread
-from ..services.grid import Grid
-from ..services import imbasic as imb
-from ..services import colorSegmentation as cs
-from ..services.path import interpolate_nan
-from ..services.mask import get_mask, get_circles
-
-# assert numpy  # avoid "imported but unused" message (W0611)
+from ..models.ActualProjectModel import ActualProjectModel
 
 
 class MicThread(QThread):
@@ -37,42 +25,61 @@ class MicThread(QThread):
         self.chunksize = chunksize
         self.device = ""
         self.q = queue.Queue()
+        self._running = False
+        self._rec = False
 
-        self.stream = sd.InputStream(
-            device=(1, 3), channels=2, samplerate=44100, callback=self.callback, blocksize=1024)
+    def toogleRec(self):
+        if not self._rec:
+            self._rec = True
+            print("[MicThread.py] Start recording!")
+        else:
+            self._rec = False
+            self._running = False
+            print("[MicThread.py] Stop recording!")
 
     def run(self):
         self._running = True
 
+        from datetime import datetime
+        now = datetime.now()
+        date = now.strftime("[%Y%m%d_%H%M%S] ")
+
+        self.stream = sd.Stream(channels=2, callback=self.callback)
+        self.file_stream = sf.SoundFile(f"data/{date}audio.wav",
+                                        mode='w',
+                                        samplerate=44100,
+                                        channels=2)
         try:
-            print("[MICTHREAD] Trying...")
-            with self.stream:
-                if not self._running:
-                    raise KeyboardInterrupt()
+            with self.file_stream as file:
+                with self.stream:
+                    while self._running:
+                        if self._rec:
+                            file.write(self.q.get())
+                        if not self._running:
+                            raise KeyboardInterrupt("End of recording")
 
-        except KeyboardInterrupt:
-            print("[MICTHREAD] KeyboardInterrupt")
-            # self.stop()
+        except KeyboardInterrupt as e:
+            print("[MicThread.py]", e)
         except Exception as e:
-            print("[MICTHREAD] Exception: ", e)
-            # self.stop()
-
-        print("[MICTHREAD] Finished!")
+            print("[MicThread.py] Exception:", e)
 
     def stop(self):
-        print("Stopping audio stream")
-        self.stream.stop()
+        if not self._running:
+            return
+
+        print("[MicThread.py] Stopping audio stream")
+        self._rec = False
         self._running = False
         self.wait()
-        # return KeyboardInterrupt()
 
-    def callback(self, indata, frames, time, status):
+    def callback(self, indata, outdata, frames, time, status):
         """This is called (from a separate thread) for each audio block."""
         if status:
             print(status, file=sys.stderr)
         # print('.')
-        self.q.put(indata.copy())
+        outdata[:] = indata
         self.update_volume.emit(indata.copy())
+        self.q.put(indata.copy())
 
 
 class DataAcquisitionView(QMainWindow):
@@ -86,24 +93,18 @@ class DataAcquisitionView(QMainWindow):
         self.connect_to_controller()
         self.connect_to_model()
         self.set_default_values()
-        self.start_threads()
         self.installEventFilter(self)
+
+    # region ------------------------ QMainWindow ------------------------
 
     def open(self):
         self.window.show()
+        self.create_threads()
         self.start_thread()
 
     def close(self):
         self.stop_thread()
         self.window.hide()
-
-    def start_thread(self):
-        self.cameraThread.start()
-        self.micThread.start()
-
-    def stop_thread(self):
-        self.cameraThread.stop()
-        self.micThread.stop()
 
     def eventFilter(self, obj, event):
         if obj is self.window and event.type() == QEvent.Close:
@@ -128,9 +129,13 @@ class DataAcquisitionView(QMainWindow):
         pass
 
     def set_default_values(self):
-        pass
+        self.q = queue.Queue()
 
-    def start_threads(self):
+    # endregion
+
+    # region -------------------------- Threads --------------------------
+
+    def create_threads(self):
         # 1. Start camera Thread
         self.cameraThread = CameraThread(self)
         self.cameraThread.update_frame.connect(self.set_image)
@@ -142,19 +147,50 @@ class DataAcquisitionView(QMainWindow):
         self.micThread.update_volume.connect(self.set_volume)
         self.window.installEventFilter(self)
 
+    def start_thread(self):
+        self.cameraThread.start()
+        # self.micThread.start()
+
+    def stop_thread(self):
+        if hasattr(self, 'cameraThread'):
+            self.cameraThread.stop()
+        if hasattr(self, 'micThread'):
+            self.micThread.stop()
+
+    # endregion
+
+    # region ------------------------- Handlers --------------------------
+
     @Slot(object)
     def stop_recording_handler(self, value):
         self.stop_thread()  # change
         ActualProjectModel.data_x = value["x_data"]
         ActualProjectModel.data_y = value["y_data"]
+
+        # Write data to disk!
+        self.save_np_to_txt(value["x_data"], file_name="x_data.txt")
+        self.save_np_to_txt(value["y_data"], file_name="y_data.txt")
         self._controller.navigate('display_results')
 
-    @Slot(np.ndarray)
-    def set_image(self, cv_img):
-        """Updates the image_label with a new opencv image"""
-        qt_img = self.convert_cv_qt(cv_img)
-        self.window.cam_view.setPixmap(qt_img)
+    # TODO: move to own file
+    @staticmethod
+    def save_np_to_txt(data, file_name="data.txt", path=os.path.join("data"), add_date_prefix=True):
+        if add_date_prefix:
+            from datetime import datetime
 
+            now = datetime.now()
+            date = now.strftime("[%Y-%m-%d_%H%M%S] ")
+            file_name = date + file_name
+
+        file_path = os.path.join(path, file_name)
+        np.savetxt(file_path, data)
+
+    def start_stop(self):
+        self.cameraThread.toogleRec()
+        self.micThread.toogleRec()
+        self.micThread.start()
+
+    # TODO: move to utils
     def convert_cv_qt(self, cv_img):
         """Convert from an opencv image to QPixmap"""
         rgb_image = cv2.cvtColor(cv_img, cv2.COLOR_BGR2RGB)
@@ -162,14 +198,17 @@ class DataAcquisitionView(QMainWindow):
         bytes_per_line = ch * w
         qt_format = QImage(
             rgb_image.data, w, h, bytes_per_line, QImage.Format_RGB888)
-        # p = qt_format.scaled(
-        #     self.disply_width, self.display_height, Qt.KeepAspectRatio)
+        # p = qt_format.scaled(self.disply_width, self.display_height, Qt.KeepAspectRatio)
         return QPixmap.fromImage(qt_format)
+
+    @Slot(np.ndarray)
+    def set_image(self, cv_img):
+        """Updates the image_label with a new opencv image"""
+        qt_img = self.convert_cv_qt(cv_img)
+        self.window.cam_view.setPixmap(qt_img)
 
     @Slot(int)
     def set_volume(self, value):
-        pass
-        # print(len(value))
+        self.q.put(value)
 
-    def start_stop(self):
-        self.cameraThread.toogleRec()
+    # endregion
