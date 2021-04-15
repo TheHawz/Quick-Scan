@@ -1,19 +1,9 @@
 # This Python file uses the following encoding: utf-8
-import tempfile
-import numpy  # Make sure NumPy is loaded before it is used in the callback
-# import soundfile as sf
-import sounddevice as sd
-import sys
-import queue
-import os
 import cv2
 import numpy as np
 import time
 
-from PySide2.QtCore import QEvent, QFile, QThread, Qt, Signal, Slot
-from PySide2.QtGui import QImage, QPixmap
-from PySide2.QtUiTools import QUiLoader
-from PySide2.QtWidgets import QMainWindow, QWidget
+from PySide2.QtCore import QThread, Signal
 
 from ..models.ActualProjectModel import ActualProjectModel
 
