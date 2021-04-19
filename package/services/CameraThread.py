@@ -1,19 +1,9 @@
 # This Python file uses the following encoding: utf-8
-import tempfile
-import numpy  # Make sure NumPy is loaded before it is used in the callback
-# import soundfile as sf
-import sounddevice as sd
-import sys
-import queue
-import os
 import cv2
 import numpy as np
 import time
 
-from PySide2.QtCore import QEvent, QFile, QThread, Qt, Signal, Slot
-from PySide2.QtGui import QImage, QPixmap
-from PySide2.QtUiTools import QUiLoader
-from PySide2.QtWidgets import QMainWindow, QWidget
+from PySide2.QtCore import QThread, Signal
 
 from ..models.ActualProjectModel import ActualProjectModel
 
@@ -89,14 +79,17 @@ class CameraThread(QThread):
     def process_circles(self, frame, circles):
         """Appends data to the arrays and draws circles in the frame
 
+           DOC: habrá un subarray de 'np.nan' al principio de cada x_data y y_data
+           De esta forma se tendrá sincronizado el momento en el que el micro se coloca en posición
         Args:
             frame ([type]): [description]
             circles ([type]): [description]
         """
         if circles is None:
-            if len(self.x_data) != 0:
-                self.x_data.append(np.nan)
-                self.y_data.append(np.nan)
+
+            # if len(self.x_data) != 0:
+            self.x_data.append(np.nan)
+            self.y_data.append(np.nan)
         else:
             circles = np.round(circles[0, :]).astype("int")
 
@@ -120,12 +113,12 @@ class CameraThread(QThread):
         """
         # TODO: quitar flip en production phase
         frame = cv2.flip(frame, 1)
-        mask = get_mask(frame)
-        circles = get_circles(mask)
         self._grid.draw_grid(frame)
-        self.process_circles(frame, circles)
+        self.process_circles(frame, get_circles(get_mask(frame)))
         self.draw_rec_indicator(frame)
 
+        # TODO: add Time calculation with alpha channel!
+        # TODO: fade green to red
         # rgb_times = (self.times*255)/3
         # rgb_times = np.clip(rgb_times, 0, 255).astype(np.uint8)
         # frame = cv2.resize(
@@ -146,12 +139,9 @@ class CameraThread(QThread):
             frame, (self._grid.size_of_frame[0]-30, 30), 8, (0, 0, 255), -1)
 
     def bypass(self, frame):
-        # TODO: quitar flip en production phase
+        # TODO: quitar flip en prod.
         frame = cv2.flip(frame, 1)
-        mask = get_mask(frame)
-        circles = get_circles(mask)
         self._grid.draw_grid(frame)
-        # self.process_circles(frame, circles)
         return frame
 
     def toogleRec(self):

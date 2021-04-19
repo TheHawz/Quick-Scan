@@ -1,73 +1,17 @@
 # This Python file uses the following encoding: utf-8
-import tempfile
-import numpy  # Make sure NumPy is loaded before it is used in the callback
-# import soundfile as sf
-import sounddevice as sd
-import sys
-import queue
-import os
-import cv2
 import numpy as np
-import time
+import cv2
+import os
+import queue
 
-from PySide2.QtCore import QEvent, QFile, QThread, Qt, Signal, Slot
-from PySide2.QtGui import QImage, QPixmap
+from PySide2.QtWidgets import QMainWindow
 from PySide2.QtUiTools import QUiLoader
-from PySide2.QtWidgets import QMainWindow, QWidget
+from PySide2.QtGui import QImage, QPixmap
+from PySide2.QtCore import QEvent, QFile, QThread,  Signal, Slot
 
-from ..models.ActualProjectModel import ActualProjectModel
-
-# from ..services import colorSegmentation as cs  # Credits to Lara!
 from ..services.CameraThread import CameraThread
-from ..services.grid import Grid
-from ..services import imbasic as imb
-from ..services import colorSegmentation as cs
-from ..services.path import interpolate_nan
-from ..services.mask import get_mask, get_circles
-
-assert numpy  # avoid "imported but unused" message (W0611)
-q = queue.Queue()
-
-
-class MicThread(QThread):
-    update_volume = Signal(int)
-
-    def __init__(self, rate=4000, chunksize=1024, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.rate = rate
-        self.chunksize = chunksize
-        self.device = ""
-        self.stream = sd.InputStream(
-            device=(1, 3), channels=2,
-            samplerate=44100, callback=MicThread.callback)
-
-    def run(self):
-        self._running = True
-
-        try:
-            print("Trying...")
-            with self.stream:
-                pass
-        except KeyboardInterrupt:
-            print("[MICTHREAD] KeyboardInterrupt")
-            self.stop()
-        except Exception as e:
-            print("[MICTHREAD] Exception: ", e)
-            self.stop()
-
-        print("[MICTHREAD] Finished!")
-
-    def stop(self):
-        self._running = False
-        self.wait()
-
-    @staticmethod
-    def callback(indata, frames, time, status):
-        """This is called (from a separate thread) for each audio block."""
-        if status:
-            print(status, file=sys.stderr)
-        print('.')
-        q.put(indata.copy())
+from ..services.MicThread import MicThread
+from ..models.ActualProjectModel import ActualProjectModel
 
 # TODO: add regions
 
@@ -83,24 +27,18 @@ class DataAcquisitionView(QMainWindow):
         self.connect_to_controller()
         self.connect_to_model()
         self.set_default_values()
-        self.start_threads()
         self.installEventFilter(self)
+
+    # region ------------------------ QMainWindow ------------------------
 
     def open(self):
         self.window.show()
+        self.create_threads()
         self.start_thread()
 
     def close(self):
         self.stop_thread()
         self.window.hide()
-
-    def start_thread(self):
-        self.cameraThread.start()
-        self.micThread.start()
-
-    def stop_thread(self):
-        self.cameraThread.stop()
-        self.micThread.stop()
 
     def eventFilter(self, obj, event):
         if obj is self.window and event.type() == QEvent.Close:
@@ -125,9 +63,13 @@ class DataAcquisitionView(QMainWindow):
         pass
 
     def set_default_values(self):
-        pass
+        self.q = queue.Queue()
 
-    def start_threads(self):
+    # endregion
+
+    # region -------------------------- Threads --------------------------
+
+    def create_threads(self):
         # 1. Start camera Thread
         self.cameraThread = CameraThread(self)
         self.cameraThread.update_frame.connect(self.set_image)
@@ -139,18 +81,50 @@ class DataAcquisitionView(QMainWindow):
         self.micThread.update_volume.connect(self.set_volume)
         self.window.installEventFilter(self)
 
+    def start_thread(self):
+        self.cameraThread.start()
+        # self.micThread.start()
+
+    def stop_thread(self):
+        if hasattr(self, 'cameraThread'):
+            self.cameraThread.stop()
+        if hasattr(self, 'micThread'):
+            self.micThread.stop()
+
+    # endregion
+
+    # region ------------------------- Handlers --------------------------
+
     @Slot(object)
     def stop_recording_handler(self, value):
+        self.stop_thread()  # change
         ActualProjectModel.data_x = value["x_data"]
         ActualProjectModel.data_y = value["y_data"]
+
+        # Write data to disk!
+        self.save_np_to_txt(value["x_data"], file_name="x_data.txt")
+        self.save_np_to_txt(value["y_data"], file_name="y_data.txt")
         self._controller.navigate('display_results')
 
-    @Slot(np.ndarray)
-    def set_image(self, cv_img):
-        """Updates the image_label with a new opencv image"""
-        qt_img = self.convert_cv_qt(cv_img)
-        self.window.cam_view.setPixmap(qt_img)
+    # TODO: move to own file
+    @staticmethod
+    def save_np_to_txt(data, file_name="data.txt", path=os.path.join("data"), add_date_prefix=True):
+        if add_date_prefix:
+            from datetime import datetime
 
+            now = datetime.now()
+            date = now.strftime("[%Y-%m-%d_%H%M%S] ")
+            file_name = date + file_name
+
+        file_path = os.path.join(path, file_name)
+        np.savetxt(file_path, data)
+
+    def start_stop(self):
+        self.cameraThread.toogleRec()
+        self.micThread.toogleRec()
+        self.micThread.start()
+
+    # TODO: move to utils
     def convert_cv_qt(self, cv_img):
         """Convert from an opencv image to QPixmap"""
         rgb_image = cv2.cvtColor(cv_img, cv2.COLOR_BGR2RGB)
@@ -158,14 +132,17 @@ class DataAcquisitionView(QMainWindow):
         bytes_per_line = ch * w
         qt_format = QImage(
             rgb_image.data, w, h, bytes_per_line, QImage.Format_RGB888)
-        # p = qt_format.scaled(
-        #     self.disply_width, self.display_height, Qt.KeepAspectRatio)
+        # p = qt_format.scaled(self.disply_width, self.display_height, Qt.KeepAspectRatio)
         return QPixmap.fromImage(qt_format)
+
+    @Slot(np.ndarray)
+    def set_image(self, cv_img):
+        """Updates the image_label with a new opencv image"""
+        qt_img = self.convert_cv_qt(cv_img)
+        self.window.cam_view.setPixmap(qt_img)
 
     @Slot(int)
     def set_volume(self, value):
-        if value:
-            print(value)
+        self.q.put(value)
 
-    def start_stop(self):
-        self.cameraThread.toogleRec()
+    # endregion

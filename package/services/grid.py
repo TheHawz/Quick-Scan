@@ -27,9 +27,11 @@ class Grid:
         self.number_of_rows = number_of_rows
         self.number_of_cols = number_of_cols
         self.padding = padding
-        self.padding_coords = np.array([self.padding, self.padding])
+        self.padding_coords = np.array(
+            [self.padding, self.padding]).astype(int)
 
-        self.real_size = self.size_of_frame - (self.padding_coords * 2)
+        self.real_size = np.round(
+            self.size_of_frame - (self.padding_coords * 2)).astype(int)
 
         self.grid_size = np.array(
             [self.real_size[0] / self.number_of_rows,
@@ -53,13 +55,13 @@ class Grid:
         # DRAW HORIZONTAL DIVISIONS
         for div in self.hor_div:
             start_point = (self.padding, div)
-            end_point = (self.size_of_frame[0] - self.padding, div)
+            end_point = (self.size_of_frame[0]-self.padding, div)
             cv2.line(frame, start_point, end_point, color, thickness)
 
         # DRAW VERTICAL DIVISIONS
         for div in self.ver_div:
             start_point = (div, self.padding)
-            end_point = (div, self.size_of_frame[1] - self.padding)
+            end_point = (div, self.size_of_frame[1]-self.padding)
             cv2.line(frame, start_point, end_point, color, thickness)
 
         return frame
