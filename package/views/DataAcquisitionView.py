@@ -13,6 +13,8 @@ from ..services.CameraThread import CameraThread
 from ..services.MicThread import MicThread
 from ..models.ActualProjectModel import ActualProjectModel
 
+# TODO: add regions
+
 
 class DataAcquisitionView(QMainWindow):
 

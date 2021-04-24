@@ -6,6 +6,8 @@ from PySide2.QtWidgets import QMainWindow, QFileDialog
 from PySide2.QtCore import QFile, Slot
 from PySide2.QtUiTools import QUiLoader
 
+from ..models.ActualProjectModel import ActualProjectModel
+
 
 class DisplayResultsView(QMainWindow):
     def __init__(self, model, controller):
@@ -24,6 +26,8 @@ class DisplayResultsView(QMainWindow):
 
     def close(self):
         self.window.hide()
+
+    # region HELPER FUNCTIONS AND CALLBACKS
 
     def load_ui(self):
         loader = QUiLoader()
