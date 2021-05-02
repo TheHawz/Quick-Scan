@@ -7,8 +7,28 @@ Created on Mon Feb 22 18:16:28 2021
 
 import numpy as np
 
+__all__ = ['interpolate_nan']
 
-def nan_helper(y):
+
+def interpolate_nan(array):
+    """Trims the array of possible np.nan values at the end of the 
+    array and interpolates any np.nan value that is located in the array
+
+    Args:
+        array (np.array): Initial array
+
+    Returns:
+        np.array: processed array
+    """
+    array = _trim_first_nans(array)
+    array = np.array(_trim_last_nans(array, True))
+    x_nans, x_nonzero = _nan_helper(array)
+    array[x_nans] = np.interp(
+        x_nonzero(x_nans), x_nonzero(~x_nans), array[~x_nans])
+    return array
+
+
+def _nan_helper(y):
     """Helper to handle indices and logical indices of NaNs.
 
     Input:
@@ -22,7 +42,19 @@ def nan_helper(y):
     return np.isnan(y), lambda z: z.nonzero()[0]
 
 
-def trim_last_nans(array, verbose=False):
+def _trim_first_nans(array): 
+    
+    i = 0
+    while True:
+        i += 1
+        if not np.isnan(array[i]):
+            break
+
+    array = array[i:]
+    
+    return array
+
+def _trim_last_nans(array, verbose=False):
     """Search for a block of np.nan at the end of the array
     and returns the same array without the np.nan at the end.
 
@@ -59,20 +91,3 @@ def trim_last_nans(array, verbose=False):
         return Exception
 
     return array_rev[::-1]
-
-
-def interpolate_nan(array):
-    """Trims the array of possible np.nan values at the end of the 
-    array and interpolates any np.nan value that is located in the array
-
-    Args:
-        array (np.array): Initial array
-
-    Returns:
-        np.array: processed array
-    """
-    array = np.array(trim_last_nans(array, True))
-    x_nans, x_nonzero = nan_helper(array)
-    array[x_nans] = np.interp(
-        x_nonzero(x_nans), x_nonzero(~x_nans), array[~x_nans])
-    return array

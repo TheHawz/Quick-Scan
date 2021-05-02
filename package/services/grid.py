@@ -47,18 +47,11 @@ class Grid:
         return np.floor(point_grid_coords / self.grid_size).astype(int)
 
     def draw_grid(self, frame, color=(180, 180, 180), thickness=1):
-        """ 
-            TODO: se puede optimizar mucho: 
-            crear una mascara que luego se reutilice para colorear todos 
-            los frames siguientes
-        """
-        # DRAW HORIZONTAL DIVISIONS
         for div in self.hor_div:
             start_point = (self.padding, div)
             end_point = (self.size_of_frame[0]-self.padding, div)
             cv2.line(frame, start_point, end_point, color, thickness)
 
-        # DRAW VERTICAL DIVISIONS
         for div in self.ver_div:
             start_point = (div, self.padding)
             end_point = (div, self.size_of_frame[1]-self.padding)
