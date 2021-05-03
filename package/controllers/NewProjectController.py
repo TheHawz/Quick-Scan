@@ -1,3 +1,4 @@
+import math
 import sounddevice as sd
 
 from PySide2.QtCore import QObject, Slot
@@ -71,3 +72,11 @@ class NewProjectController(QObject):
     @Slot(int)
     def change_video_device(self, value):
         self._model.video_device = value
+
+    @Slot(int)
+    def change_low_freq(self, value):
+        self._model.low_freq = round(math.exp(value/10))
+
+    @Slot(int)
+    def change_high_freq(self, value):
+        self._model.high_freq = round(math.exp(value/10))

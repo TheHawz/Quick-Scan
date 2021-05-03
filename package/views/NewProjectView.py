@@ -1,9 +1,17 @@
 # This Python file uses the following encoding: utf-8
+import math
 import os
 
 from PySide2.QtWidgets import QMainWindow, QFileDialog
 from PySide2.QtCore import QFile, Slot
 from PySide2.QtUiTools import QUiLoader
+
+
+def freq_to_text(value):
+    if value >= 1000:
+        return f'{round(value/1000, 1)} kHz'
+
+    return f'{round(value, 1)} Hz'
 
 
 class NewProjectView(QMainWindow):
@@ -46,6 +54,10 @@ class NewProjectView(QMainWindow):
             self._controller.create_new_project)
         self.window.cb_video_devices.currentIndexChanged.connect(
             self._controller.change_video_device)
+        self.window.low_freq_dial.valueChanged.connect(
+            self._controller.change_low_freq)
+        self.window.high_freq_dial.valueChanged.connect(
+            self._controller.change_high_freq)
 
     def connect_to_model(self):
         self._model.project_name_changed.connect(self.on_project_name_changed)
@@ -57,12 +69,18 @@ class NewProjectView(QMainWindow):
         self._model.audio_device_changed.connect(self.on_audio_device_changed)
         self._model.video_devices_set.connect(self.on_video_devices_set)
         self._model.video_device_changed.connect(self.on_video_device_changed)
+        self._model.low_freq_changed.connect(self.on_low_freq_changed)
+        self._model.high_freq_changed.connect(self.on_high_freq_changed)
+        self._model.low_freq_forced.connect(self.on_low_freq_forced)
+        self._model.high_freq_forced.connect(self.on_high_freq_forced)
 
     def set_default_values(self):
         self._controller.change_project_location(os.path.expanduser("~"))
         self._controller.change_project_name('New Project')
         self._controller.set_audio_drivers()
         self._controller.set_video_devices()
+        self.window.high_freq_dial.setValue(1000)
+        self.window.low_freq_dial.setValue(40)
 
     def open_location_dialog(self):
         _dir = str(QFileDialog.getExistingDirectory(
@@ -105,3 +123,20 @@ class NewProjectView(QMainWindow):
     @Slot(int)
     def on_video_device_changed(self, value):
         print(f'[VIEW]: Video Device changed: {value}')
+
+    @Slot(int)
+    def on_low_freq_changed(self, value):
+
+        self.window.low_freq_label.setText(freq_to_text(value))
+
+    @Slot(int)
+    def on_high_freq_changed(self, value):
+        self.window.high_freq_label.setText(freq_to_text(value))
+
+    @Slot(int)
+    def on_low_freq_forced(self, value):
+        self.window.low_freq_dial.setValue(math.floor(math.log(value))*10-1)
+
+    @Slot(int)
+    def on_high_freq_forced(self, value):
+        self.window.high_freq_dial.setValue(math.ceil(math.log(value))*10+1)

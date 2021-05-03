@@ -17,6 +17,10 @@ class NewProjectModel(QObject):
     audio_devices_set = Signal(object)
     video_devices_set = Signal(object)
     video_device_changed = Signal(int)
+    low_freq_changed = Signal(int)
+    high_freq_changed = Signal(int)
+    low_freq_forced = Signal(int)
+    high_freq_forced = Signal(int)
 
     def __init__(self):
         super().__init__()
@@ -32,6 +36,8 @@ class NewProjectModel(QObject):
         self._audio_device = 0
         self._video_devices = {}
         self._video_device = 0
+        self._low_freq = 20
+        self._high_freq = 20000
 
     @property
     def project_name(self):
@@ -104,3 +110,25 @@ class NewProjectModel(QObject):
     def video_device(self, value):
         self._video_device = value
         self.video_device_changed.emit(value)
+
+    @property
+    def low_freq(self):
+        return self._low_freq
+
+    @low_freq.setter
+    def low_freq(self, value):
+        self._low_freq = value
+        if value >= self._high_freq:
+            self.high_freq_forced.emit(value)
+        self.low_freq_changed.emit(value)
+
+    @property
+    def high_freq(self):
+        return self._high_freq
+
+    @high_freq.setter
+    def high_freq(self, value):
+        self._high_freq = value
+        if value <= self._low_freq:
+            self.low_freq_forced.emit(value)
+        self.high_freq_changed.emit(value)
