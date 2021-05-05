@@ -1,6 +1,7 @@
 import sounddevice as sd
 
 from PySide2.QtCore import QObject, Signal
+from package.services.dsp import getTimeOfRecording
 
 
 class NewProjectModel(QObject):
@@ -21,6 +22,7 @@ class NewProjectModel(QObject):
     high_freq_changed = Signal(int)
     low_freq_forced = Signal(int)
     high_freq_forced = Signal(int)
+    minimum_time_changed = Signal(float)
 
     def __init__(self):
         super().__init__()
@@ -121,6 +123,7 @@ class NewProjectModel(QObject):
         if value >= self._high_freq:
             self.high_freq_forced.emit(value)
         self.low_freq_changed.emit(value)
+        self.minimum_time_changed.emit(getTimeOfRecording(value))
 
     @property
     def high_freq(self):

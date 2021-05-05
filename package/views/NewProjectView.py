@@ -73,6 +73,7 @@ class NewProjectView(QMainWindow):
         self._model.high_freq_changed.connect(self.on_high_freq_changed)
         self._model.low_freq_forced.connect(self.on_low_freq_forced)
         self._model.high_freq_forced.connect(self.on_high_freq_forced)
+        self._model.minimum_time_changed.connect(self.on_minimum_time_changed)
 
     def set_default_values(self):
         self._controller.change_project_location(os.path.expanduser("~"))
@@ -126,7 +127,6 @@ class NewProjectView(QMainWindow):
 
     @Slot(int)
     def on_low_freq_changed(self, value):
-
         self.window.low_freq_label.setText(freq_to_text(value))
 
     @Slot(int)
@@ -140,3 +140,8 @@ class NewProjectView(QMainWindow):
     @Slot(int)
     def on_high_freq_forced(self, value):
         self.window.high_freq_dial.setValue(math.ceil(math.log(value))*10+1)
+
+    @Slot(float)
+    def on_minimum_time_changed(self, value):
+        self.window.minimum_time_label.setText(
+            f'Minimum time of recording:\n {round(value, 2)}s')
