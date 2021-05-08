@@ -5,7 +5,7 @@ from .package.services import colorSegmentation as cs
 from .package.services import imbasic as imb
 import numpy as np
 import cv2
-ximport os
+import os
 
 
 # TODO: move to own file
