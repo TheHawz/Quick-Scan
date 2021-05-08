@@ -78,7 +78,8 @@ class NewProjectView(QMainWindow):
     def set_default_values(self):
         self._controller.change_project_location(os.path.expanduser("~"))
         self._controller.change_project_name('New Project')
-        self._controller.set_audio_drivers()
+        
+        self._controller.get_audio_drivers()
         self._controller.set_video_devices()
         self.window.high_freq_dial.setValue(1000)
         self.window.low_freq_dial.setValue(40)

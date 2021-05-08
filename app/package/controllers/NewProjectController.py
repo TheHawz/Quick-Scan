@@ -23,6 +23,35 @@ class NewProjectController(QObject):
 
         self._navigator.navigate('data_acquisition')
 
+    def get_audio_drivers(self):
+        """Initial setup => get all available audio drivers
+        Select audio driver that have at least 1 device 
+        with max_input_channels > 0
+        
+         * Types *
+        
+        hostapi: {
+            name:string, 
+            devices: int[], 
+            defualt_input_device: int
+            defualt_output_device: int
+        }
+        """
+        hostapis = sd.query_hostapis()
+        all_devices = sd.query_devices()
+        filtered_hostapis = []
+        
+        for hostapi in hostapis:
+            devices_index = hostapi['devices']
+            for index in devices_index:
+                device = all_devices[index]
+                if device['max_input_channels'] > 0:
+                    filtered_hostapis.append(hostapi)
+                    break
+                    
+        self._model.audio_drivers = filtered_hostapis
+        return hostapis
+
     @Slot(str)
     def change_project_name(self, value):
         self._model.project_name = value
@@ -32,21 +61,19 @@ class NewProjectController(QObject):
         self._model.project_location = value
 
     @Slot(int)
-    def change_audio_driver(self, value):
-        self._model.audio_driver = value
+    def change_audio_driver(self, index):
+        self._model.audio_driver = index
 
     @Slot(int)
     def change_audio_device(self, value):
         self._model.audio_device = self._model.audio_devices_index[value]
 
-    def set_audio_drivers(self):
-        hostapis = sd.query_hostapis()
-        self._model.audio_drivers = hostapis
 
     def set_audio_devices(self, driver):
         all_devices = sd.query_devices()
         actual_driver = self._model.audio_drivers[driver]
         actual_devices_index = actual_driver['devices']
+        # default_device_index = actual_driver['defualt_input_device']
         input_devices_index = []
 
         input_devices = []

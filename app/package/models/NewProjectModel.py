@@ -73,9 +73,9 @@ class NewProjectModel(QObject):
         return self._audio_driver
 
     @audio_driver.setter
-    def audio_driver(self, value):
-        self._audio_driver = value
-        self.audio_driver_changed.emit(value)
+    def audio_driver(self, index):
+        self._audio_driver = index
+        self.audio_driver_changed.emit(index)
 
     @property
     def audio_devices(self):
