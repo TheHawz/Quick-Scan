@@ -83,6 +83,9 @@ class NewProjectView(QMainWindow):
         self._controller.set_video_devices()
         self.window.high_freq_dial.setValue(1000)
         self.window.low_freq_dial.setValue(40)
+        hostapi, device = self._controller.get_default_audio_device()
+        self.window.cb_audio_driver.setCurrentIndex(hostapi)
+        self.window.cb_audio_device.setCurrentIndex(device)
 
     def open_location_dialog(self):
         _dir = str(QFileDialog.getExistingDirectory(

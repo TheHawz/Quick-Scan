@@ -22,6 +22,8 @@ class NewProjectController(QObject):
         ActualProjectModel.video_device = self._model.video_device
 
         self._navigator.navigate('data_acquisition')
+        
+    #region Get Drivers
 
     def get_audio_drivers(self):
         """Initial setup => get all available audio drivers
@@ -52,23 +54,6 @@ class NewProjectController(QObject):
         self._model.audio_drivers = filtered_hostapis
         return hostapis
 
-    @Slot(str)
-    def change_project_name(self, value):
-        self._model.project_name = value
-
-    @Slot(str)
-    def change_project_location(self, value):
-        self._model.project_location = value
-
-    @Slot(int)
-    def change_audio_driver(self, index):
-        self._model.audio_driver = index
-
-    @Slot(int)
-    def change_audio_device(self, value):
-        self._model.audio_device = self._model.audio_devices_index[value]
-
-
     def set_audio_devices(self, driver):
         all_devices = sd.query_devices()
         actual_driver = self._model.audio_drivers[driver]
@@ -95,6 +80,29 @@ class NewProjectController(QObject):
             index += 1
 
         self._model.video_devices = video_devices
+
+    def get_default_audio_device(self):
+        input_device, _ = sd.default.device
+        devices = sd.query_devices()
+        return [devices[input_device]['hostapi'], input_device]
+        
+    #endregion
+    
+    @Slot(str)
+    def change_project_name(self, value):
+        self._model.project_name = value
+
+    @Slot(str)
+    def change_project_location(self, value):
+        self._model.project_location = value
+
+    @Slot(int)
+    def change_audio_driver(self, index):
+        self._model.audio_driver = index
+
+    @Slot(int)
+    def change_audio_device(self, value):
+        self._model.audio_device = self._model.audio_devices_index[value]
 
     @Slot(int)
     def change_video_device(self, value):
