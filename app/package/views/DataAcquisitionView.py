@@ -13,17 +13,17 @@ from ..services.CameraThread import CameraThread
 from ..services.MicThread import MicThread
 from ..models.ActualProjectModel import ActualProjectModel
 
-# TODO: add regions
+from ..ui.DataAcquisition_ui import Ui_MainWindow as DataAcquisition_ui
 
 
-class DataAcquisitionView(QMainWindow):
+class DataAcquisitionView(QMainWindow, DataAcquisition_ui):
 
     def __init__(self, model, controller, parent=None):
         super(DataAcquisitionView, self).__init__(parent)
         self._model = model
         self._controller = controller
 
-        self.load_ui()
+        self.setupUi(self)
         self.connect_to_controller()
         self.connect_to_model()
         self.set_default_values()
@@ -32,32 +32,32 @@ class DataAcquisitionView(QMainWindow):
     # region ------------------------ QMainWindow ------------------------
 
     def open(self):
-        self.window.show()
+        self.show()
         self.create_threads()
         self.start_thread()
 
     def close(self):
         self.stop_thread()
-        self.window.hide()
+        self.hide()
 
     def eventFilter(self, obj, event):
-        if obj is self.window and event.type() == QEvent.Close:
+        if obj is self and event.type() == QEvent.Close:
             self.stop_thread()
             event.accept()
             return True
         else:
             return super(DataAcquisitionView, self).eventFilter(obj, event)
 
-    def load_ui(self):
-        loader = QUiLoader()
-        path = os.path.join('resources', 'ui', "data_acquisition.ui")
-        ui_file = QFile(path)
-        ui_file.open(QFile.ReadOnly)
-        self.window = loader.load(ui_file)
-        ui_file.close()
+    # def load_ui(self):
+    #     loader = QUiLoader()
+    #     path = os.path.join('resources', 'ui', "DataAcquisition.ui")
+    #     ui_file = QFile(path)
+    #     ui_file.open(QFile.ReadOnly)
+    #     self = loader.load(ui_file)
+    #     ui_file.close()
 
     def connect_to_controller(self):
-        self.window.start_stop_button.clicked.connect(self.start_stop)
+        self.start_stop_button.clicked.connect(self.start_stop)
 
     def connect_to_model(self):
         pass
@@ -79,7 +79,7 @@ class DataAcquisitionView(QMainWindow):
         # 2. Start Mic Thread
         self.micThread = MicThread(self)
         self.micThread.update_volume.connect(self.set_volume)
-        self.window.installEventFilter(self)
+        self.installEventFilter(self)
 
     def start_thread(self):
         self.cameraThread.start()
@@ -139,7 +139,7 @@ class DataAcquisitionView(QMainWindow):
     def set_image(self, cv_img):
         """Updates the image_label with a new opencv image"""
         qt_img = self.convert_cv_qt(cv_img)
-        self.window.cam_view.setPixmap(qt_img)
+        self.cam_view.setPixmap(qt_img)
 
     @Slot(int)
     def set_volume(self, value):

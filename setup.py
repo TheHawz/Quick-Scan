@@ -36,8 +36,8 @@ if has_build_ui:
         """Build UI, resources and translations."""
 
         def run(self):
-            pass
-
+            build_ui.run(self)
+            
     cmdclass["build_res"] = build_res
 
 

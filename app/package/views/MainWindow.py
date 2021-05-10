@@ -23,7 +23,7 @@ class MainWindow(QMainWindow):
 
     def load_ui(self):
         loader = QUiLoader()
-        path = os.path.join('resources', 'ui', "form.ui")
+        path = os.path.join('resources', 'ui', "Form.ui")
         ui_file = QFile(path)
         ui_file.open(QFile.ReadOnly)
         self.window = loader.load(ui_file, self)

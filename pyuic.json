@@ -2,11 +2,11 @@
     "files": [
         [
             "resources/resources.qrc",
-            "app/ui"
+            "app/package/ui"
         ],
         [
             "resources/ui/*.ui",
-            "app/ui"
+            "app/package/ui"
         ]
     ],
     "hooks": [],
