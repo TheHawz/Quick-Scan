@@ -23,3 +23,4 @@ jobs:
       - name: build with pyinstaller
         run: |
           python setup.exe bdist_app
+          
