@@ -23,4 +23,4 @@ jobs:
         pip install -r requirements-dev.txt
     - name: build with pyinstaller
       run: |
-        python setup.exe bdist_app
+        python setup.py bdist_app
