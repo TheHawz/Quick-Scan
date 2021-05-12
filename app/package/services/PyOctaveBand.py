@@ -6,6 +6,8 @@ Octave-Band and Fractional Octave-Band filter.
 import numpy as np
 from scipy import signal
 import matplotlib.pyplot as plt
+import matplotlib
+matplotlib.use('tkagg')
 
 # Public methods
 __all__ = ['octavefilter', 'getansifrequencies', 'normalizedfreq', 'genfreqs']

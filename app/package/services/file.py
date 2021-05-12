@@ -36,3 +36,11 @@ def mkdir(path):
 
     if isfile:
         raise Exception('This path already exists. And its a file')
+
+def touch(path, override=False):
+    exists, isfile = check_for_existance(path)
+    
+    if exists and override: 
+        raise Exception
+        
+        

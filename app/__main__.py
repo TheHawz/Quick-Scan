@@ -1,5 +1,7 @@
 # This Python file uses the following encoding: utf-8
 import sys
+import matplotlib
+matplotlib.use('tkagg')
 
 from PySide2.QtWidgets import QApplication
 from PySide2 import QtCore
@@ -24,8 +26,8 @@ class App(QApplication):
     # Diccionario que mapea nombres con Vistas
     views = {}
 
-    def __init__(self):
-        super(App, self).__init__()
+    def __init__(self, args):
+        super(App, self).__init__(args)
 
         self.navigator = Navigator()
         self.navigator.navigator.connect(self.change_view)
@@ -83,7 +85,7 @@ sys.excepthook = exception_hook
 
 def main():
     QtCore.QCoreApplication.setAttribute(QtCore.Qt.AA_ShareOpenGLContexts)
-    app = App()
+    app = App([])
     sys.exit(app.exec_())
 
 
