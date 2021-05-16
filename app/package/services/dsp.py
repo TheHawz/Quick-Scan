@@ -9,7 +9,7 @@ def _getTime(B, e=0.1):
 
 
 def _getSmallestBandwidth(low_freq, frac=3, fs=48000):
-    freq, freq_d, freq_u = PyOctaveBand.genfreqs((low_freq, 10000), frac, fs)
+    freq, freq_d, freq_u = PyOctaveBand._genfreqs((low_freq, 10000), frac, fs)
     smallest_bandwidth = freq_u[0]-freq_d[0]
 
     return smallest_bandwidth

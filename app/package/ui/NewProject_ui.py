@@ -388,7 +388,6 @@ class Ui_MainWindow(object):
         self.low_freq_label.setObjectName(u"low_freq_label")
         font = QFont()
         font.setBold(False)
-        font.setWeight(50)
         self.low_freq_label.setFont(font)
         self.low_freq_label.setLayoutDirection(Qt.LeftToRight)
         self.low_freq_label.setAlignment(Qt.AlignCenter)
@@ -464,6 +463,11 @@ class Ui_MainWindow(object):
         self.horizontalLayout_15.setSpacing(0)
         self.horizontalLayout_15.setObjectName(u"horizontalLayout_15")
         self.horizontalLayout_15.setContentsMargins(0, 0, 0, 0)
+        self.open_project_button = QPushButton(self.frame_8)
+        self.open_project_button.setObjectName(u"open_project_button")
+
+        self.horizontalLayout_15.addWidget(self.open_project_button)
+
         self.horizontalSpacer_2 = QSpacerItem(430, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
         self.horizontalLayout_15.addItem(self.horizontalSpacer_2)
@@ -492,7 +496,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 542, 21))
+        self.menubar.setGeometry(QRect(0, 0, 542, 22))
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QStatusBar(MainWindow)
         self.statusbar.setObjectName(u"statusbar")
@@ -526,6 +530,7 @@ class Ui_MainWindow(object):
         self.low_freq_label.setText(QCoreApplication.translate("MainWindow", u"TextLabel", None))
         self.high_freq_label.setText(QCoreApplication.translate("MainWindow", u"TextLabel", None))
         self.minimum_time_label.setText(QCoreApplication.translate("MainWindow", u"TextLabel", None))
+        self.open_project_button.setText(QCoreApplication.translate("MainWindow", u"Open Project", None))
         self.but_create.setText(QCoreApplication.translate("MainWindow", u"Create", None))
     # retranslateUi
 

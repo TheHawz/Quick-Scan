@@ -44,7 +44,7 @@ def check_for_empty(path) -> tuple:
         else:
             return False, 'Dir is not empty.'
     else:
-        return False, 'Not a dir!'
+        return False, 'Dir does not exist!'
 
 
 def mkdir(path):
@@ -52,7 +52,9 @@ def mkdir(path):
 
     try:
         if not exists:
-            os.mkdir(path)
+            os.makedirs(path)
+            return True, ''
+        else:
             return True, ''
     except Exception as e:
         return False, str(e)

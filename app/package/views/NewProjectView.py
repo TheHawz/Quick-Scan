@@ -52,6 +52,7 @@ class NewProjectView(QMainWindow, NewProject_ui):
             self._controller.change_low_freq)
         self.high_freq_dial.valueChanged.connect(
             self._controller.change_high_freq)
+        self.open_project_button.clicked.connect(self.open_project)
 
     def connect_to_model(self):
         self._model.project_name_changed.connect(self.on_project_name_changed)
@@ -84,7 +85,16 @@ class NewProjectView(QMainWindow, NewProject_ui):
     def open_location_dialog(self):
         _dir = str(QFileDialog.getExistingDirectory(
             self, "Choose a location.", str(self._model.project_location)))
-        self._controller.change_project_location(_dir)
+        if _dir != '':
+            self._controller.change_project_location(_dir)
+
+    @Slot()
+    def open_project(self):
+        _file = QFileDialog.getOpenFileName(self, "Open a project.", str(
+            self._model.project_location), "Project files (*.pro)")
+        # if _file != '':
+        #     self._controller.change_project_location(_file)
+        print(_file)
 
     @Slot(str)
     def on_project_name_changed(self, value):

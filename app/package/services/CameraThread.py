@@ -63,7 +63,7 @@ class CameraThread(QThread):
             processed_frame = None
 
             if not self._rec:
-                self._grid.config(NUMBER_OF_ROWS, NUMBER_OF_COLS, padding=20)
+                self._grid.config(NUMBER_OF_ROWS, NUMBER_OF_COLS, pad=20)
                 processed_frame = self.bypass(frame)
             else:
                 processed_frame = self.process_frame(frame)
