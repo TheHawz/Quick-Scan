@@ -5,9 +5,8 @@ import os
 import queue
 
 from PySide2.QtWidgets import QMainWindow
-from PySide2.QtUiTools import QUiLoader
 from PySide2.QtGui import QImage, QPixmap
-from PySide2.QtCore import QEvent, QFile, QThread,  Signal, Slot
+from PySide2.QtCore import QEvent, Slot
 
 from ..services.CameraThread import CameraThread
 from ..services.MicThread import MicThread

@@ -1,5 +1,3 @@
-import sounddevice as sd
-
 from PySide2.QtCore import QObject, Signal
 from ..services.dsp import getTimeOfRecording
 

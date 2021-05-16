@@ -1,8 +1,5 @@
 import numpy as np
 
-from PySide2.QtCore import QObject, Signal
-
-
 class ActualProjectModel(object):
     """
         This class servers a Global Model.

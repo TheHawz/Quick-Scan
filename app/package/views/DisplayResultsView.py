@@ -2,9 +2,7 @@
 import os
 from ..models.ActualProjectModel import ActualProjectModel
 
-from PySide2.QtWidgets import QMainWindow, QFileDialog
-from PySide2.QtCore import QFile, Slot
-from PySide2.QtUiTools import QUiLoader
+from PySide2.QtWidgets import QMainWindow
 
 from ..models.ActualProjectModel import ActualProjectModel
 from ..ui.DisplayResults_ui import Ui_MainWindow as DisplayResults_ui

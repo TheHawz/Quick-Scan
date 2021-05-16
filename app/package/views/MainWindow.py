@@ -2,8 +2,6 @@
 import os
 
 from PySide2.QtWidgets import QMainWindow
-from PySide2.QtCore import QFile
-from PySide2.QtUiTools import QUiLoader
 
 from ..ui.Form_ui import Ui_MainWindow as Form_ui
 
