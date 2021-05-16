@@ -69,9 +69,7 @@ class NewProjectController(QObject):
         succeed, error_msg = fileutils.mkdir(self._model.project_location)
 
         if not succeed:
-            print('pre')
             self.error_msg(error_msg)
-            print('post')
             return
 
         print('Created!')
