@@ -3,7 +3,11 @@ Ficheros temporales, ficheros del proyecto, crear y borrar carpetas
 
 """
 import os
+import numpy as np
 
+def save_np_to_txt(data, path, file_name="data.txt"):
+    file_path = os.path.join(path, file_name)
+    np.savetxt(file_path, data)
 
 def check_for_existance(path) -> tuple:
     """Checks for existance of a file or a dir

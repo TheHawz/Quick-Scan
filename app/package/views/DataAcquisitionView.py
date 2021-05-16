@@ -95,18 +95,13 @@ class DataAcquisitionView(QMainWindow, DataAcquisition_ui):
         ActualProjectModel.data_y = value["y_data"]
 
         # Write data to disk
-        self.save_np_to_txt(value["x_data"], file_name="x_data.txt")
-        self.save_np_to_txt(value["y_data"], file_name="y_data.txt")
-        self._controller.navigate('display_results')
-
-    # TODO: move to own file
-    @staticmethod
-    def save_np_to_txt(data, file_name="data.txt"):
-        path = os.path.join(ActualProjectModel.project_location, 'Position Data')
+        path = os.path.join(
+            ActualProjectModel.project_location, 'Position Data')
         fileutils.mkdir(path)
-        
-        file_path = os.path.join(path, file_name)
-        np.savetxt(file_path, data)
+
+        fileutils.save_np_to_txt(value["x_data"], path, file_name="x_data.txt")
+        fileutils.save_np_to_txt(value["y_data"], path, file_name="y_data.txt")
+        self._controller.navigate('display_results')
 
     def start_stop(self):
         self.cameraThread.toogleRec()
