@@ -7,6 +7,7 @@ import datetime
 
 from PySide2.QtCore import QObject, Slot
 from PySide2 import QtMultimedia
+from PySide2.QtWidgets import QMessageBox
 
 from ..models.ActualProjectModel import ActualProjectModel
 from ..services import file as fileutils
@@ -43,6 +44,13 @@ class NewProjectController(QObject):
         self._model = model
         self._navigator = navigator
 
+    def error_msg(self, msg):
+        error_dialog = QMessageBox()
+        error_dialog.setText(msg)
+        error_dialog.setIcon(QMessageBox.Critical)
+        error_dialog.setWindowTitle("Error")
+        error_dialog.exec_()
+
     def create_new_project(self):
         # Checking if the Project Location is available
         print(f'Checking if {self._model.project_location} is available')
@@ -50,14 +58,20 @@ class NewProjectController(QObject):
         print(f'Avaiable: {not exist}')
 
         if exist:
-            # todo: show error msg
-            return
+            is_empty, error_msg = fileutils.check_for_empty(
+                self._model.project_location)
+            if not is_empty:
+                # todo: show error msg
+                self.error_msg(error_msg)
+                return
 
         print('Creating project directory...')
-        succeed = fileutils.mkdir(self._model.project_location)
+        succeed, error_msg = fileutils.mkdir(self._model.project_location)
 
         if not succeed:
-            # todo: show error msg
+            print('pre')
+            self.error_msg(error_msg)
+            print('post')
             return
 
         print('Created!')
@@ -72,7 +86,7 @@ class NewProjectController(QObject):
         ActualProjectModel.low_freq = self._model.low_freq
         ActualProjectModel.high_freq = self._model.high_freq
         ActualProjectModel.path_to_save = pro_file
-        
+
         self._navigator.navigate('data_acquisition')
 
     # region Get Drivers

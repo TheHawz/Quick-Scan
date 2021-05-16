@@ -27,20 +27,32 @@ def check_for_existance(path) -> tuple:
 
     return False, None
 
+def check_for_empty(path) -> tuple:
+    '''
+    Check if a Directory is empty and also check exceptional situations.
+    '''    
+    if os.path.exists(path) and os.path.isdir(path):
+        if not os.listdir(path):
+            return True, ''
+        else:    
+            return False, 'Dir is not empty.'
+    else:
+        return False, 'Not a dir!'
 
-def mkdir(path) -> bool:
-    exists, isfile = check_for_existance(path)
 
-    if not exists:
-        os.mkdir(path)
-        return True
+def mkdir(path):
+    exists, _ = check_for_existance(path)
 
-    return False
+    try:
+        if not exists:
+            os.mkdir(path)
+            return True, ''
+    except Exception as e:
+        return False, str(e)
+
 
 def touch(path, override=False):
     exists, isfile = check_for_existance(path)
-    
-    if exists and override: 
+
+    if exists and override:
         raise Exception
-        
-        
