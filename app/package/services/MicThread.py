@@ -1,9 +1,13 @@
+import os
 import sys
 import sounddevice as sd
 import soundfile as sf
 import queue
 
 from PySide2.QtCore import QThread, Signal
+
+from . import file as fileutils
+from ..models.ActualProjectModel import ActualProjectModel as actual_project
 
 
 class MicThread(QThread):
@@ -30,12 +34,10 @@ class MicThread(QThread):
     def run(self):
         self._running = True
 
-        from datetime import datetime
-        now = datetime.now()
-        date = now.strftime("[%Y%m%d_%H%M%S] ")
-
         self.stream = sd.Stream(channels=2, callback=self.callback)
-        self.file_stream = sf.SoundFile(f"data/{date}audio.wav",
+        path = os.path.join(actual_project.project_location, 'Audio Files')
+        fileutils.mkdir(path)
+        self.file_stream = sf.SoundFile(os.path.join(path, 'audio.wav'),
                                         mode='w',
                                         samplerate=44100,
                                         channels=2)

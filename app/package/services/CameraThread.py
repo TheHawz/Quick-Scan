@@ -10,9 +10,8 @@ from ..models.ActualProjectModel import ActualProjectModel
 # from ..services import colorSegmentation as cs  # Credits to Lara!
 from .grid import Grid
 from . import imbasic as imb
-from . import colorSegmentation as cs
-from .path import interpolate_nan
 from .mask import get_mask, get_circles
+from . import file as fileutils
 
 # TODO: move to own file
 # GRID DEFINITION
@@ -41,6 +40,11 @@ class CameraThread(QThread):
         self._rec = False
 
         cap = cv2.VideoCapture(ActualProjectModel.video_device + cv2.CAP_DSHOW)
+        
+        # Trying DSHOW driver
+        frame, ret = cap.read()
+        if not ret:
+            cap = cv2.VideoCapture(ActualProjectModel.video_device)
 
         self.frame_size = np.array([int(cap.get(3)), int(cap.get(4))])
         self._grid = Grid(self.frame_size, NUMBER_OF_ROWS,
