@@ -12,6 +12,7 @@ from PySide2.QtCore import QEvent, QFile, QThread,  Signal, Slot
 from ..services.CameraThread import CameraThread
 from ..services.MicThread import MicThread
 from ..models.ActualProjectModel import ActualProjectModel
+from ..services import file as fileutils
 
 from ..ui.DataAcquisition_ui import Ui_MainWindow as DataAcquisition_ui
 
@@ -47,14 +48,6 @@ class DataAcquisitionView(QMainWindow, DataAcquisition_ui):
             return True
         else:
             return super(DataAcquisitionView, self).eventFilter(obj, event)
-
-    # def load_ui(self):
-    #     loader = QUiLoader()
-    #     path = os.path.join('resources', 'ui', "DataAcquisition.ui")
-    #     ui_file = QFile(path)
-    #     ui_file.open(QFile.ReadOnly)
-    #     self = loader.load(ui_file)
-    #     ui_file.close()
 
     def connect_to_controller(self):
         self.start_stop_button.clicked.connect(self.start_stop)
@@ -97,25 +90,21 @@ class DataAcquisitionView(QMainWindow, DataAcquisition_ui):
 
     @Slot(object)
     def stop_recording_handler(self, value):
-        self.stop_thread()  # change
+        self.stop_thread()
         ActualProjectModel.data_x = value["x_data"]
         ActualProjectModel.data_y = value["y_data"]
 
-        # Write data to disk!
+        # Write data to disk
         self.save_np_to_txt(value["x_data"], file_name="x_data.txt")
         self.save_np_to_txt(value["y_data"], file_name="y_data.txt")
         self._controller.navigate('display_results')
 
     # TODO: move to own file
     @staticmethod
-    def save_np_to_txt(data, file_name="data.txt", path=os.path.join("data"), add_date_prefix=True):
-        if add_date_prefix:
-            from datetime import datetime
-
-            now = datetime.now()
-            date = now.strftime("[%Y-%m-%d_%H%M%S] ")
-            file_name = date + file_name
-
+    def save_np_to_txt(data, file_name="data.txt"):
+        path = os.path.join(ActualProjectModel.project_location, 'Position Data')
+        fileutils.mkdir(path)
+        
         file_path = os.path.join(path, file_name)
         np.savetxt(file_path, data)
 
