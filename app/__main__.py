@@ -1,7 +1,6 @@
 # This Python file uses the following encoding: utf-8
 import sys
 import matplotlib
-matplotlib.use('tkagg')
 
 from PySide2.QtWidgets import QApplication
 from PySide2 import QtCore
@@ -12,8 +11,10 @@ from .package.models.DisplayResultsModel import DisplayResultsModel
 
 from .package.controllers.Navigator import Navigator
 from .package.controllers.NewProjectController import NewProjectController
-from .package.controllers.DataAcquisitionController import DataAcquisitionController
-from .package.controllers.DisplayResultsController import DisplayResultsController
+from .package.controllers.DataAcquisitionController import (
+    DataAcquisitionController)
+from .package.controllers.DisplayResultsController import (
+    DisplayResultsController)
 
 from .package.views.MainWindow import MainWindow
 from .package.views.NewProjectView import NewProjectView
@@ -88,6 +89,8 @@ def main():
     app = App([])
     sys.exit(app.exec_())
 
+
+matplotlib.use('tkagg')
 
 if __name__ == "__main__":
     main()

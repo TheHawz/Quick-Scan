@@ -1,11 +1,10 @@
 # This Python file uses the following encoding: utf-8
-import os
-from ..models.ActualProjectModel import ActualProjectModel
 
 from PySide2.QtWidgets import QMainWindow
 
 from ..models.ActualProjectModel import ActualProjectModel
 from ..ui.DisplayResults_ui import Ui_MainWindow as DisplayResults_ui
+
 
 class DisplayResultsView(QMainWindow, DisplayResults_ui):
     def __init__(self, model, controller):
@@ -26,7 +25,7 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
         self.hide()
 
     # region HELPER FUNCTIONS AND CALLBACKS
-    
+
     def connect_to_controller(self):
         pass
 

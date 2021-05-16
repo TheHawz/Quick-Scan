@@ -1,4 +1,4 @@
-from PySide2.QtCore import QObject, Signal, Slot
+from PySide2.QtCore import QObject, Signal
 
 
 class Navigator(QObject):
@@ -9,5 +9,5 @@ class Navigator(QObject):
         super().__init__()
 
     # @Slot(str)
-    def navigate(self, value): 
+    def navigate(self, value):
         self.navigator.emit(value)

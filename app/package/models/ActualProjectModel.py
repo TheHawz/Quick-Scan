@@ -1,11 +1,12 @@
 import numpy as np
 
+
 class ActualProjectModel(object):
     """
         This class servers a Global Model.
         Others views should use their own Models to keep track of the data
-        but when the user wants to actualy commit the changes, that Model should
-        push its information here!
+        but when the user wants to actualy commit the changes, that Model
+        should push its information here!
     """
 
     project_name = ''

@@ -1,4 +1,4 @@
-from PySide2.QtCore import QObject, Signal
+from PySide2.QtCore import QObject
 
 
 class DataAcquisitionModel(QObject):

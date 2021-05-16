@@ -11,7 +11,6 @@ from ..models.ActualProjectModel import ActualProjectModel
 from .grid import Grid
 from . import imbasic as imb
 from .mask import get_mask, get_circles
-from . import file as fileutils
 
 # TODO: move to own file
 # GRID DEFINITION
@@ -32,15 +31,15 @@ class CameraThread(QThread):
         self.y = -1
 
     def run(self):
-        """ 
-            Callback function executed whenever someone starts the QThreat 
+        """
+            Callback function executed whenever someone starts the QThreat
             (thread.start())
         """
         self._running = True
         self._rec = False
 
         cap = cv2.VideoCapture(ActualProjectModel.video_device + cv2.CAP_DSHOW)
-        
+
         # Trying DSHOW driver
         frame, ret = cap.read()
         if not ret:
@@ -83,8 +82,9 @@ class CameraThread(QThread):
     def process_circles(self, frame, circles):
         """Appends data to the arrays and draws circles in the frame
 
-           DOC: habrá un subarray de 'np.nan' al principio de cada x_data y y_data
-           De esta forma se tendrá sincronizado el momento en el que el micro se coloca en posición
+           DOC: habrá un subarray de 'np.nan' al principio de cada x_data y
+           y_data. De esta forma se tendrá sincronizado el momento en el
+           que el micro se coloca en posición
         Args:
             frame ([type]): [description]
             circles ([type]): [description]
@@ -126,7 +126,8 @@ class CameraThread(QThread):
         # rgb_times = (self.times*255)/3
         # rgb_times = np.clip(rgb_times, 0, 255).astype(np.uint8)
         # frame = cv2.resize(
-        #     rgb_times, (self._grid.size_of_frame[0], self._grid.size_of_frame[1]))
+        #     rgb_times, (self._grid.size_of_frame[0],
+        #                 self._grid.size_of_frame[1]))
 
         delta = time.time() - self.time
         self.time = time.time()

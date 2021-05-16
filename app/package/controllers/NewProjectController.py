@@ -91,14 +91,14 @@ class NewProjectController(QObject):
 
     def get_audio_drivers(self):
         """Initial setup => get all available audio drivers
-        Select audio driver that have at least 1 device 
+        Select audio driver that have at least 1 device
         with max_input_channels > 0
 
          * Types *
 
-        hostapi: {
-            name:string, 
-            devices: int[], 
+        hostapi:
+            name:string,
+            devices: int[],
             defualt_input_device: int
             defualt_output_device: int
         }

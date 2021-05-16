@@ -115,7 +115,8 @@ class DataAcquisitionView(QMainWindow, DataAcquisition_ui):
         bytes_per_line = ch * w
         qt_format = QImage(
             rgb_image.data, w, h, bytes_per_line, QImage.Format_RGB888)
-        # p = qt_format.scaled(self.disply_width, self.display_height, Qt.KeepAspectRatio)
+        # p = qt_format.scaled(self.disply_width,
+        # self.display_height, Qt.KeepAspectRatio)
         return QPixmap.fromImage(qt_format)
 
     @Slot(np.ndarray)

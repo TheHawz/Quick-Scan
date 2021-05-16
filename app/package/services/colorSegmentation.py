@@ -3,10 +3,6 @@
 import cv2
 import colorsys
 
-import numpy as np
-# import matplotlib.pyplot as plt
-# from matplotlib import colors
-
 
 def getColorMask(img, bottom_thres, top_thres):
     """

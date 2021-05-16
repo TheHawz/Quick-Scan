@@ -3,7 +3,7 @@ import math
 import os
 
 from PySide2.QtWidgets import QMainWindow, QFileDialog
-from PySide2.QtCore import  Slot
+from PySide2.QtCore import Slot
 
 from ..ui.NewProject_ui import Ui_MainWindow as NewProject_ui
 
@@ -72,7 +72,7 @@ class NewProjectView(QMainWindow, NewProject_ui):
     def set_default_values(self):
         self._controller.change_project_location(os.path.expanduser("~"))
         self._controller.change_project_name('New Project')
-        
+
         self._controller.get_audio_drivers()
         self._controller.set_video_devices()
         self.high_freq_dial.setValue(1000)

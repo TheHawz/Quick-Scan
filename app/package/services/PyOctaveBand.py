@@ -10,7 +10,7 @@ import matplotlib
 matplotlib.use('tkagg')
 
 # Public methods
-__all__ = ['octavefilter', 'getansifrequencies', 'normalizedfreq', 'genfreqs']
+__all__ = ['octavefilter', 'getansifrequencies', 'normalizedfreq', '_genfreqs']
 
 
 def octavefilter(x, fs, fraction=1, order=6, limits=None, show=0):
@@ -113,7 +113,7 @@ def _showfilter(sos, freq, freq_u, freq_d, fs, factor):
     plt.show()
 
 
-def genfreqs(limits, fraction, fs):
+def _genfreqs(limits, fraction, fs):
     # Generate frequencies
     freq, freq_d, freq_u = getansifrequencies(fraction, limits)
 
