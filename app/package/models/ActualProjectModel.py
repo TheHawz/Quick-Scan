@@ -15,6 +15,10 @@ class ActualProjectModel(object):
     project_location = ''
     audio_device_index = -1
     video_device = -1
+    low_freq = -1
+    high_freq = -1
+
+    path_to_save = ''
 
     data_x = np.array([])
     data_y = np.array([])

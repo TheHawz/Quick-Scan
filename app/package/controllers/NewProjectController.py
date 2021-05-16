@@ -1,13 +1,42 @@
+import os
+import json
 import math
 import sounddevice as sd
+import datetime
+
 
 from PySide2.QtCore import QObject, Slot
 from PySide2 import QtMultimedia
 
 from ..models.ActualProjectModel import ActualProjectModel
+from ..services import file as fileutils
 
 
 class NewProjectController(QObject):
+
+    def createProjectJson(cls, model):
+        data = {}
+        metadata = {}
+        project_config = {}
+        data['metadata'] = metadata
+        data['project_config'] = project_config
+
+        metadata['name'] = model.project_name
+        metadata['created_at'] = datetime.datetime.now().isoformat()
+
+        project_config['freq_range'] = {
+            'low': model.low_freq, 'high': model.high_freq}
+
+        path = os.path.join(model.project_location,
+                            model.project_name + '.pro')
+
+        try:
+            with open(path, 'w') as outfile:
+                json.dump(data, outfile)
+        except Exception as e:
+            print(f'Error: {e}')
+        finally:
+            return path
 
     def __init__(self, model, navigator):
         super().__init__()
@@ -15,23 +44,46 @@ class NewProjectController(QObject):
         self._navigator = navigator
 
     def create_new_project(self):
+        # Checking if the Project Location is available
+        print(f'Checking if {self._model.project_location} is available')
+        exist, _ = fileutils.check_for_existance(self._model.project_location)
+        print(f'Avaiable: {not exist}')
+
+        if exist:
+            # todo: show error msg
+            return
+
+        print('Creating project directory...')
+        succeed = fileutils.mkdir(self._model.project_location)
+
+        if not succeed:
+            # todo: show error msg
+            return
+
+        print('Created!')
+        print('Pushing values to .pro')
+        pro_file = self.createProjectJson(self._model)
+
         # Pushing info to ActualProject Global Model
         ActualProjectModel.project_name = self._model.project_name
         ActualProjectModel.project_location = self._model.project_location
         ActualProjectModel.audio_device_index = self._model.audio_device
         ActualProjectModel.video_device = self._model.video_device
-
-        self._navigator.navigate('data_acquisition')
+        ActualProjectModel.low_freq = self._model.low_freq
+        ActualProjectModel.high_freq = self._model.high_freq
+        ActualProjectModel.path_to_save = pro_file
         
-    #region Get Drivers
+        self._navigator.navigate('data_acquisition')
+
+    # region Get Drivers
 
     def get_audio_drivers(self):
         """Initial setup => get all available audio drivers
         Select audio driver that have at least 1 device 
         with max_input_channels > 0
-        
+
          * Types *
-        
+
         hostapi: {
             name:string, 
             devices: int[], 
@@ -42,7 +94,7 @@ class NewProjectController(QObject):
         hostapis = sd.query_hostapis()
         all_devices = sd.query_devices()
         filtered_hostapis = []
-        
+
         for hostapi in hostapis:
             devices_index = hostapi['devices']
             for index in devices_index:
@@ -50,7 +102,7 @@ class NewProjectController(QObject):
                 if device['max_input_channels'] > 0:
                     filtered_hostapis.append(hostapi)
                     break
-                    
+
         self._model.audio_drivers = filtered_hostapis
         return hostapis
 
@@ -85,9 +137,9 @@ class NewProjectController(QObject):
         input_device, _ = sd.default.device
         devices = sd.query_devices()
         return [devices[input_device]['hostapi'], input_device]
-        
-    #endregion
-    
+
+    # endregion
+
     @Slot(str)
     def change_project_name(self, value):
         self._model.project_name = value

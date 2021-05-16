@@ -28,14 +28,14 @@ def check_for_existance(path) -> tuple:
     return False, None
 
 
-def mkdir(path):
+def mkdir(path) -> bool:
     exists, isfile = check_for_existance(path)
 
     if not exists:
         os.mkdir(path)
+        return True
 
-    if isfile:
-        raise Exception('This path already exists. And its a file')
+    return False
 
 def touch(path, override=False):
     exists, isfile = check_for_existance(path)
