@@ -23,14 +23,14 @@ class MicThread(QThread):
         self._running = False
         self._rec = False
 
-    def toogleRec(self):
-        if not self._rec:
-            self._rec = True
-            print("[MicThread.py] Start recording!")
-        else:
-            self._rec = False
-            self._running = False
-            print("[MicThread.py] Stop recording!")
+    def rec(self):
+        print("[MicThread] Start recording!")
+        self._rec = True
+
+    def stop_rec(self):
+        print("[MicThread] Stopping rec...")
+        self._rec = False
+        self._running = False  # to raise the Exception
 
     def run(self):
         print('[MIC] Running!')
@@ -50,20 +50,20 @@ class MicThread(QThread):
                         if self._rec:
                             file.write(self.q.get())
                         if not self._running:
-                            raise KeyboardInterrupt("End of recording")
+                            raise KeyboardInterrupt("Recording stopped!")
 
         except KeyboardInterrupt as e:
-            print("[MicThread.py]", e)
+            print("[MicThread]", e)
         except Exception as e:
-            print("[MicThread.py] Exception:", e)
+            print("[MicThread] Exception:", e)
 
-        self.on_stop_recording.emit()
+        self.on_stop_recording.emit(None)
 
     def stop(self):
         if not self._running:
             return
 
-        print("[MicThread.py] Stopping audio stream")
+        print("[MicThread] Stopping audio stream")
         self._rec = False
         self._running = False
 
@@ -75,5 +75,5 @@ class MicThread(QThread):
             print(status, file=sys.stderr)
         # print('.')
         outdata[:] = indata
-        self.update_volume.emit(indata.copy())
+        # self.update_volume.emit(indata.copy())
         self.q.put(indata.copy())

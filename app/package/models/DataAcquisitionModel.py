@@ -17,6 +17,8 @@ class DataAcquisitionModel(QObject):
         self._cam_thread_running = False
         self._mic_recording = False
         self._cam_recording = False
+        self.micThread = None
+        self.camThread = None
 
     # region Props & Setters
     @property

@@ -150,11 +150,12 @@ class CameraThread(QThread):
 
     def rec(self):
         self._rec = True
-        print("Start recording!")
+        print("[CamThread] Start recording!")
 
     def stop_rec(self):
         self._rec = False
-        print("Stop recording!")
+        self._running = False
+        print("[CamThread] Stop recording!")
 
     def stop(self):
         """Sets run flag to False and waits for thread to finish"""

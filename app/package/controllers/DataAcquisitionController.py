@@ -12,12 +12,6 @@ class DataAcquisitionController(QObject):
     def navigate(self, value):
         self._navigator.navigator.emit(value)
 
-    def stop_mic_thread(self):
-        self._model.mic_thread_running = False
-
-    def stop_cam_thread(self):
-        self._model.cam_thread_running = False
-
     def start_mic_thread(self):
         self._model.micThread.start()
         self._model.mic_thread_running = True
@@ -26,6 +20,25 @@ class DataAcquisitionController(QObject):
         self._model.camThread.start()
         self._model.cam_thread_running = True
 
+    def stop_mic_thread(self):
+        if self._model.micThread:
+            self._model.micThread.stop()
+        self._model.mic_thread_running = False
+
+    def stop_cam_thread(self):
+        if self._model.camThread:
+            self._model.camThread.stop()
+        self._model.cam_thread_running = False
+
     def toogle_recording(self):
-        self._model.mic_recording = not self._model.mic_recording
-        self._model.cam_recording = not self._model.cam_recording
+        rec = self._model.cam_recording
+
+        if rec:
+            self._model.micThread.stop_rec()
+            self._model.camThread.stop_rec()
+        else:
+            self._model.micThread.rec()
+            self._model.camThread.rec()
+
+        self._model.mic_recording = not rec
+        self._model.cam_recording = not rec
