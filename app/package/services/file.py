@@ -34,17 +34,14 @@ def check_for_existance(path) -> tuple:
     return False, None
 
 
-def check_for_empty(path) -> tuple:
+def check_for_empty(path: str) -> bool:
     '''
     Check if a Directory is empty and also check exceptional situations.
     '''
     if os.path.exists(path) and os.path.isdir(path):
-        if not os.listdir(path):
-            return True, ''
-        else:
-            return False, 'Dir is not empty.'
-    else:
-        return False, 'Dir does not exist!'
+        if os.listdir(path):
+            return False
+    return True
 
 
 def mkdir(path):

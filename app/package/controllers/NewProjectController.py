@@ -59,11 +59,12 @@ class NewProjectController(QObject):
         print(f'Avaiable: {not exist}')
 
         if exist:
-            is_empty, error_msg = fileutils.check_for_empty(
+            is_empty = fileutils.check_for_empty(
                 self._model.project_location)
             if not is_empty:
                 # todo: show error msg
-                self.error_msg(error_msg)
+                self.error_msg(
+                    'Directory is not empty. Could not create a project here.')
                 return
 
         print('Creating project directory...')
@@ -110,12 +111,12 @@ class NewProjectController(QObject):
 
         # Check if the project has writen data and/or audio files
         # TODO: make dir names constants
-        audio_empty, _ = fileutils.check_for_empty(
+        audio_empty = fileutils.check_for_empty(
             os.path.join(project_location, 'Audio Files'))
-        pos_empty, _ = fileutils.check_for_empty(
+        pos_empty = fileutils.check_for_empty(
             os.path.join(project_location, 'Position Data'))
 
-        if not audio_empty or not pos_empty:
+        if audio_empty or pos_empty:
             self.error_msg('Files empty! Project has no data in it.')
             return
 
