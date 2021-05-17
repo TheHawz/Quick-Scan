@@ -74,8 +74,7 @@ class DataAcquisitionView(QMainWindow, DataAcquisition_ui):
         # 1. Start camera Thread
         self._model.camThread = CameraThread(self)
         self._model.camThread.update_frame.connect(self.handle_new_image)
-        self._model.camThread.on_stop_recording.connect(
-            lambda: print(' ** Cam thread: Stop rec CALLBACK'))
+        self._model.camThread.on_stop_recording.connect(self.save_positon_data)
 
         # 2. Start Mic Thread
         self._model.micThread = MicThread(self)
@@ -95,12 +94,14 @@ class DataAcquisitionView(QMainWindow, DataAcquisition_ui):
 
     @Slot(bool)
     def handle_mic_thread_runnnig_changed(self, value):
-        # print(f'View: cam thread running = {value}')
-        self._
         pass
 
     @Slot(bool)
     def handle_cam_thread_runnnig_changed(self, value):
+        pass
+
+    @Slot(object)
+    def save_positon_data(self, value):
         ActualProjectModel.data_x = value["x_data"]
         ActualProjectModel.data_y = value["y_data"]
 

@@ -1,4 +1,5 @@
 # This Python file uses the following encoding: utf-8
+import os
 import numpy as np
 
 from PySide2.QtWidgets import QMainWindow
@@ -45,8 +46,11 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
         self._controller.set_data_x(ActualProjectModel.data_x)
         self._controller.set_data_y(ActualProjectModel.data_y)
         try:
-            self._controller.load_audio_file(
-                ActualProjectModel.project_location)
+            self._controller.load_audio_file(os.path.join(
+                ActualProjectModel.project_location,
+                'Audio Files',
+                'audio.wav'))
+
         except Exception as e:
             print(f'[ERROR] Error while loading audio file: {e}')
 
