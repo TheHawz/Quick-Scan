@@ -1,6 +1,7 @@
 # This Python file uses the following encoding: utf-8
+import numpy as np
 
-from PySide2.QtWidgets import QMainWindow
+from PySide2.QtWidgets import QMainWindow, Slot
 
 from ..models.ActualProjectModel import ActualProjectModel
 from ..ui.DisplayResults_ui import Ui_MainWindow as DisplayResults_ui
@@ -19,7 +20,7 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
 
     def open(self):
         self.show()
-        self.onOpen()
+        self.on_open()
 
     def close(self):
         self.hide()
@@ -39,7 +40,7 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
     def set_default_values(self):
         pass
 
-    def onOpen(self):
+    def on_open(self):
         self._controller.set_data_x(ActualProjectModel.data_x)
         self._controller.set_data_y(ActualProjectModel.data_y)
         try:
@@ -48,14 +49,16 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
         except Exception as e:
             print(f'[ERROR] Error while loading audio file: {e}')
 
+    @Slot(np.ndarray)
     def on_data_x_changed(self, value):
-        pass
+        print(f'Data: X -> length={value.lenght}')
 
+    @Slot(np.ndarray)
     def on_data_y_changed(self, value):
-        pass
+        print(f'Data: Y -> length={value.lenght}')
 
     def on_audio_data_changed(self, value):
-        pass
+        print(f'Audio: data -> length={value.lenght}')
 
     def on_audio_fs_changed(self, value):
-        pass
+        print(f'Audio: fs -> {value}')
