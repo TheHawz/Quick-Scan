@@ -32,6 +32,8 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
     def connect_to_model(self):
         self._model.data_x_changed.connect(self.on_data_x_changed)
         self._model.data_y_changed.connect(self.on_data_y_changed)
+        self._model.audio_data_changed.connect(self.on_audio_data_changed)
+        self._model.audio_fs_changed.connect(self.on_audio_fs_changed)
         pass
 
     def set_default_values(self):
@@ -46,15 +48,14 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
         except Exception as e:
             print(f'[ERROR] Error while loading audio file: {e}')
 
-        # ActualProjectModel.project_location
-        # ActualProjectModel.audio_device_index
-        # ActualProjectModel.video_device
-        # ActualProjectModel.low_freq
-        # ActualProjectModel.high_freq
-        # ActualProjectModel.path_to_save
-
-    def on_data_x_changed(self):
+    def on_data_x_changed(self, value):
         pass
 
-    def on_data_y_changed(self):
+    def on_data_y_changed(self, value):
+        pass
+
+    def on_audio_data_changed(self, value):
+        pass
+
+    def on_audio_fs_changed(self, value):
         pass

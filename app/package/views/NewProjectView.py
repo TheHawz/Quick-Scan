@@ -1,7 +1,6 @@
 # This Python file uses the following encoding: utf-8
 import math
 import os
-import json
 
 from PySide2.QtWidgets import QMainWindow, QFileDialog
 from PySide2.QtCore import Slot
