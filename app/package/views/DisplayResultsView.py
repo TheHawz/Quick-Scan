@@ -40,6 +40,18 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
     def onOpen(self):
         self._controller.set_data_x(ActualProjectModel.data_x)
         self._controller.set_data_y(ActualProjectModel.data_y)
+        try:
+            self._controller.load_audio_file(
+                ActualProjectModel.project_location)
+        except Exception as e:
+            print(f'[ERROR] Error while loading audio file: {e}')
+
+        # ActualProjectModel.project_location
+        # ActualProjectModel.audio_device_index
+        # ActualProjectModel.video_device
+        # ActualProjectModel.low_freq
+        # ActualProjectModel.high_freq
+        # ActualProjectModel.path_to_save
 
     def on_data_x_changed(self):
         pass

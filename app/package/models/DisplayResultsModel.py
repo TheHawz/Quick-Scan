@@ -8,6 +8,8 @@ class DisplayResultsModel(QObject):
     # Signals: to announce changes to the View
     data_x_changed = Signal()
     data_y_changed = Signal()
+    audio_data_changed = Signal()
+    audio_fs_changed = Signal()
 
     def __init__(self):
         super().__init__()
@@ -37,3 +39,25 @@ class DisplayResultsModel(QObject):
     def data_y(self, value):
         self._data_y = value
         self.data_y_changed.emit()
+
+    # --- --- --- --- --- --- --- --- --- ---
+
+    @property
+    def audio_data(self):
+        return self._audio_data
+
+    @audio_data.setter
+    def audio_data(self, value):
+        self._audio_data = value
+        self.audio_data_changed.emit()
+
+    # --- --- --- --- --- --- --- --- --- ---
+
+    @property
+    def audio_fs(self):
+        return self._audio_fs
+
+    @audio_fs.setter
+    def audio_fs(self, value):
+        self._audio_fs = value
+        self.audio_fs_changed.emit()
