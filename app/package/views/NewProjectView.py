@@ -1,6 +1,7 @@
 # This Python file uses the following encoding: utf-8
 import math
 import os
+import json
 
 from PySide2.QtWidgets import QMainWindow, QFileDialog
 from PySide2.QtCore import Slot
@@ -8,7 +9,7 @@ from PySide2.QtCore import Slot
 from ..ui.NewProject_ui import Ui_MainWindow as NewProject_ui
 
 
-def freq_to_text(value):
+def freq_to_text(value: float) -> str:
     if value >= 1000:
         return f'{round(value/1000, 1)} kHz'
 
@@ -90,11 +91,12 @@ class NewProjectView(QMainWindow, NewProject_ui):
 
     @Slot()
     def open_project(self):
-        _file = QFileDialog.getOpenFileName(self, "Open a project.", str(
-            self._model.project_location), "Project files (*.pro)")
-        # if _file != '':
-        #     self._controller.change_project_location(_file)
-        print(_file)
+        fpath, _ = QFileDialog.getOpenFileName(self, "Open a project.", str(
+            self._model.project_location), filter="Project files (*.pro)")
+        if fpath != '':
+            self._controller.load_new_project(fpath)
+
+    # region SLOTS
 
     @Slot(str)
     def on_project_name_changed(self, value):
@@ -153,3 +155,4 @@ class NewProjectView(QMainWindow, NewProject_ui):
     def on_minimum_time_changed(self, value):
         self.minimum_time_label.setText(
             f'Minimum time of recording:\n {round(value, 2)}s')
+    # endregion

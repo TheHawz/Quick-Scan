@@ -1,4 +1,5 @@
 import os
+import sys
 import json
 import math
 import sounddevice as sd
@@ -86,6 +87,50 @@ class NewProjectController(QObject):
         ActualProjectModel.path_to_save = pro_file
 
         self._navigator.navigate('data_acquisition')
+
+    def load_new_project(self, fpath: str) -> None:
+        data = None
+        print(f'Loading Project from: {fpath}...')
+        try:
+            with open(fpath) as json_file:
+                data = json.load(json_file)
+        except IOError as e:
+            print("I/O error({0}): {1}".format(e.errno, e.strerror))
+        except Exception:
+            print("Unexpected error:", sys.exc_info()[0])
+            self.error_msg('Could not open project')
+
+        if not data:
+            return
+
+        print('Project loaded! With contents:')
+        print(json.dumps(data, indent=2, sort_keys=True))
+
+        project_location = fpath[:int(fpath.rindex('/'))]
+
+        # Check if the project has writen data and/or audio files
+        # TODO: make dir names constants
+        audio_empty, _ = fileutils.check_for_empty(
+            os.path.join(project_location, 'Audio Files'))
+        pos_empty, _ = fileutils.check_for_empty(
+            os.path.join(project_location, 'Position Data'))
+
+        if not audio_empty or not pos_empty:
+            self.error_msg('Files empty! Project has no data in it.')
+            return
+
+        metadata = data['metadata']
+        freq_range = data['project_config']['freq_range']
+
+        ActualProjectModel.project_name = metadata['name']
+        ActualProjectModel.project_location = project_location
+        ActualProjectModel.audio_device_index = self._model.audio_device
+        ActualProjectModel.video_device = self._model.video_device
+        ActualProjectModel.low_freq = freq_range['low']
+        ActualProjectModel.high_freq = freq_range['high']
+        ActualProjectModel.path_to_save = fpath
+
+        self._navigator.navigate('display_results')
 
     # region Get Drivers
 
