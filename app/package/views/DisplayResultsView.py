@@ -1,7 +1,8 @@
 # This Python file uses the following encoding: utf-8
 import numpy as np
 
-from PySide2.QtWidgets import QMainWindow, Slot
+from PySide2.QtWidgets import QMainWindow
+from PySide2.QtCore import Slot
 
 from ..models.ActualProjectModel import ActualProjectModel
 from ..ui.DisplayResults_ui import Ui_MainWindow as DisplayResults_ui
@@ -51,14 +52,14 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
 
     @Slot(np.ndarray)
     def on_data_x_changed(self, value):
-        print(f'Data: X -> length={value.lenght}')
+        print(f'Data: X -> length={len(value)}')
 
     @Slot(np.ndarray)
     def on_data_y_changed(self, value):
-        print(f'Data: Y -> length={value.lenght}')
+        print(f'Data: Y -> length={len(value)}')
 
     def on_audio_data_changed(self, value):
-        print(f'Audio: data -> length={value.lenght}')
+        print(f'Audio: data -> length={len(value)}')
 
     def on_audio_fs_changed(self, value):
         print(f'Audio: fs -> {value}')

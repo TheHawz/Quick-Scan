@@ -35,6 +35,7 @@ class CameraThread(QThread):
             Callback function executed whenever someone starts the QThreat
             (thread.start())
         """
+        print('[CAM] Running!')
         self._running = True
         self._rec = False
 
@@ -49,9 +50,7 @@ class CameraThread(QThread):
         self._grid = Grid(self.frame_size, NUMBER_OF_ROWS,
                           NUMBER_OF_COLS, padding=60)
 
-        # TODO: move this to "if not self._rec:"
         self.times = np.zeros((NUMBER_OF_ROWS, NUMBER_OF_COLS))
-
         self.time = time.time()
 
         while self._running:
@@ -71,8 +70,8 @@ class CameraThread(QThread):
             self.update_frame.emit(processed_frame)
 
         # print('Stopping Camera Thread!')
-        print('*' * 40)
-        print('Times: \n', self.times)
+        # print('*' * 40)
+        # print('Times: \n', self.times)
 
         emit_obj = {"x_data": self.x_data, "y_data": self.y_data}
         self.on_stop_recording.emit(emit_obj)
@@ -149,16 +148,16 @@ class CameraThread(QThread):
         self._grid.draw_grid(frame)
         return frame
 
-    def toogleRec(self):
-        if not self._rec:
-            self._rec = True
-            print("Start recording!")
-        else:
-            self._rec = False
-            self._running = False
-            print("Stop recording!")
+    def rec(self):
+        self._rec = True
+        print("Start recording!")
+
+    def stop_rec(self):
+        self._rec = False
+        print("Stop recording!")
 
     def stop(self):
         """Sets run flag to False and waits for thread to finish"""
+        self._rec = False
         self._running = False
         self.wait()

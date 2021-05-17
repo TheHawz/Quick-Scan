@@ -1,7 +1,7 @@
 # This Python file uses the following encoding: utf-8
 import numpy as np
 import cv2
-import os
+# import os
 import queue
 
 from PySide2.QtWidgets import QMainWindow
@@ -10,8 +10,8 @@ from PySide2.QtCore import QEvent, Slot
 
 from ..services.CameraThread import CameraThread
 from ..services.MicThread import MicThread
-from ..models.ActualProjectModel import ActualProjectModel
-from ..services import file as fileutils
+# from ..models.ActualProjectModel import ActualProjectModel
+# from ..services import file as fileutils
 
 from ..ui.DataAcquisition_ui import Ui_MainWindow as DataAcquisition_ui
 
@@ -34,25 +34,34 @@ class DataAcquisitionView(QMainWindow, DataAcquisition_ui):
     def open(self):
         self.show()
         self.create_threads()
-        self.start_thread()
+        self._controller.start_cam_thread()
+        self._controller.start_mic_thread()
 
     def close(self):
-        self.stop_thread()
+        self.stop_threads()
         self.hide()
 
     def eventFilter(self, obj, event):
         if obj is self and event.type() == QEvent.Close:
-            self.stop_thread()
+            self.stop_threads()
             event.accept()
             return True
         else:
             return super(DataAcquisitionView, self).eventFilter(obj, event)
 
     def connect_to_controller(self):
-        self.start_stop_button.clicked.connect(self.start_stop)
+        self.start_stop_button.clicked.connect(
+            self._controller.toogle_recording)
 
     def connect_to_model(self):
-        pass
+        self._model.on_mic_thread_runnnig_changed.connect(
+            self.handle_mic_thread_runnnig_changed)
+        self._model.on_cam_thread_runnnig_changed.connect(
+            self.handle_cam_thread_runnnig_changed)
+        self._model.on_mic_recording_changed.connect(
+            self.handle_mic_recording_changed)
+        self._model.on_cam_recording_changed.connect(
+            self.handle_cam_recording_changed)
 
     def set_default_values(self):
         self.q = queue.Queue()
@@ -63,49 +72,68 @@ class DataAcquisitionView(QMainWindow, DataAcquisition_ui):
 
     def create_threads(self):
         # 1. Start camera Thread
-        self.cameraThread = CameraThread(self)
-        self.cameraThread.update_frame.connect(self.set_image)
-        self.cameraThread.on_stop_recording.connect(
-            self.stop_recording_handler)
+        self._model.camThread = CameraThread(self)
+        self._model.camThread.update_frame.connect(self.handle_new_image)
+        self._model.camThread.on_stop_recording.connect(
+            lambda: print(' ** Cam thread: Stop rec CALLBACK'))
 
         # 2. Start Mic Thread
-        self.micThread = MicThread(self)
-        self.micThread.update_volume.connect(self.set_volume)
-        self.installEventFilter(self)
+        self._model.micThread = MicThread(self)
+        self._model.micThread.update_volume.connect(self.handle_new_audio)
+        self._model.micThread.on_stop_recording.connect(
+            lambda: print(' ** Mic thread: Stop rec CALLBACK'))
 
-    def start_thread(self):
-        self.cameraThread.start()
-        # self.micThread.start()
-
-    def stop_thread(self):
-        if hasattr(self, 'cameraThread'):
-            self.cameraThread.stop()
-        if hasattr(self, 'micThread'):
-            self.micThread.stop()
+    def stop_threads(self):
+        self._controller.stop_mic_thread()
+        self._controller.stop_cam_thread()
+        # print('[DataAcquisitionView] Stoping both threads!')
+        # if hasattr(self, 'cameraThread'):
+        #     self._model.camThread.stop()
+        # if hasattr(self, 'micThread'):
+        #     self._model.micThread.stop()
 
     # endregion
 
     # region ------------------------- Handlers --------------------------
 
-    @Slot(object)
-    def stop_recording_handler(self, value):
-        self.stop_thread()
-        ActualProjectModel.data_x = value["x_data"]
-        ActualProjectModel.data_y = value["y_data"]
+    @Slot(bool)
+    def handle_mic_thread_runnnig_changed(self, value):
+        print(f'View: cam thread running = {value}')
 
-        # Write data to disk
-        path = os.path.join(
-            ActualProjectModel.project_location, 'Position Data')
-        fileutils.mkdir(path)
+    @Slot(bool)
+    def handle_cam_thread_runnnig_changed(self, value):
+        print(f'View: mic thread running = {value}')
+        # self._controller.on_mic_stopped()
 
-        fileutils.save_np_to_txt(value["x_data"], path, file_name="x_data.txt")
-        fileutils.save_np_to_txt(value["y_data"], path, file_name="y_data.txt")
-        self._controller.navigate('display_results')
+    def handle_mic_recording_changed(self, rec):
+        if not rec:
+            print('View: stopped mic recording')
+            self.start_stop_button.setText('START!')
+        else:
+            print('View: started mic recording')
+            self.start_stop_button.setText('STOP!')
 
-    def start_stop(self):
-        self.cameraThread.toogleRec()
-        self.micThread.toogleRec()
-        self.micThread.start()
+    def handle_cam_recording_changed(self, rec):
+        if not rec:
+            print('View: stopped cam recording')
+            self.start_stop_button.setText('START!')
+        else:
+            print('View: started cam recording')
+            self.start_stop_button.setText('STOP!')
+
+        # self.stop_thread()
+        # ActualProjectModel.data_x = value["x_data"]
+        # ActualProjectModel.data_y = value["y_data"]
+
+        # # Write data to disk
+        # path = os.path.join(
+        #     ActualProjectModel.project_location, 'Position Data')
+        # fileutils.mkdir(path)
+
+        # fileutils.save_np_to_txt(value["x_data"], path, file_name="x_data.txt")
+        # fileutils.save_np_to_txt(value["y_data"], path, file_name="y_data.txt")
+
+        # self._controller.navigate('display_results')
 
     # TODO: move to utils
     def convert_cv_qt(self, cv_img):
@@ -115,18 +143,16 @@ class DataAcquisitionView(QMainWindow, DataAcquisition_ui):
         bytes_per_line = ch * w
         qt_format = QImage(
             rgb_image.data, w, h, bytes_per_line, QImage.Format_RGB888)
-        # p = qt_format.scaled(self.disply_width,
-        # self.display_height, Qt.KeepAspectRatio)
         return QPixmap.fromImage(qt_format)
 
     @Slot(np.ndarray)
-    def set_image(self, cv_img):
+    def handle_new_image(self, cv_img):
         """Updates the image_label with a new opencv image"""
         qt_img = self.convert_cv_qt(cv_img)
         self.cam_view.setPixmap(qt_img)
 
     @Slot(int)
-    def set_volume(self, value):
+    def handle_new_audio(self, value):
         self.q.put(value)
 
     # endregion

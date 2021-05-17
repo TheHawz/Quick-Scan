@@ -12,6 +12,7 @@ from ..models.ActualProjectModel import ActualProjectModel as actual_project
 
 class MicThread(QThread):
     update_volume = Signal(object)
+    on_stop_recording = Signal(object)
 
     def __init__(self, rate=44100, chunksize=1024, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -32,6 +33,7 @@ class MicThread(QThread):
             print("[MicThread.py] Stop recording!")
 
     def run(self):
+        print('[MIC] Running!')
         self._running = True
 
         self.stream = sd.Stream(channels=2, callback=self.callback)
@@ -55,6 +57,8 @@ class MicThread(QThread):
         except Exception as e:
             print("[MicThread.py] Exception:", e)
 
+        self.on_stop_recording.emit()
+
     def stop(self):
         if not self._running:
             return
@@ -62,6 +66,7 @@ class MicThread(QThread):
         print("[MicThread.py] Stopping audio stream")
         self._rec = False
         self._running = False
+
         self.wait()
 
     def callback(self, indata, outdata, frames, time, status):
