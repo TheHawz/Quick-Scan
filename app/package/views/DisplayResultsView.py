@@ -33,11 +33,10 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
         pass
 
     def connect_to_model(self):
-        self._model.data_x_changed.connect(self.on_data_x_changed)
-        self._model.data_y_changed.connect(self.on_data_y_changed)
-        self._model.audio_data_changed.connect(self.on_audio_data_changed)
-        self._model.audio_fs_changed.connect(self.on_audio_fs_changed)
-        pass
+        self._model.data_x_changed.connect(self.handle_data_x_changed)
+        self._model.data_y_changed.connect(self.handle_data_y_changed)
+        self._model.audio_data_changed.connect(self.handle_audio_data_changed)
+        self._model.audio_fs_changed.connect(self.handle_audio_fs_changed)
 
     def set_default_values(self):
         pass
@@ -55,15 +54,15 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
             print(f'[ERROR] Error while loading audio file: {e}')
 
     @Slot(np.ndarray)
-    def on_data_x_changed(self, value):
+    def handle_data_x_changed(self, value):
         print(f'Data: X -> length={len(value)}')
 
     @Slot(np.ndarray)
-    def on_data_y_changed(self, value):
+    def handle_data_y_changed(self, value):
         print(f'Data: Y -> length={len(value)}')
 
-    def on_audio_data_changed(self, value):
+    def handle_audio_data_changed(self, value):
         print(f'Audio: data -> length={len(value)}')
 
-    def on_audio_fs_changed(self, value):
+    def handle_audio_fs_changed(self, value):
         print(f'Audio: fs -> {value}')

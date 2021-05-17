@@ -55,20 +55,24 @@ class NewProjectView(QMainWindow, NewProject_ui):
         self.open_project_button.clicked.connect(self.open_project)
 
     def connect_to_model(self):
-        self._model.project_name_changed.connect(self.on_project_name_changed)
+        self._model.project_name_changed.connect(self.project_name_changed)
         self._model.project_location_changed.connect(
-            self.on_project_location_changed)
-        self._model.audio_drivers_set.connect(self.on_audio_drivers_set)
-        self._model.audio_driver_changed.connect(self.on_audio_driver_changed)
-        self._model.audio_devices_set.connect(self.on_audio_devices_set)
-        self._model.audio_device_changed.connect(self.on_audio_device_changed)
-        self._model.video_devices_set.connect(self.on_video_devices_set)
-        self._model.video_device_changed.connect(self.on_video_device_changed)
-        self._model.low_freq_changed.connect(self.on_low_freq_changed)
-        self._model.high_freq_changed.connect(self.on_high_freq_changed)
-        self._model.low_freq_forced.connect(self.on_low_freq_forced)
-        self._model.high_freq_forced.connect(self.on_high_freq_forced)
-        self._model.minimum_time_changed.connect(self.on_minimum_time_changed)
+            self.handle_project_location_changed)
+        self._model.audio_drivers_set.connect(self.handle_audio_drivers_set)
+        self._model.audio_driver_changed.connect(
+            self.handle_audio_driver_changed)
+        self._model.audio_devices_set.connect(self.handle_audio_devices_set)
+        self._model.audio_device_changed.connect(
+            self.handle_audio_device_changed)
+        self._model.video_devices_set.connect(self.handle_video_devices_set)
+        self._model.video_device_changed.connect(
+            self.handle_video_device_changed)
+        self._model.low_freq_changed.connect(self.handle_low_freq_changed)
+        self._model.high_freq_changed.connect(self.handle_high_freq_changed)
+        self._model.low_freq_forced.connect(self.handle_low_freq_forced)
+        self._model.high_freq_forced.connect(self.handle_high_freq_forced)
+        self._model.minimum_time_changed.connect(
+            self.handle_minimum_time_changed)
 
     def set_default_values(self):
         self._controller.change_project_location(os.path.expanduser("~"))
@@ -98,60 +102,60 @@ class NewProjectView(QMainWindow, NewProject_ui):
     # region SLOTS
 
     @Slot(str)
-    def on_project_name_changed(self, value):
+    def project_name_changed(self, value):
         self.line_project_name.setText(value)
 
     @Slot(str)
-    def on_project_location_changed(self, value):
+    def handle_project_location_changed(self, value):
         self.line_project_location.setText(value)
 
     @Slot(object)
-    def on_audio_drivers_set(self, value):
+    def handle_audio_drivers_set(self, value):
         # driver_names = [*value]  # Unpacking dict keys
         names = [v['name'] for v in value]
         self.cb_audio_driver.clear()
         self.cb_audio_driver.addItems(names)
 
     @Slot(int)
-    def on_audio_driver_changed(self, value):
+    def handle_audio_driver_changed(self, value):
         self._controller.set_audio_devices(value)
 
     @Slot(object)
-    def on_audio_devices_set(self, value):
+    def handle_audio_devices_set(self, value):
         self.cb_audio_device.clear()
         self.cb_audio_device.addItems(value)
 
     @Slot(int)
-    def on_audio_device_changed(self, value):
+    def handle_audio_device_changed(self, value):
         print(f'[VIEW]: Audio Device changed: {value}')
 
     @Slot(object)
-    def on_video_devices_set(self, value):
+    def handle_video_devices_set(self, value):
         self.cb_video_devices.clear()
         self.cb_video_devices.addItems(list(value.values()))
 
     @Slot(int)
-    def on_video_device_changed(self, value):
+    def handle_video_device_changed(self, value):
         print(f'[VIEW]: Video Device changed: {value}')
 
     @Slot(int)
-    def on_low_freq_changed(self, value):
+    def handle_low_freq_changed(self, value):
         self.low_freq_label.setText(freq_to_text(value))
 
     @Slot(int)
-    def on_high_freq_changed(self, value):
+    def handle_high_freq_changed(self, value):
         self.high_freq_label.setText(freq_to_text(value))
 
     @Slot(int)
-    def on_low_freq_forced(self, value):
+    def handle_low_freq_forced(self, value):
         self.low_freq_dial.setValue(math.floor(math.log(value))*10-1)
 
     @Slot(int)
-    def on_high_freq_forced(self, value):
+    def handle_high_freq_forced(self, value):
         self.high_freq_dial.setValue(math.ceil(math.log(value))*10+1)
 
     @Slot(float)
-    def on_minimum_time_changed(self, value):
+    def handle_minimum_time_changed(self, value):
         self.minimum_time_label.setText(
             f'Minimum time of recording:\n {round(value, 2)}s')
     # endregion
