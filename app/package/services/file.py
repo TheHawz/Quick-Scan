@@ -4,9 +4,11 @@ Ficheros temporales, ficheros del proyecto, crear y borrar carpetas
 """
 import os
 import numpy as np
+from . import file as fileutils
 
 
 def save_np_to_txt(data, path, file_name="data.txt"):
+    fileutils.mkdir(path)
     file_path = os.path.join(path, file_name)
     np.savetxt(file_path, data)
 

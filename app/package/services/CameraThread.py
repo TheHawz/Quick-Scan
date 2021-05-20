@@ -22,6 +22,7 @@ PADDING = 100
 class CameraThread(QThread):
     update_frame = Signal(np.ndarray)
     on_stop_recording = Signal(object)
+    on_frame_size_detected = Signal(tuple)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -42,7 +43,7 @@ class CameraThread(QThread):
         cap = cv2.VideoCapture(ActualProjectModel.video_device + cv2.CAP_DSHOW)
 
         # Trying DSHOW driver
-        frame, ret = cap.read()
+        ret, _ = cap.read()
         if not ret:
             cap = cv2.VideoCapture(ActualProjectModel.video_device)
 
@@ -52,6 +53,9 @@ class CameraThread(QThread):
 
         self.times = np.zeros((NUMBER_OF_ROWS, NUMBER_OF_COLS))
         self.time = time.time()
+
+        _, frame = cap.read()
+        self.on_frame_size_detected.emit(frame.shape[:2])
 
         while self._running:
             ret, frame = cap.read()

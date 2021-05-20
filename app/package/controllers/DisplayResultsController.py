@@ -42,15 +42,20 @@ class DisplayResultsController(QObject):
         print('[Display Results] Loading position from file...')
 
         data_dir = os.path.join(project_path, 'Position Data')
-        files_path = [os.path.join(data_dir, 'data_x.txt'),
-                      os.path.join(data_dir, 'data_y.txt')]
+        files_path = [os.path.join(data_dir, 'data.x'),
+                      os.path.join(data_dir, 'data.y')]
 
         try:
             _x = np.loadtxt(files_path[0])
             _y = np.loadtxt(files_path[1])
 
+            if len(_x) == 0 or len(_y) == 0:
+                raise FileNotFoundError('File is empty')
+
             self.set_data_x(_x)
             self.set_data_y(_y)
 
+        except FileNotFoundError:
+            raise Exception('File is empty')
         except Exception as e:
             raise Exception(f'Could not read position from files: {e}')

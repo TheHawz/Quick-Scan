@@ -75,6 +75,8 @@ class DataAcquisitionView(QMainWindow, DataAcquisition_ui):
         self._model.camThread = CameraThread(self)
         self._model.camThread.update_frame.connect(self.handle_new_image)
         self._model.camThread.on_stop_recording.connect(self.save_positon_data)
+        self._model.camThread.on_frame_size_detected.connect(
+            self.save_frame_size)
 
         # 2. Start Mic Thread
         self._model.micThread = MicThread(self)
@@ -110,8 +112,8 @@ class DataAcquisitionView(QMainWindow, DataAcquisition_ui):
                             'Position Data')
         fileutils.mkdir(path)
 
-        fileutils.save_np_to_txt(value["x_data"], path, file_name="x_data.txt")
-        fileutils.save_np_to_txt(value["y_data"], path, file_name="y_data.txt")
+        fileutils.save_np_to_txt(value["x_data"], path, file_name="data.x")
+        fileutils.save_np_to_txt(value["y_data"], path, file_name="data.y")
 
     def handle_mic_recording_changed(self, rec):
         if not rec:
@@ -148,5 +150,14 @@ class DataAcquisitionView(QMainWindow, DataAcquisition_ui):
     @Slot(int)
     def handle_new_audio(self, value):
         self.q.put(value)
+
+    @Slot(tuple)
+    def save_frame_size(self, value: tuple) -> None:
+        print('[Data Acquisition] Saving frame size to disk...')
+        print(f'Value: {value}')
+
+        path = os.path.join(ActualProjectModel.project_location,
+                            'Position Data')
+        fileutils.save_np_to_txt(value, path, file_name='frame.size')
 
     # endregion

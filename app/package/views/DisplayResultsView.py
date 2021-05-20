@@ -42,7 +42,7 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
         pass
 
     def on_open(self):
-        if ActualProjectModel.data_x is None:
+        if len(ActualProjectModel.data_x) == 0:
             self._controller.load_position_data(
                 ActualProjectModel.project_location)
         else:
