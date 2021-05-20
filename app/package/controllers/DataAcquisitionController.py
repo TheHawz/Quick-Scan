@@ -37,7 +37,6 @@ class DataAcquisitionController(QObject):
             self._model.micThread.stop_rec()
             self._model.camThread.stop_rec()
         else:
-            # self.start_mic_thread()
             self._model.micThread.rec()
             self._model.camThread.rec()
 
