@@ -1,11 +1,12 @@
 import os
+from typing import Tuple
 import numpy as np
 from scipy.io import wavfile
 
 from PySide2.QtCore import QObject, Slot
 from ..services import file as fileutils
 from ..services.grid import Grid
-
+from ..services.path import interpolate_coords
 
 # TODO: make configurable
 # GRID DEFINITION
@@ -95,10 +96,12 @@ class DisplayResultsController(QObject):
     # region DSP
 
     def dsp(self) -> None:
-        log()
+        log('### DSP ### ')
 
         trimmed_audio = self.trim_audio()
         log(f'Trimmed audio len: {len(trimmed_audio)}')
+
+        shift, trim = self.clean_data_position()
 
         spatial_segmentation = self.segment_video()
         log(spatial_segmentation)
@@ -110,44 +113,53 @@ class DisplayResultsController(QObject):
         video_len = len(self._model.data_x)
 
         fps = 30
-        max_audio_len = video_len * self._model.audio_fs / fps
+        max_audio_len = int(video_len * self._model.audio_fs / fps)
 
-        log(f'Trimming the last {abs(audio_len-max_audio_len)} from audio_data')
+        log(f'Trimming the last {abs(audio_len-max_audio_len)} from audio')
         return self._model.audio_data[:max_audio_len]
 
-    def segment_video(self) -> dict:
-        x_data = np.loadtxt(os.path.join('data', 'x_data.txt'))
-        y_data = np.loadtxt(os.path.join('data', 'y_data.txt'))
+    def clean_data_position(self) -> Tuple:
+        self._model.data_x, shift, trim = interpolate_coords(
+            self._model.data_x)
+        self._model.data_y, _, _ = interpolate_coords(self._model.data_y)
 
-        data = np.transpose(np.array([x_data, y_data]))
+        log(f'shift {shift}')
+        log(f'trim {trim}')
+
+        return shift, trim
+
+    def segment_video(self) -> dict:
+        data = np.transpose(np.array([self._model.data_x, self._model.data_y]))
+        print(data)
 
         grid = Grid(self._model.frame_size, NUMBER_OF_ROWS,
                     NUMBER_OF_COLS, padding=60)
 
-        grid_list = []
-        for x, y in data:
-            grid_id = grid.locate_point((x, y))
-            grid_id = [int(i) for i in grid_id]  # np.array to python list
-            grid_list.append(grid_id)
+        spatial_segmentation = {}
 
         start = 0
         end = 0
-        grid = grid_list[0]
+        prev_grid_id = -1
 
-        dictionary = {}
+        for index in range(len(data)):
+            x, y = data[index]
 
-        for index in range(len(grid_list)):
-            _grid = grid_list[index]
+            actual_grid_id = grid.locate_point((x, y))
+            # np.array to python list
+            actual_grid_id = [int(i) for i in actual_grid_id]
 
-            if grid == _grid:
+            if index == 1:
+                prev_grid_id = actual_grid_id
+
+            if prev_grid_id == actual_grid_id:
                 end = index
             else:
-                dictionary[(start, end)] = _grid
+                spatial_segmentation[(start, end)] = actual_grid_id
                 start = index
                 end = index
-                grid = _grid
+                prev_grid_id = actual_grid_id
 
-        return dictionary
+        return spatial_segmentation
 
     # endregion
 
