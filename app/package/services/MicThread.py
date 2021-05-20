@@ -58,8 +58,8 @@ class MicThread(QThread):
             print("[MicThread]", e)
         except Exception as e:
             print("[MicThread] Exception:", e)
-
-        self.on_stop_recording.emit(None)
+        finally:
+            self.on_stop_recording.emit(None)
 
     def stop(self):
         print("[MicThread] Stopping audio stream")
