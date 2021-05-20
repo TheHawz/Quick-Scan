@@ -1,12 +1,10 @@
-import sounddevice as sd
-
 from PySide2.QtCore import QObject, Signal
 from ..services.dsp import getTimeOfRecording
 
 
 class NewProjectModel(QObject):
     """
-    The model class stores program data and state and some minimal logic for 
+    The model class stores program data and state and some minimal logic for
     announcing changes to this data
     """
 

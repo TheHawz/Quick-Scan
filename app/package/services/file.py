@@ -3,6 +3,14 @@ Ficheros temporales, ficheros del proyecto, crear y borrar carpetas
 
 """
 import os
+import numpy as np
+from . import file as fileutils
+
+
+def save_np_to_txt(data, path, file_name="data.txt"):
+    fileutils.mkdir(path)
+    file_path = os.path.join(path, file_name)
+    np.savetxt(file_path, data)
 
 
 def check_for_existance(path) -> tuple:
@@ -28,19 +36,31 @@ def check_for_existance(path) -> tuple:
     return False, None
 
 
+def check_for_empty(path: str) -> bool:
+    '''
+    Check if a Directory is empty and also check exceptional situations.
+    '''
+    if os.path.exists(path) and os.path.isdir(path):
+        if os.listdir(path):
+            return False
+    return True
+
+
 def mkdir(path):
-    exists, isfile = check_for_existance(path)
+    exists, _ = check_for_existance(path)
 
-    if not exists:
-        os.mkdir(path)
+    try:
+        if not exists:
+            os.makedirs(path)
+            return True, ''
+        else:
+            return True, ''
+    except Exception as e:
+        return False, str(e)
 
-    if isfile:
-        raise Exception('This path already exists. And its a file')
 
 def touch(path, override=False):
     exists, isfile = check_for_existance(path)
-    
-    if exists and override: 
+
+    if exists and override:
         raise Exception
-        
-        

@@ -1,8 +1,7 @@
-from .package.services.grid import Grid, draw_grid
-from .package.services.mask import get_mask, get_circles
-from .package.services.path import interpolate_nan
-from .package.services import colorSegmentation as cs
-from .package.services import imbasic as imb
+from ..app.package.services.grid import Grid
+from ..app.package.services.mask import get_mask, get_circles
+from ..app.package.services.path import interpolate_coords
+from ..app.package.services import imbasic as imb
 import numpy as np
 import cv2
 import os
@@ -76,8 +75,8 @@ def main(file=None):
 
     # Interpolate missed frames
     if len(x_data) != 0 and len(y_data) != 0:
-        x_data = interpolate_nan(x_data)
-        y_data = interpolate_nan(y_data)
+        x_data = interpolate_coords(x_data)
+        y_data = interpolate_coords(y_data)
 
         if not os.path.exists('data'):
             os.makedirs('data')
@@ -88,9 +87,9 @@ def main(file=None):
 
 
 def audio_video_segmentation():
-    """Esta función se encarga de recibir las listas de X_DATA & Y_DATA y de calcular
-    los intervalos entre los que se ha detectado el micrófono en una región
-    De esta forma si obtenemos: 
+    """Esta función se encarga de recibir las listas de X_DATA & Y_DATA y de
+    calcular los intervalos entre los que se ha detectado el micrófono en
+    una región. De esta forma si obtenemos:
     regions = {
     ...,
     (28, 50): [1, 1],
@@ -98,8 +97,8 @@ def audio_video_segmentation():
     (68, 83): [0, 0], ...
     }
 
-    Esto quiere decir que entre los frames 28 y 50 el microfono 
-    se ha detectado en la región (1, 1). 
+    Esto quiere decir que entre los frames 28 y 50 el microfono
+    se ha detectado en la región (1, 1).
     entre los frames 51 y 67 en la region (0, 1).
     y entre los frames 68 y 83 en la region (0, 0).
 
@@ -145,7 +144,6 @@ if __name__ == "__main__":
     cProfile.run('audio_video_segmentation()', 'output.dat')
 
     import pstats
-    from pstats import SortKey
 
     with open("output_time.dat", "w") as f:
         p = pstats.Stats("output.dat", stream=f)

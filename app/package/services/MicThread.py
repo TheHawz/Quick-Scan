@@ -1,3 +1,4 @@
+import os
 import sys
 import sounddevice as sd
 import soundfile as sf
@@ -5,9 +6,13 @@ import queue
 
 from PySide2.QtCore import QThread, Signal
 
+from . import file as fileutils
+from ..models.ActualProjectModel import ActualProjectModel as actual_project
+
 
 class MicThread(QThread):
     update_volume = Signal(object)
+    on_stop_recording = Signal(object)
 
     def __init__(self, rate=44100, chunksize=1024, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -18,24 +23,24 @@ class MicThread(QThread):
         self._running = False
         self._rec = False
 
-    def toogleRec(self):
-        if not self._rec:
-            self._rec = True
-            print("[MicThread.py] Start recording!")
-        else:
-            self._rec = False
-            self._running = False
-            print("[MicThread.py] Stop recording!")
+    def rec(self):
+        print("[MicThread] Start recording!")
+        self._rec = True
+
+    def stop_rec(self):
+        print("[MicThread] Stopping rec...")
+        self._rec = False
+        self._running = False  # to raise the Exception
 
     def run(self):
+        print('[MIC] Running!')
         self._running = True
 
-        from datetime import datetime
-        now = datetime.now()
-        date = now.strftime("[%Y%m%d_%H%M%S] ")
-
-        self.stream = sd.Stream(channels=2, callback=self.callback)
-        self.file_stream = sf.SoundFile(f"data/{date}audio.wav",
+        self.stream = sd.Stream(
+            channels=2, callback=self.callback, samplerate=44100)
+        path = os.path.join(actual_project.project_location, 'Audio Files')
+        fileutils.mkdir(path)
+        self.file_stream = sf.SoundFile(os.path.join(path, 'audio.wav'),
                                         mode='w',
                                         samplerate=44100,
                                         channels=2)
@@ -45,19 +50,19 @@ class MicThread(QThread):
                     while self._running:
                         if self._rec:
                             file.write(self.q.get())
+
                         if not self._running:
-                            raise KeyboardInterrupt("End of recording")
+                            raise KeyboardInterrupt("Recording stopped!")
 
         except KeyboardInterrupt as e:
-            print("[MicThread.py]", e)
+            print("[MicThread]", e)
         except Exception as e:
-            print("[MicThread.py] Exception:", e)
+            print("[MicThread] Exception:", e)
+        finally:
+            self.on_stop_recording.emit(None)
 
     def stop(self):
-        if not self._running:
-            return
-
-        print("[MicThread.py] Stopping audio stream")
+        print("[MicThread] Stopping audio stream")
         self._rec = False
         self._running = False
         self.wait()
@@ -66,7 +71,11 @@ class MicThread(QThread):
         """This is called (from a separate thread) for each audio block."""
         if status:
             print(status, file=sys.stderr)
-        # print('.')
+
         outdata[:] = indata
-        self.update_volume.emit(indata.copy())
-        self.q.put(indata.copy())
+        # self.update_volume.emit(indata.copy())
+
+        if self._rec:
+            self.q.put(indata.copy())
+        else:
+            self.q.empty()

@@ -60,15 +60,16 @@ def resize(frame, size=None, width=None):
 
     return cv2.resize(frame, size, fx=scale_factor, fy=scale_factor)
 
-  
+
 def draw_text(img, text, x, y, color=(255, 255, 255)):
     return cv2.putText(img, text, (x, y), cv2.FONT_HERSHEY_PLAIN, 1, color, 1)
+
 
 def draw_filled_rectangle(img, pt1, pt2, gray, alpha):
     # First we crop the sub-rect from the image
     x1, y1 = pt1
     x2, y2 = pt2
-    
+
     sub_img = img[y1:y2, x1:x2]
     white_rect = np.ones(sub_img.shape, dtype=np.uint8) * gray
     res = cv2.addWeighted(sub_img, 0.5, white_rect, 0.5, 1.0)

@@ -1,11 +1,8 @@
 # This Python file uses the following encoding: utf-8
-import os
-
 from PySide2.QtWidgets import QMainWindow
-from PySide2.QtCore import QFile
-from PySide2.QtUiTools import QUiLoader
 
 from ..ui.Form_ui import Ui_MainWindow as Form_ui
+
 
 class MainWindow(QMainWindow, Form_ui):
 
@@ -13,7 +10,7 @@ class MainWindow(QMainWindow, Form_ui):
         super(MainWindow, self).__init__()
         self._model = model
         self._main_controller = controller
-        
+
         self.setupUi(self)
         self.connect_elements()
 

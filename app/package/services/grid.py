@@ -11,22 +11,23 @@ import cv2
 
 class Grid:
 
-    def __init__(self, size_of_frame, number_of_rows, number_of_cols, padding=0):
+    def __init__(self, size_of_frame, number_of_rows,
+                 number_of_cols, padding=0):
         """Constructor
 
         Args:
             size_of_frame (numpy.array): (horizontal, vertical)
-            number_of_rows (int): 
-            number_of_cols (int): 
+            number_of_rows (int):
+            number_of_cols (int):
             padding (int, optional): Padding arround the border. Defaults to 0.
         """
         self.size_of_frame = size_of_frame
         self.config(number_of_rows, number_of_cols, padding)
 
-    def config(self,  number_of_rows, number_of_cols, padding=0):
+    def config(self,  number_of_rows, number_of_cols, pad=0):
         self.number_of_rows = number_of_rows
         self.number_of_cols = number_of_cols
-        self.padding = padding
+        self.padding = pad
         self.padding_coords = np.array(
             [self.padding, self.padding]).astype(int)
 
@@ -37,9 +38,9 @@ class Grid:
             [self.real_size[0] / self.number_of_rows,
              self.real_size[1] / self.number_of_cols])
 
-        self.hor_div = [int(self.real_size[1] / self.number_of_rows * i + padding)
+        self.hor_div = [int(self.real_size[1] / self.number_of_rows * i + pad)
                         for i in range(self.number_of_rows + 1)]
-        self.ver_div = [int(self.real_size[0] / self.number_of_cols * i + padding)
+        self.ver_div = [int(self.real_size[0] / self.number_of_cols * i + pad)
                         for i in range(self.number_of_cols + 1)]
 
     def locate_point(self, point):
@@ -59,11 +60,13 @@ class Grid:
 
         return frame
 
+# todo: delete!
+
 
 def draw_grid(frame, rows, cols, padding, color=(180, 180, 180), thickness=1):
-    """ 
-        TODO: se puede optimizar mucho: 
-        crear una mascara que luego se reutilice para colorear todos 
+    """
+        TODO: se puede optimizar mucho:
+        crear una mascara que luego se reutilice para colorear todos
         los frames siguientes
     """
     # GET SIZE OF THE FRAME & APPLY PADDING

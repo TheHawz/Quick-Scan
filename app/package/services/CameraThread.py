@@ -10,8 +10,6 @@ from ..models.ActualProjectModel import ActualProjectModel
 # from ..services import colorSegmentation as cs  # Credits to Lara!
 from .grid import Grid
 from . import imbasic as imb
-from . import colorSegmentation as cs
-from .path import interpolate_nan
 from .mask import get_mask, get_circles
 
 # TODO: move to own file
@@ -24,6 +22,7 @@ PADDING = 100
 class CameraThread(QThread):
     update_frame = Signal(np.ndarray)
     on_stop_recording = Signal(object)
+    on_frame_size_detected = Signal(tuple)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -33,23 +32,30 @@ class CameraThread(QThread):
         self.y = -1
 
     def run(self):
-        """ 
-            Callback function executed whenever someone starts the QThreat 
+        """
+            Callback function executed whenever someone starts the QThreat
             (thread.start())
         """
+        print('[CAM] Running!')
         self._running = True
         self._rec = False
 
         cap = cv2.VideoCapture(ActualProjectModel.video_device + cv2.CAP_DSHOW)
 
+        # Trying DSHOW driver
+        ret, _ = cap.read()
+        if not ret:
+            cap = cv2.VideoCapture(ActualProjectModel.video_device)
+
         self.frame_size = np.array([int(cap.get(3)), int(cap.get(4))])
         self._grid = Grid(self.frame_size, NUMBER_OF_ROWS,
                           NUMBER_OF_COLS, padding=60)
 
-        # TODO: move this to "if not self._rec:"
         self.times = np.zeros((NUMBER_OF_ROWS, NUMBER_OF_COLS))
-
         self.time = time.time()
+
+        _, frame = cap.read()
+        self.on_frame_size_detected.emit(frame.shape[:2])
 
         while self._running:
             ret, frame = cap.read()
@@ -60,7 +66,7 @@ class CameraThread(QThread):
             processed_frame = None
 
             if not self._rec:
-                self._grid.config(NUMBER_OF_ROWS, NUMBER_OF_COLS, padding=20)
+                self._grid.config(NUMBER_OF_ROWS, NUMBER_OF_COLS, pad=20)
                 processed_frame = self.bypass(frame)
             else:
                 processed_frame = self.process_frame(frame)
@@ -68,8 +74,8 @@ class CameraThread(QThread):
             self.update_frame.emit(processed_frame)
 
         # print('Stopping Camera Thread!')
-        print('*' * 40)
-        print('Times: \n', self.times)
+        # print('*' * 40)
+        # print('Times: \n', self.times)
 
         emit_obj = {"x_data": self.x_data, "y_data": self.y_data}
         self.on_stop_recording.emit(emit_obj)
@@ -79,8 +85,9 @@ class CameraThread(QThread):
     def process_circles(self, frame, circles):
         """Appends data to the arrays and draws circles in the frame
 
-           DOC: habrá un subarray de 'np.nan' al principio de cada x_data y y_data
-           De esta forma se tendrá sincronizado el momento en el que el micro se coloca en posición
+           DOC: habrá un subarray de 'np.nan' al principio de cada x_data y
+           y_data. De esta forma se tendrá sincronizado el momento en el
+           que el micro se coloca en posición
         Args:
             frame ([type]): [description]
             circles ([type]): [description]
@@ -122,7 +129,8 @@ class CameraThread(QThread):
         # rgb_times = (self.times*255)/3
         # rgb_times = np.clip(rgb_times, 0, 255).astype(np.uint8)
         # frame = cv2.resize(
-        #     rgb_times, (self._grid.size_of_frame[0], self._grid.size_of_frame[1]))
+        #     rgb_times, (self._grid.size_of_frame[0],
+        #                 self._grid.size_of_frame[1]))
 
         delta = time.time() - self.time
         self.time = time.time()
@@ -144,16 +152,17 @@ class CameraThread(QThread):
         self._grid.draw_grid(frame)
         return frame
 
-    def toogleRec(self):
-        if not self._rec:
-            self._rec = True
-            print("Start recording!")
-        else:
-            self._rec = False
-            self._running = False
-            print("Stop recording!")
+    def rec(self):
+        self._rec = True
+        print("[CamThread] Start recording!")
+
+    def stop_rec(self):
+        self._rec = False
+        self._running = False
+        print("[CamThread] Stop recording!")
 
     def stop(self):
         """Sets run flag to False and waits for thread to finish"""
+        self._rec = False
         self._running = False
         self.wait()

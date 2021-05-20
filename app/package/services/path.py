@@ -7,11 +7,11 @@ Created on Mon Feb 22 18:16:28 2021
 
 import numpy as np
 
-__all__ = ['interpolate_nan']
+__all__ = ['interpolate_coords']
 
 
-def interpolate_nan(array):
-    """Trims the array of possible np.nan values at the end of the 
+def interpolate_coords(array):
+    """Trims the array of possible np.nan values at the end of the
     array and interpolates any np.nan value that is located in the array
 
     Args:
@@ -42,8 +42,8 @@ def _nan_helper(y):
     return np.isnan(y), lambda z: z.nonzero()[0]
 
 
-def _trim_first_nans(array): 
-    
+def _trim_first_nans(array):
+
     i = 0
     while True:
         i += 1
@@ -51,8 +51,9 @@ def _trim_first_nans(array):
             break
 
     array = array[i:]
-    
+
     return array
+
 
 def _trim_last_nans(array, verbose=False):
     """Search for a block of np.nan at the end of the array
@@ -60,8 +61,8 @@ def _trim_last_nans(array, verbose=False):
 
     Args:
         array (np.array): initial array
-        verbose (bool, optional): Whether the funcion should 
-        print extra information or not. Use only for debugin 
+        verbose (bool, optional): Whether the funcion should
+        print extra information or not. Use only for debugin
         purpose. Defaults to False.
 
     Returns:
