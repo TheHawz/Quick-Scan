@@ -60,6 +60,8 @@ class Grid:
 
         return frame
 
+# todo: delete!
+
 
 def draw_grid(frame, rows, cols, padding, color=(180, 180, 180), thickness=1):
     """

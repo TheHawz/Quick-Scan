@@ -42,13 +42,17 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
         pass
 
     def on_open(self):
-        self._controller.set_data_x(ActualProjectModel.data_x)
-        self._controller.set_data_y(ActualProjectModel.data_y)
+        if ActualProjectModel.data_x is None:
+            self._controller.load_position_data(
+                ActualProjectModel.project_location)
+        else:
+            self._controller.set_data_x(ActualProjectModel.data_x)
+            self._controller.set_data_y(ActualProjectModel.data_y)
+
         try:
-            self._controller.load_audio_file(os.path.join(
-                ActualProjectModel.project_location,
-                'Audio Files',
-                'audio.wav'))
+            path = os.path.join(ActualProjectModel.project_location,
+                                'Audio Files', 'audio.wav')
+            self._controller.load_audio_file(path)
 
         except Exception as e:
             print(f'[ERROR] Error while loading audio file: {e}')

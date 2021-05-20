@@ -36,7 +36,8 @@ class MicThread(QThread):
         print('[MIC] Running!')
         self._running = True
 
-        self.stream = sd.Stream(channels=2, callback=self.callback)
+        self.stream = sd.Stream(
+            channels=2, callback=self.callback, samplerate=44100)
         path = os.path.join(actual_project.project_location, 'Audio Files')
         fileutils.mkdir(path)
         self.file_stream = sf.SoundFile(os.path.join(path, 'audio.wav'),

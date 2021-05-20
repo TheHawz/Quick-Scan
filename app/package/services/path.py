@@ -7,10 +7,10 @@ Created on Mon Feb 22 18:16:28 2021
 
 import numpy as np
 
-__all__ = ['interpolate_nan']
+__all__ = ['interpolate_coords']
 
 
-def interpolate_nan(array):
+def interpolate_coords(array):
     """Trims the array of possible np.nan values at the end of the
     array and interpolates any np.nan value that is located in the array
 

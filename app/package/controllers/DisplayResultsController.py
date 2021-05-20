@@ -1,3 +1,4 @@
+import os
 import numpy as np
 from scipy.io import wavfile
 
@@ -36,3 +37,20 @@ class DisplayResultsController(QObject):
         fs, data = wavfile.read(file_path)
         self._model.audio_data = data
         self._model.audio_fs = fs
+
+    def load_position_data(self, project_path: str) -> None:
+        print('[Display Results] Loading position from file...')
+
+        data_dir = os.path.join(project_path, 'Position Data')
+        files_path = [os.path.join(data_dir, 'data_x.txt'),
+                      os.path.join(data_dir, 'data_y.txt')]
+
+        try:
+            _x = np.loadtxt(files_path[0])
+            _y = np.loadtxt(files_path[1])
+
+            self.set_data_x(_x)
+            self.set_data_y(_y)
+
+        except Exception as e:
+            raise Exception(f'Could not read position from files: {e}')

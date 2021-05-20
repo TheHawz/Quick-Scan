@@ -106,8 +106,8 @@ class DataAcquisitionView(QMainWindow, DataAcquisition_ui):
         ActualProjectModel.data_y = value["y_data"]
 
         # Write data to disk
-        path = os.path.join(
-            ActualProjectModel.project_location, 'Position Data')
+        path = os.path.join(ActualProjectModel.project_location,
+                            'Position Data')
         fileutils.mkdir(path)
 
         fileutils.save_np_to_txt(value["x_data"], path, file_name="x_data.txt")

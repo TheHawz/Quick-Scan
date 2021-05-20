@@ -1,6 +1,6 @@
 from ..app.package.services.grid import Grid
 from ..app.package.services.mask import get_mask, get_circles
-from ..app.package.services.path import interpolate_nan
+from ..app.package.services.path import interpolate_coords
 from ..app.package.services import imbasic as imb
 import numpy as np
 import cv2
@@ -75,8 +75,8 @@ def main(file=None):
 
     # Interpolate missed frames
     if len(x_data) != 0 and len(y_data) != 0:
-        x_data = interpolate_nan(x_data)
-        y_data = interpolate_nan(y_data)
+        x_data = interpolate_coords(x_data)
+        y_data = interpolate_coords(y_data)
 
         if not os.path.exists('data'):
             os.makedirs('data')
