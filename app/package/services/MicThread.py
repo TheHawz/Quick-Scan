@@ -10,6 +10,10 @@ from . import file as fileutils
 from ..models.ActualProjectModel import ActualProjectModel as actual_project
 
 
+def log(msg):
+    print(f'[MicThread] {msg}')
+
+
 class MicThread(QThread):
     update_volume = Signal(object)
     on_stop_recording = Signal(object)
@@ -33,9 +37,10 @@ class MicThread(QThread):
         self._running = False  # to raise the Exception
 
     def run(self):
-        print('[MIC] Running!')
+        log("Running!")
         self._running = True
 
+        # todo: devices!
         self.stream = sd.Stream(
             channels=2, callback=self.callback, samplerate=44100)
         path = os.path.join(actual_project.project_location, 'Audio Files')
@@ -50,19 +55,21 @@ class MicThread(QThread):
                     while self._running:
                         if self._rec:
                             file.write(self.q.get())
+                        else:
+                            self.q.get()
 
                         if not self._running:
                             raise KeyboardInterrupt("Recording stopped!")
 
         except KeyboardInterrupt as e:
-            print("[MicThread]", e)
+            log(e)
         except Exception as e:
-            print("[MicThread] Exception:", e)
-        finally:
-            self.on_stop_recording.emit(None)
+            log("Unexpected Exception:", e)
+
+        self.on_stop_recording.emit(None)
 
     def stop(self):
-        print("[MicThread] Stopping audio stream")
+        log("Stopping audio stream")
         self._rec = False
         self._running = False
         self.wait()
@@ -75,7 +82,4 @@ class MicThread(QThread):
         outdata[:] = indata
         # self.update_volume.emit(indata.copy())
 
-        if self._rec:
-            self.q.put(indata.copy())
-        else:
-            self.q.empty()
+        self.q.put(indata.copy())

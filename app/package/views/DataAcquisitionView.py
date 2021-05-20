@@ -54,10 +54,10 @@ class DataAcquisitionView(QMainWindow, DataAcquisition_ui):
             self._controller.toogle_recording)
 
     def connect_to_model(self):
-        self._model.on_mic_thread_runnnig_changed.connect(
-            self.handle_mic_thread_runnnig_changed)
-        self._model.on_cam_thread_runnnig_changed.connect(
-            self.handle_cam_thread_runnnig_changed)
+        self._model.on_mic_thread_running_changed.connect(
+            self.handle_mic_thread_running_changed)
+        self._model.on_cam_thread_running_changed.connect(
+            self.handle_cam_thread_running_changed)
         self._model.on_mic_recording_changed.connect(
             self.handle_mic_recording_changed)
         self._model.on_cam_recording_changed.connect(
@@ -95,11 +95,11 @@ class DataAcquisitionView(QMainWindow, DataAcquisition_ui):
         self._controller.navigate('display_results')
 
     @Slot(bool)
-    def handle_mic_thread_runnnig_changed(self, value):
+    def handle_mic_thread_running_changed(self, value):
         pass
 
     @Slot(bool)
-    def handle_cam_thread_runnnig_changed(self, value):
+    def handle_cam_thread_running_changed(self, value):
         pass
 
     @Slot(object)

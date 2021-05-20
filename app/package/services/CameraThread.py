@@ -12,7 +12,8 @@ from .grid import Grid
 from . import imbasic as imb
 from .mask import get_mask, get_circles
 
-# TODO: move to own file
+
+# TODO: make configurable
 # GRID DEFINITION
 NUMBER_OF_ROWS = 4
 NUMBER_OF_COLS = 4

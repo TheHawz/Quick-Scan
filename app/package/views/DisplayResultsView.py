@@ -50,9 +50,10 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
             self._controller.set_data_y(ActualProjectModel.data_y)
 
         try:
-            path = os.path.join(ActualProjectModel.project_location,
-                                'Audio Files', 'audio.wav')
-            self._controller.load_audio_file(path)
+            self._controller.load_audio_file(
+                ActualProjectModel.project_location)
+            self._controller.load_frame_size(
+                ActualProjectModel.project_location)
 
         except Exception as e:
             print(f'[ERROR] Error while loading audio file: {e}')
