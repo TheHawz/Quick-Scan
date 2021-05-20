@@ -50,6 +50,7 @@ class MicThread(QThread):
                     while self._running:
                         if self._rec:
                             file.write(self.q.get())
+
                         if not self._running:
                             raise KeyboardInterrupt("Recording stopped!")
 
@@ -61,20 +62,20 @@ class MicThread(QThread):
         self.on_stop_recording.emit(None)
 
     def stop(self):
-        if not self._running:
-            return
-
         print("[MicThread] Stopping audio stream")
         self._rec = False
         self._running = False
-
         self.wait()
 
     def callback(self, indata, outdata, frames, time, status):
         """This is called (from a separate thread) for each audio block."""
         if status:
             print(status, file=sys.stderr)
-        # print('.')
+
         outdata[:] = indata
         # self.update_volume.emit(indata.copy())
-        self.q.put(indata.copy())
+
+        if self._rec:
+            self.q.put(indata.copy())
+        else:
+            self.q.empty()

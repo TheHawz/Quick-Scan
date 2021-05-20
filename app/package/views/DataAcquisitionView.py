@@ -116,20 +116,10 @@ class DataAcquisitionView(QMainWindow, DataAcquisition_ui):
         fileutils.save_np_to_txt(value["y_data"], path, file_name="data.y")
 
     def handle_mic_recording_changed(self, rec):
-        if not rec:
-            print('View: stopped mic recording')
-            self.start_stop_button.setText('START!')
-        else:
-            print('View: started mic recording')
-            self.start_stop_button.setText('STOP!')
+        pass
 
     def handle_cam_recording_changed(self, rec):
-        if not rec:
-            print('View: stopped cam recording')
-            self.start_stop_button.setText('START!')
-        else:
-            print('View: started cam recording')
-            self.start_stop_button.setText('STOP!')
+        pass
 
     # TODO: move to utils
     def convert_cv_qt(self, cv_img):
@@ -149,7 +139,8 @@ class DataAcquisitionView(QMainWindow, DataAcquisition_ui):
 
     @Slot(int)
     def handle_new_audio(self, value):
-        self.q.put(value)
+        pass
+        # self.q.put(value)
 
     @Slot(tuple)
     def save_frame_size(self, value: tuple) -> None:
