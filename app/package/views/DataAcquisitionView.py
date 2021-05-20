@@ -116,7 +116,10 @@ class DataAcquisitionView(QMainWindow, DataAcquisition_ui):
         fileutils.save_np_to_txt(value["y_data"], path, file_name="data.y")
 
     def handle_mic_recording_changed(self, rec):
-        pass
+        if rec:
+            self.start_stop_button.setText('Stop recording')
+        else:
+            self.start_stop_button.setText('Start!')
 
     def handle_cam_recording_changed(self, rec):
         pass
@@ -139,8 +142,8 @@ class DataAcquisitionView(QMainWindow, DataAcquisition_ui):
 
     @Slot(int)
     def handle_new_audio(self, value):
-        pass
         # self.q.put(value)
+        pass
 
     @Slot(tuple)
     def save_frame_size(self, value: tuple) -> None:

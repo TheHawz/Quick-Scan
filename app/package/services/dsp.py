@@ -18,3 +18,7 @@ def _getSmallestBandwidth(low_freq, frac=3, fs=48000):
 def getTimeOfRecording(lowest_freq, e=0.1, frac=3, fs=48000):
     sb = _getSmallestBandwidth(lowest_freq, frac, fs)
     return _getTime(sb, e)
+
+
+def get_spectrum(audio, fs):
+    return PyOctaveBand.octavefilter(audio, fs=fs, fraction=3)

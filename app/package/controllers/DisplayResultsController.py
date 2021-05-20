@@ -1,3 +1,4 @@
+from app.package.models.ActualProjectModel import ActualProjectModel
 import os
 from typing import Tuple
 import numpy as np
@@ -7,6 +8,7 @@ from PySide2.QtCore import QObject, Slot
 from ..services import file as fileutils
 from ..services.grid import Grid
 from ..services.path import interpolate_coords
+from ..services import dsp
 
 # TODO: make configurable
 # GRID DEFINITION
@@ -99,12 +101,16 @@ class DisplayResultsController(QObject):
         log('### DSP ### ')
 
         trimmed_audio = self.trim_audio()
-        log(f'Trimmed audio len: {len(trimmed_audio)}')
-
         shift, trim = self.clean_data_position()
+        self._model.audio_data = trimmed_audio[shift:-trim]
 
         spatial_segmentation = self.segment_video()
-        log(spatial_segmentation)
+        # for key in [*spatial_segmentation]:
+        #     print(f'{key} -> {spatial_segmentation[key]}')
+
+        audio_segments = self.segment_audio(spatial_segmentation)
+
+        self.analyze(audio_segments)
 
     # region Helpers
 
@@ -123,19 +129,18 @@ class DisplayResultsController(QObject):
             self._model.data_x)
         self._model.data_y, _, _ = interpolate_coords(self._model.data_y)
 
-        log(f'shift {shift}')
-        log(f'trim {trim}')
-
         return shift, trim
 
-    def segment_video(self) -> dict:
+    def segment_video(self) -> dict[tuple, list[tuple]]:
         data = np.transpose(np.array([self._model.data_x, self._model.data_y]))
-        print(data)
 
         grid = Grid(self._model.frame_size, NUMBER_OF_ROWS,
-                    NUMBER_OF_COLS, padding=60)
+                    NUMBER_OF_COLS, PADDING)
 
-        spatial_segmentation = {}
+        spatial_segmentation: dict[tuple, list[tuple]] = {}
+        for i in range(NUMBER_OF_COLS):
+            for j in range(NUMBER_OF_ROWS):
+                spatial_segmentation[i, j] = []
 
         start = 0
         end = 0
@@ -154,12 +159,48 @@ class DisplayResultsController(QObject):
             if prev_grid_id == actual_grid_id:
                 end = index
             else:
-                spatial_segmentation[(start, end)] = actual_grid_id
+                # spatial_segmentation[(start, end)] = actual_grid_id
+                key = (actual_grid_id[0], actual_grid_id[1])
+                spatial_segmentation[key].append((start, end))
                 start = index
                 end = index
                 prev_grid_id = actual_grid_id
 
         return spatial_segmentation
+
+    def segment_audio(self,
+                      segmentation: dict[tuple, list[tuple]]
+                      ) -> dict[tuple, list[tuple]]:
+        # todo: get fps from camera
+        fps = 30
+        fs = self._model.audio_fs
+        conversion_ratio = fs / fps
+
+        audio_segments: dict[tuple, list[tuple]] = {}
+        for grid_id in [*segmentation]:
+            audio_segments[grid_id] = []
+
+            for range in segmentation[grid_id]:
+                start = int(range[0] * conversion_ratio)
+                end = int(range[1] * conversion_ratio)
+                audio_segment = self._model.audio_data[start:end]
+                audio_segments[grid_id].extend(audio_segment)
+                audio_segments[grid_id].extend(audio_segment)
+                audio_segments[grid_id].extend(audio_segment)
+
+        return audio_segments
+
+    def analyze(self, audio_segments):
+        spectrum = []
+        for key in [*audio_segments]:
+            audio = np.transpose(audio_segments[key])
+            print(key)
+            if len(audio) != 0:
+                _spectrum = dsp.get_spectrum(audio, self._model.audio_fs)
+                spectrum.append(_spectrum)
+
+        fileutils.save_np_to_txt(spectrum, os.path.join(
+            ActualProjectModel.project_location, 'Results'), 'results.spec')
 
     # endregion
 
