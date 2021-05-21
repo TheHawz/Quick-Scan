@@ -19,7 +19,7 @@ class TestGrid(unittest.TestCase):
                                    self.cols[i],
                                    self.paddings[i]))
 
-    def testLocateNonePoints(self):
+    def test_locate_none_points(self):
         for grid in self.grids:
             points = [[0, 0],
                       [grid.padding, grid.padding],
@@ -41,7 +41,7 @@ class TestGrid(unittest.TestCase):
                     f'Error with point {point}' +
                     f'Should have been in grid: {result}')
 
-    def testPoints(self):
+    def test_points(self):
         grid = Grid([100, 100], 5, 5, 0)
         points = [[60, 20], [40, 20], [40, 40], [0, 0]]
         results = [[3, 1], [2, 1], [2, 2], [0, 0]]
