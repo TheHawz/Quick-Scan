@@ -10,6 +10,7 @@ class DisplayResultsModel(QObject):
     data_y_changed = Signal(np.ndarray)
     audio_data_changed = Signal(list)
     audio_fs_changed = Signal(int)
+    on_freq_range_changed = Signal(list)
 
     def __init__(self):
         super().__init__()
@@ -20,6 +21,7 @@ class DisplayResultsModel(QObject):
         self._data_y = np.array([])
 
     # region Props & Setters
+
     @property
     def data_x(self):
         return self._data_x
@@ -39,6 +41,17 @@ class DisplayResultsModel(QObject):
     def data_y(self, value):
         self._data_y = value
         self.data_y_changed.emit(value)
+
+    # --- --- --- --- --- --- --- --- --- ---
+
+    @property
+    def freq_range(self):
+        return self._freq_range
+
+    @freq_range.setter
+    def freq_range(self, value):
+        self._freq_range = value
+        self.on_freq_range_changed.emit(value)
 
     # --- --- --- --- --- --- --- --- --- ---
 

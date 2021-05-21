@@ -1,9 +1,24 @@
+from app.package.models.ActualProjectModel import ActualProjectModel
 import os
+from typing import Tuple
 import numpy as np
 from scipy.io import wavfile
 
 from PySide2.QtCore import QObject, Slot
 from ..services import file as fileutils
+from ..services.grid import Grid
+from ..services.path import interpolate_coords
+from ..services import dsp
+
+# TODO: make configurable
+# GRID DEFINITION
+NUMBER_OF_ROWS = 4
+NUMBER_OF_COLS = 4
+PADDING = 100
+
+
+def log(msg):
+    print(f'[Display Results] {msg}')
 
 
 class DisplayResultsController(QObject):
@@ -25,7 +40,16 @@ class DisplayResultsController(QObject):
     def set_data_y(self, value):
         self._model.data_y = value
 
-    def load_audio_file(self, file_path: str) -> None:
+    @Slot(list)
+    def set_freq_range(self, value):
+        self._model.freq_range = value
+
+    # region LOADERS
+
+    def load_audio_file(self, project_path: str) -> None:
+        log('Loading audio file...')
+        file_path = os.path.join(project_path,
+                                 'Audio Files', 'audio.wav')
         exists, isFile = fileutils.check_for_existance(file_path)
 
         if not exists:
@@ -39,7 +63,7 @@ class DisplayResultsController(QObject):
         self._model.audio_fs = fs
 
     def load_position_data(self, project_path: str) -> None:
-        print('[Display Results] Loading position from file...')
+        log('Loading position from file...')
 
         data_dir = os.path.join(project_path, 'Position Data')
         files_path = [os.path.join(data_dir, 'data.x'),
@@ -59,3 +83,138 @@ class DisplayResultsController(QObject):
             raise Exception('File is empty')
         except Exception as e:
             raise Exception(f'Could not read position from files: {e}')
+
+    def load_frame_size(self, project_path: str) -> None:
+        log('Loading frame size from file...')
+
+        data_dir = os.path.join(project_path, 'Position Data')
+        files_path = os.path.join(data_dir, 'frame.size')
+
+        try:
+            self._model.frame_size = np.loadtxt(files_path)
+        except FileNotFoundError:
+            raise Exception('File is empty')
+        except Exception as e:
+            raise Exception(f'Could not frame size from files: {e}')
+
+    # endregion
+
+    # region DSP
+
+    def dsp(self) -> None:
+        log('### DSP ### ')
+
+        trimmed_audio = self.trim_audio()
+        shift, trim = self.clean_data_position()
+        self._model.audio_data = trimmed_audio[shift:-trim]
+
+        spatial_segmentation = self.segment_video()
+        # for key in [*spatial_segmentation]:
+        #     print(f'{key} -> {spatial_segmentation[key]}')
+
+        audio_segments = self.segment_audio(spatial_segmentation)
+
+        self.analyze(audio_segments)
+
+    # region Helpers
+
+    def trim_audio(self) -> np.ndarray:
+        audio_len = len(self._model.audio_data)
+        video_len = len(self._model.data_x)
+
+        # TODO: get fps from camera
+        fps = 30
+
+        if (audio_len/self._model.audio_fs < video_len/fps):
+            raise Exception('ERROR: Audio is shorter than needed...')
+
+        max_audio_len = int(video_len * self._model.audio_fs / fps)
+
+        log(f'Trimming the last {abs(audio_len-max_audio_len)} from audio')
+        return self._model.audio_data[:max_audio_len]
+
+    def clean_data_position(self) -> Tuple:
+        if np.isnan(self._model.data_x).all():
+            log('ERROR: There is no localization data to analyze')
+            raise Exception('...')
+
+        self._model.data_x, shift, trim = interpolate_coords(
+            self._model.data_x)
+        self._model.data_y, _, _ = interpolate_coords(self._model.data_y)
+
+        return shift, trim
+
+    def segment_video(self) -> dict[tuple, list[tuple]]:
+        data = np.transpose(np.array([self._model.data_x, self._model.data_y]))
+
+        grid = Grid(self._model.frame_size, NUMBER_OF_ROWS,
+                    NUMBER_OF_COLS, PADDING)
+
+        spatial_segmentation: dict[tuple, list[tuple]] = {}
+        for i in range(NUMBER_OF_COLS):
+            for j in range(NUMBER_OF_ROWS):
+                spatial_segmentation[i, j] = []
+
+        start = 0
+        end = 0
+        prev_grid_id = -1
+
+        for index in range(len(data)):
+            x, y = data[index]
+
+            actual_grid_id = grid.locate_point((x, y))
+            # np.array to python list
+            actual_grid_id = [int(i) for i in actual_grid_id]
+
+            if index == 1:
+                prev_grid_id = actual_grid_id
+
+            if prev_grid_id == actual_grid_id:
+                end = index
+            else:
+                # spatial_segmentation[(start, end)] = actual_grid_id
+                key = (actual_grid_id[0], actual_grid_id[1])
+                spatial_segmentation[key].append((start, end))
+                start = index
+                end = index
+                prev_grid_id = actual_grid_id
+
+        return spatial_segmentation
+
+    def segment_audio(self,
+                      segmentation: dict[tuple, list[tuple]]
+                      ) -> dict[tuple, list[tuple]]:
+        # todo: get fps from camera
+        fps = 30
+        fs = self._model.audio_fs
+        conversion_ratio = fs / fps
+
+        audio_segments: dict[tuple, list[tuple]] = {}
+        for grid_id in [*segmentation]:
+            audio_segments[grid_id] = []
+
+            for range in segmentation[grid_id]:
+                start = int(range[0] * conversion_ratio)
+                end = int(range[1] * conversion_ratio)
+                audio_segment = self._model.audio_data[start:end]
+                audio_segments[grid_id].extend(audio_segment)
+                audio_segments[grid_id].extend(audio_segment)
+                audio_segments[grid_id].extend(audio_segment)
+
+        return audio_segments
+
+    def analyze(self, audio_segments):
+        spectrum = []
+        for key in [*audio_segments]:
+            audio = np.transpose(audio_segments[key])
+            print(key)
+            if len(audio) != 0:
+                _spectrum = dsp.get_spectrum(audio, self._model.audio_fs)
+                spectrum.append(_spectrum)
+
+        fileutils.save_np_to_txt(spectrum, os.path.join(
+            ActualProjectModel.project_location, 'Results'), 'results.spec')
+
+    # endregion
+
+    # endregion

@@ -12,7 +12,8 @@ from .grid import Grid
 from . import imbasic as imb
 from .mask import get_mask, get_circles
 
-# TODO: move to own file
+
+# TODO: make configurable
 # GRID DEFINITION
 NUMBER_OF_ROWS = 4
 NUMBER_OF_COLS = 4
@@ -30,6 +31,10 @@ class CameraThread(QThread):
         self.y_data = []
         self.x = -1
         self.y = -1
+        self.min_time_rec = -1
+
+    def set_min_time(self, time_of_rec):
+        self.min_time_rec = time_of_rec
 
     def run(self):
         """
@@ -39,6 +44,11 @@ class CameraThread(QThread):
         print('[CAM] Running!')
         self._running = True
         self._rec = False
+
+        fps = cv2.VideoCapture(
+            ActualProjectModel.video_device).get(cv2.CAP_PROP_FPS)
+        print(f'FPS: {fps}')
+        # TODO: push fps into GlobalModel
 
         cap = cv2.VideoCapture(ActualProjectModel.video_device + cv2.CAP_DSHOW)
 

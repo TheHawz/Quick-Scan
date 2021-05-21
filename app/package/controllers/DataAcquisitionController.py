@@ -16,8 +16,10 @@ class DataAcquisitionController(QObject):
         self._model.micThread.start()
         self._model.mic_thread_running = True
 
-    def start_cam_thread(self):
+    def start_cam_thread(self, time_of_rec):
         self._model.camThread.start()
+        self._model.camThread.set_min_time(time_of_rec)
+        self._model.min_time_of_rec = time_of_rec
         self._model.cam_thread_running = True
 
     def stop_mic_thread(self):
@@ -37,7 +39,6 @@ class DataAcquisitionController(QObject):
             self._model.micThread.stop_rec()
             self._model.camThread.stop_rec()
         else:
-            # self.start_mic_thread()
             self._model.micThread.rec()
             self._model.camThread.rec()
 

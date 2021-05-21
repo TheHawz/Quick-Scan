@@ -37,7 +37,7 @@ if has_build_ui:
 
         def run(self):
             build_ui.run(self)
-            
+
     cmdclass["build_res"] = build_res
 
 

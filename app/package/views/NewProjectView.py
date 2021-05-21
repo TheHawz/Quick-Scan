@@ -8,6 +8,7 @@ from PySide2.QtCore import Slot
 from ..ui.NewProject_ui import Ui_MainWindow as NewProject_ui
 
 
+# TODO: move to utils
 def freq_to_text(value: float) -> str:
     if value >= 1000:
         return f'{round(value/1000, 1)} kHz'
@@ -22,7 +23,6 @@ class NewProjectView(QMainWindow, NewProject_ui):
         self._model = model
         self._controller = controller
 
-        # self.load_ui()
         self.setupUi(self)
         self.connect_to_controller()
         self.connect_to_model()

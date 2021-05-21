@@ -12,6 +12,7 @@ from ..services.CameraThread import CameraThread
 from ..services.MicThread import MicThread
 from ..models.ActualProjectModel import ActualProjectModel
 from ..services import file as fileutils
+from ..services.dsp import getTimeOfRecording
 
 from ..ui.DataAcquisition_ui import Ui_MainWindow as DataAcquisition_ui
 
@@ -34,7 +35,8 @@ class DataAcquisitionView(QMainWindow, DataAcquisition_ui):
     def open(self):
         self.show()
         self.create_threads()
-        self._controller.start_cam_thread()
+        min_time = getTimeOfRecording(ActualProjectModel.low_freq)
+        self._controller.start_cam_thread(min_time)
         self._controller.start_mic_thread()
 
     def close(self):
@@ -54,10 +56,10 @@ class DataAcquisitionView(QMainWindow, DataAcquisition_ui):
             self._controller.toogle_recording)
 
     def connect_to_model(self):
-        self._model.on_mic_thread_runnnig_changed.connect(
-            self.handle_mic_thread_runnnig_changed)
-        self._model.on_cam_thread_runnnig_changed.connect(
-            self.handle_cam_thread_runnnig_changed)
+        self._model.on_mic_thread_running_changed.connect(
+            self.handle_mic_thread_running_changed)
+        self._model.on_cam_thread_running_changed.connect(
+            self.handle_cam_thread_running_changed)
         self._model.on_mic_recording_changed.connect(
             self.handle_mic_recording_changed)
         self._model.on_cam_recording_changed.connect(
@@ -94,15 +96,15 @@ class DataAcquisitionView(QMainWindow, DataAcquisition_ui):
     def handle_rec_ended(self):
         self._controller.navigate('display_results')
 
-    @Slot(bool)
-    def handle_mic_thread_runnnig_changed(self, value):
+    @ Slot(bool)
+    def handle_mic_thread_running_changed(self, value):
         pass
 
-    @Slot(bool)
-    def handle_cam_thread_runnnig_changed(self, value):
+    @ Slot(bool)
+    def handle_cam_thread_running_changed(self, value):
         pass
 
-    @Slot(object)
+    @ Slot(object)
     def save_positon_data(self, value):
         ActualProjectModel.data_x = value["x_data"]
         ActualProjectModel.data_y = value["y_data"]
@@ -116,7 +118,10 @@ class DataAcquisitionView(QMainWindow, DataAcquisition_ui):
         fileutils.save_np_to_txt(value["y_data"], path, file_name="data.y")
 
     def handle_mic_recording_changed(self, rec):
-        pass
+        if rec:
+            self.start_stop_button.setText('Stop recording')
+        else:
+            self.start_stop_button.setText('Start!')
 
     def handle_cam_recording_changed(self, rec):
         pass
@@ -131,18 +136,18 @@ class DataAcquisitionView(QMainWindow, DataAcquisition_ui):
             rgb_image.data, w, h, bytes_per_line, QImage.Format_RGB888)
         return QPixmap.fromImage(qt_format)
 
-    @Slot(np.ndarray)
+    @ Slot(np.ndarray)
     def handle_new_image(self, cv_img):
         """Updates the image_label with a new opencv image"""
         qt_img = self.convert_cv_qt(cv_img)
         self.cam_view.setPixmap(qt_img)
 
-    @Slot(int)
+    @ Slot(int)
     def handle_new_audio(self, value):
-        pass
         # self.q.put(value)
+        pass
 
-    @Slot(tuple)
+    @ Slot(tuple)
     def save_frame_size(self, value: tuple) -> None:
         print('[Data Acquisition] Saving frame size to disk...')
         print(f'Value: {value}')
