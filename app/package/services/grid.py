@@ -11,8 +11,11 @@ import cv2
 
 class Grid:
 
-    def __init__(self, size_of_frame, number_of_rows,
-                 number_of_cols, padding=0):
+    def __init__(self,
+                 size_of_frame: np.ndarray,
+                 number_of_rows: int,
+                 number_of_cols: int,
+                 padding: int = 0):
         """Constructor
 
         Args:
@@ -43,9 +46,26 @@ class Grid:
         self.ver_div = [int(self.real_size[0] / self.number_of_cols * i + pad)
                         for i in range(self.number_of_cols + 1)]
 
-    def locate_point(self, point):
+    def locate_point(self, point: list):
         point_grid_coords = np.array(point) - self.padding_coords
-        return np.floor(point_grid_coords / self.grid_size).astype(int)
+        result = np.floor(point_grid_coords / self.grid_size).astype(int)
+        # if (result < 0).any():
+        #     return None
+        # if (result[0] > self.number_of_cols):
+        #     return None
+        # if (result[1] > self.number_of_rows):
+        #     return None
+
+        if (result[0] < 0):
+            result[0] = 0
+        if (result[0] >= self.number_of_rows):
+            result[0] = self.number_of_rows-1
+
+        if (result[1] < 0):
+            result[1] = 0
+        if (result[1] >= self.number_of_cols):
+            result[1] = self.number_of_cols-1
+        return result
 
     def draw_grid(self, frame, color=(180, 180, 180), thickness=1):
         for div in self.hor_div:
