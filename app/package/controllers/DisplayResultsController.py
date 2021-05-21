@@ -122,13 +122,22 @@ class DisplayResultsController(QObject):
         audio_len = len(self._model.audio_data)
         video_len = len(self._model.data_x)
 
+        # TODO: get fps from camera
         fps = 30
+
+        if (audio_len/self._model.audio_fs < video_len/fps):
+            raise Exception('ERROR: Audio is shorter than needed...')
+
         max_audio_len = int(video_len * self._model.audio_fs / fps)
 
         log(f'Trimming the last {abs(audio_len-max_audio_len)} from audio')
         return self._model.audio_data[:max_audio_len]
 
     def clean_data_position(self) -> Tuple:
+        if np.isnan(self._model.data_x).all():
+            log('ERROR: There is no localization data to analyze')
+            raise Exception('...')
+
         self._model.data_x, shift, trim = interpolate_coords(
             self._model.data_x)
         self._model.data_y, _, _ = interpolate_coords(self._model.data_y)

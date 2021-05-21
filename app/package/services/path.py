@@ -21,6 +21,8 @@ def interpolate_coords(array: np.ndarray) -> tuple:
         np.array: processed array
     """
 
+    array = _typesignal(array)
+
     # 1. Trim
     array, shift = _trim_first_nans(array)
     array, trim = _trim_last_nans(array)
@@ -30,6 +32,15 @@ def interpolate_coords(array: np.ndarray) -> tuple:
     array[x_nans] = np.interp(
         x_nonzero(x_nans), x_nonzero(~x_nans), array[~x_nans])
     return array, shift, trim
+
+
+def _typesignal(value):
+    if type(value) is list:
+        return np.array(value)
+    if type(value) is np.ndarray:
+        return value
+    raise Exception(
+        f'Data.x and Data.y are in a non supported format: {type(value)}')
 
 
 def _nan_helper(y):
@@ -49,7 +60,8 @@ def _nan_helper(y):
 def _trim_first_nans(array):
 
     i = 0
-    while True:
+    le = len(array)
+    while i < le:
         i += 1
         if not np.isnan(array[i]):
             break
@@ -75,7 +87,8 @@ def _trim_last_nans(array, verbose=False):
 
     array_rev = array[::-1]
     i = 0
-    while True:
+    le = len(array_rev)
+    while i < le:
         i += 1
         if not np.isnan(array_rev[i]):
             break

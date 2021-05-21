@@ -45,6 +45,11 @@ class CameraThread(QThread):
         self._running = True
         self._rec = False
 
+        fps = cv2.VideoCapture(
+            ActualProjectModel.video_device).get(cv2.CAP_PROP_FPS)
+        print(f'FPS: {fps}')
+        # TODO: push fps into GlobalModel
+
         cap = cv2.VideoCapture(ActualProjectModel.video_device + cv2.CAP_DSHOW)
 
         # Trying DSHOW driver

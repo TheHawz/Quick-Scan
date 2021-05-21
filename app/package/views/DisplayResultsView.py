@@ -61,8 +61,6 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
         self._controller.set_freq_range(
             [ActualProjectModel.low_freq, ActualProjectModel.high_freq])
 
-        log(self._model.freq_range)
-
         try:
             self._controller.load_audio_file(
                 ActualProjectModel.project_location)
@@ -72,8 +70,12 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
         except Exception as e:
             log(f'[ERROR] Error while loading audio file: {e}')
 
-        finally:
-            self._controller.dsp()
+        self._controller.dsp()
+        # try:
+        #     self._controller.dsp()
+        # except Exception as e:
+        #     log(e)
+        #     # TODO: show Error msg...
 
     @Slot(np.ndarray)
     def handle_data_x_changed(self, value):
