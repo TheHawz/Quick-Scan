@@ -31,6 +31,10 @@ class CameraThread(QThread):
         self.y_data = []
         self.x = -1
         self.y = -1
+        self.min_time_rec = -1
+
+    def set_min_time(self, time_of_rec):
+        self.min_time_rec = time_of_rec
 
     def run(self):
         """
