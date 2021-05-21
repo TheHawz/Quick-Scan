@@ -40,6 +40,10 @@ class DisplayResultsController(QObject):
     def set_data_y(self, value):
         self._model.data_y = value
 
+    @Slot(list)
+    def set_freq_range(self, value):
+        self._model.freq_range = value
+
     # region LOADERS
 
     def load_audio_file(self, project_path: str) -> None:

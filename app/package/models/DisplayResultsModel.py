@@ -43,6 +43,17 @@ class DisplayResultsModel(QObject):
     # --- --- --- --- --- --- --- --- --- ---
 
     @property
+    def freq_range(self):
+        return self._freq_range
+
+    @freq_range.setter
+    def freq_range(self, value):
+        self._freq_range = value
+        self.freq_range.emit(value)
+
+    # --- --- --- --- --- --- --- --- --- ---
+
+    @property
     def audio_data(self):
         return self._audio_data
 

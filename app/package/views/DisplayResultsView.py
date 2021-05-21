@@ -46,11 +46,22 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
 
     def on_open(self):
         if len(ActualProjectModel.data_x) == 0:
+            # We are loading a project => so we need to:
+            #  - Load Position Data
+            #  - Load freq. range from .pro
             self._controller.load_position_data(
                 ActualProjectModel.project_location)
+
         else:
+            # We have to move data from 'ActualProjectModel' to the
+            # DisplayResultsModel.
             self._controller.set_data_x(ActualProjectModel.data_x)
             self._controller.set_data_y(ActualProjectModel.data_y)
+
+        self._controller.set_freq_range(
+            [ActualProjectModel.low_freq, ActualProjectModel.high_freq])
+
+        log(self._model.freq_range)
 
         try:
             self._controller.load_audio_file(
