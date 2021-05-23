@@ -23,7 +23,7 @@ PADDING = 100
 class CameraThread(QThread):
     update_frame = Signal(np.ndarray)
     on_stop_recording = Signal(object)
-    on_frame_size_detected = Signal(tuple)
+    on_camera_caracteristics_detected = Signal(tuple)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -47,8 +47,6 @@ class CameraThread(QThread):
 
         fps = cv2.VideoCapture(
             ActualProjectModel.video_device).get(cv2.CAP_PROP_FPS)
-        print(f'FPS: {fps}')
-        # TODO: push fps into GlobalModel
 
         cap = cv2.VideoCapture(ActualProjectModel.video_device + cv2.CAP_DSHOW)
 
@@ -65,7 +63,7 @@ class CameraThread(QThread):
         self.time = time.time()
 
         _, frame = cap.read()
-        self.on_frame_size_detected.emit(frame.shape[:2])
+        self.on_camera_caracteristics_detected.emit((frame.shape[:2], fps))
 
         while self._running:
             ret, frame = cap.read()

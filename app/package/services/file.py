@@ -7,7 +7,7 @@ import numpy as np
 from . import file as fileutils
 
 
-def save_np_to_txt(data, path, file_name="data.txt"):
+def save_np_to_txt(data: np.ndarray, path: str, file_name="data.txt"):
     fileutils.mkdir(path)
     file_path = os.path.join(path, file_name)
     np.savetxt(file_path, data)

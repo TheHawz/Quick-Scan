@@ -77,8 +77,8 @@ class DataAcquisitionView(QMainWindow, DataAcquisition_ui):
         self._model.camThread = CameraThread(self)
         self._model.camThread.update_frame.connect(self.handle_new_image)
         self._model.camThread.on_stop_recording.connect(self.save_positon_data)
-        self._model.camThread.on_frame_size_detected.connect(
-            self.save_frame_size)
+        self._model.camThread.on_camera_caracteristics_detected.connect(
+            self.save_camera_characteristica)
 
         # 2. Start Mic Thread
         self._model.micThread = MicThread(self)
@@ -148,12 +148,13 @@ class DataAcquisitionView(QMainWindow, DataAcquisition_ui):
         pass
 
     @ Slot(tuple)
-    def save_frame_size(self, value: tuple) -> None:
-        print('[Data Acquisition] Saving frame size to disk...')
+    def save_camera_characteristica(self, value: tuple) -> None:
+        print('[Data Acquisition] Saving camera characteristics to disk...')
         print(f'Value: {value}')
+        array = np.array(value, dtype=object)
 
         path = os.path.join(ActualProjectModel.project_location,
                             'Position Data')
-        fileutils.save_np_to_txt(value, path, file_name='frame.size')
+        fileutils.save_np_to_txt(array, path, file_name='frame.size')
 
     # endregion
