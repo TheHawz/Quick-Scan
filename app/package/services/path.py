@@ -62,9 +62,9 @@ def _trim_first_nans(array):
     i = 0
     le = len(array)
     while i < le:
-        i += 1
         if not np.isnan(array[i]):
             break
+        i += 1
 
     array = array[i:]
 

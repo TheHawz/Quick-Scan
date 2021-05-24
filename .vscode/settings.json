@@ -1,6 +1,6 @@
 {
   "terminal.integrated.shellArgs.windows": null,
-  "python.pythonPath": "D:\\Bibliotecas\\Code\\Python\\tfg-Scan-Paint-clone\\venv\\python.exe",
+  "python.pythonPath": "/home/pablo/code/python/firestore-signamed-util/venv/bin/python3",
   "python.linting.flake8Enabled": true,
   "python.linting.enabled": true
 }
