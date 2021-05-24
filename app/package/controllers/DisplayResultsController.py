@@ -88,10 +88,12 @@ class DisplayResultsController(QObject):
         log('Loading frame size from file...')
 
         data_dir = os.path.join(project_path, 'Position Data')
-        files_path = os.path.join(data_dir, 'frame.size')
+        files_path = os.path.join(data_dir, 'camera.data')
 
         try:
-            self._model.frame_size = np.loadtxt(files_path)
+            width, height, fps = np.loadtxt(files_path)
+            self._model.frame_size = [width, height]
+            self._model.fps = fps
         except FileNotFoundError:
             raise Exception('File is empty')
         except Exception as e:
@@ -114,7 +116,8 @@ class DisplayResultsController(QObject):
 
         audio_segments = self.segment_audio(spatial_segmentation)
 
-        self.analyze(audio_segments)
+        spectrum = self.analyze(audio_segments)
+        print(spectrum)
 
     # region Helpers
 
@@ -214,6 +217,8 @@ class DisplayResultsController(QObject):
 
         fileutils.save_np_to_txt(spectrum, os.path.join(
             ActualProjectModel.project_location, 'Results'), 'results.spec')
+
+        return spectrum
 
     # endregion
 

@@ -155,6 +155,7 @@ class DataAcquisitionView(QMainWindow, DataAcquisition_ui):
 
         path = os.path.join(ActualProjectModel.project_location,
                             'Position Data')
-        fileutils.save_np_to_txt(array, path, file_name='frame.size')
+        fileutils.save_np_to_txt(
+            array, path, file_name='camera.data')
 
     # endregion
