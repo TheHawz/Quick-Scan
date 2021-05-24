@@ -62,9 +62,9 @@ def _trim_first_nans(array):
     i = 0
     le = len(array)
     while i < le:
-        i += 1
         if not np.isnan(array[i]):
             break
+        i += 1
 
     array = array[i:]
 
@@ -89,9 +89,9 @@ def _trim_last_nans(array, verbose=False):
     i = 0
     le = len(array_rev)
     while i < le:
-        i += 1
         if not np.isnan(array_rev[i]):
             break
+        i += 1
 
     array_rev = array_rev[i:]
 
