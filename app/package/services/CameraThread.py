@@ -15,7 +15,7 @@ from .mask import get_mask, get_circles
 
 # TODO: make configurable
 # GRID DEFINITION
-NUMBER_OF_ROWS = 4
+NUMBER_OF_ROWS = 3
 NUMBER_OF_COLS = 4
 PADDING = 100
 
@@ -55,7 +55,9 @@ class CameraThread(QThread):
         if not ret:
             cap = cv2.VideoCapture(ActualProjectModel.video_device)
 
-        self.frame_size = np.array([int(cap.get(3)), int(cap.get(4))])
+        # 4 => Horizontal
+        # 3 => Vertical
+        self.frame_size = np.array([int(cap.get(4)), int(cap.get(3))])
         self._grid = Grid(self.frame_size, NUMBER_OF_ROWS,
                           NUMBER_OF_COLS, padding=60)
 
@@ -63,7 +65,8 @@ class CameraThread(QThread):
         self.time = time.time()
 
         _, frame = cap.read()
-        self.on_camera_caracteristics_detected.emit((frame.shape[:2], fps))
+        self.on_camera_caracteristics_detected.emit(
+            (frame.shape[0], frame.shape[1], fps))
 
         while self._running:
             ret, frame = cap.read()
@@ -80,10 +83,6 @@ class CameraThread(QThread):
                 processed_frame = self.process_frame(frame)
 
             self.update_frame.emit(processed_frame)
-
-        # print('Stopping Camera Thread!')
-        # print('*' * 40)
-        # print('Times: \n', self.times)
 
         emit_obj = {"x_data": self.x_data, "y_data": self.y_data}
         self.on_stop_recording.emit(emit_obj)
@@ -132,27 +131,46 @@ class CameraThread(QThread):
         self.process_circles(frame, get_circles(get_mask(frame)))
         self.draw_rec_indicator(frame)
 
-        # TODO: add Time calculation with alpha channel!
-        # TODO: fade green to red
-        # rgb_times = (self.times*255)/3
-        # rgb_times = np.clip(rgb_times, 0, 255).astype(np.uint8)
-        # frame = cv2.resize(
-        #     rgb_times, (self._grid.size_of_frame[0],
-        #                 self._grid.size_of_frame[1]))
+        color_frame = self.draw_color_display(frame, self.times, self._grid)
 
         delta = time.time() - self.time
         self.time = time.time()
 
         if self.x != -1 and self.y != -1:
             grid = self._grid.locate_point((self.x, self.y))
-            self.times[grid[1]][grid[0]] += delta
+            self.times[grid[0]][grid[1]] += delta
             imb.draw_text(frame, f'{grid[0], grid[1]}', 15, 15)
 
-        return frame
+        return color_frame
 
     def draw_rec_indicator(self, frame):
         cv2.circle(
-            frame, (self._grid.size_of_frame[0]-30, 30), 8, (0, 0, 255), -1)
+            frame, (self._grid.size_of_frame[1]-30, 30), 8, (0, 0, 255), -1)
+
+    def draw_color_display(self, frame, times: np.ndarray, grid: Grid):
+        for row_index, row in enumerate(times):
+            for col_index, t in enumerate(row):
+                alpha = np.clip(t/ActualProjectModel.time_of_rec, 0, 1)
+
+                pt1, pt2 = grid.get_region([row_index, col_index])
+                self.draw_overlay(frame, alpha, pt1, pt2)
+
+        return frame
+
+    def draw_overlay(self, frame, t, pt1, pt2):
+        if t < 0.5:
+            # Degradado rojo -> transparente
+            alpha = 0.5 - t
+            imb.draw_filled_rectangle(
+                frame, pt1, pt2, (0, 0, 255), alpha)
+
+        else:
+            # Degradado transparente -> verde
+            alpha = t - 0.5
+            imb.draw_filled_rectangle(
+                frame, pt1, pt2, (0, 255, 0), alpha)
+
+        return frame
 
     def bypass(self, frame):
         # TODO: quitar flip en prod.

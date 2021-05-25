@@ -1,4 +1,5 @@
 # This Python file uses the following encoding: utf-8
+from app.package.models.ActualProjectModel import ActualProjectModel
 import math
 import os
 
@@ -158,4 +159,5 @@ class NewProjectView(QMainWindow, NewProject_ui):
     def handle_minimum_time_changed(self, value):
         self.minimum_time_label.setText(
             f'Minimum time of recording:\n {round(value, 2)}s')
+        ActualProjectModel.time_of_rec = value
     # endregion

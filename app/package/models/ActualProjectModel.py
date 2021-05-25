@@ -15,6 +15,7 @@ class ActualProjectModel(object):
     video_device = -1
     low_freq = -1
     high_freq = -1
+    time_of_rec = -1
 
     path_to_save = ''
 
