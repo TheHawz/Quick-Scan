@@ -14,12 +14,18 @@ from ..models.ActualProjectModel import ActualProjectModel
 from ..services import file as fileutils
 from ..services.dsp import getTimeOfRecording
 
+from ..controllers.DataAcquisitionController import DataAcquisitionController
+from ..models.DataAcquisitionModel import DataAcquisitionModel
+
 from ..ui.DataAcquisition_ui import Ui_MainWindow as DataAcquisition_ui
 
 
 class DataAcquisitionView(QMainWindow, DataAcquisition_ui):
 
-    def __init__(self, model, controller, parent=None):
+    def __init__(self,
+                 model: DataAcquisitionModel,
+                 controller: DataAcquisitionController,
+                 parent=None):
         super(DataAcquisitionView, self).__init__(parent)
         self._model = model
         self._controller = controller
@@ -39,6 +45,10 @@ class DataAcquisitionView(QMainWindow, DataAcquisition_ui):
         self._controller.start_cam_thread(min_time)
         self._controller.start_mic_thread()
 
+        self._controller.change_rows(4)
+        self._controller.change_cols(4)
+        self._controller.change_padding(40)
+
     def close(self):
         self.stop_threads()
         self.hide()
@@ -54,6 +64,12 @@ class DataAcquisitionView(QMainWindow, DataAcquisition_ui):
     def connect_to_controller(self):
         self.start_stop_button.clicked.connect(
             self._controller.toogle_recording)
+        self.rows_sb.valueChanged.connect(
+            self._controller.change_rows)
+        self.cols_sb.valueChanged.connect(
+            self._controller.change_cols)
+        self.pad_sb.valueChanged.connect(
+            self._controller.change_padding)
 
     def connect_to_model(self):
         self._model.on_mic_thread_running_changed.connect(
@@ -64,6 +80,9 @@ class DataAcquisitionView(QMainWindow, DataAcquisition_ui):
             self.handle_mic_recording_changed)
         self._model.on_cam_recording_changed.connect(
             self.handle_cam_recording_changed)
+        self._model.on_rows_changed.connect(self.handle_rows_changed)
+        self._model.on_cols_changed.connect(self.handle_cols_changed)
+        self._model.on_padding_changed.connect(self.handle_padding_changed)
 
     def set_default_values(self):
         self.q = queue.Queue()
@@ -79,6 +98,8 @@ class DataAcquisitionView(QMainWindow, DataAcquisition_ui):
         self._model.camThread.on_stop_recording.connect(self.save_positon_data)
         self._model.camThread.on_camera_caracteristics_detected.connect(
             self.save_camera_characteristica)
+        self._model.camThread.on_handle_all_regions_rec.connect(
+            self.handle_all_regions_rec)
 
         # 2. Start Mic Thread
         self._model.micThread = MicThread(self)
@@ -119,6 +140,7 @@ class DataAcquisitionView(QMainWindow, DataAcquisition_ui):
 
     def handle_mic_recording_changed(self, rec):
         if rec:
+            self.start_stop_button.setDisabled(True)
             self.start_stop_button.setText('Stop recording')
         else:
             self.start_stop_button.setText('Start!')
@@ -126,7 +148,10 @@ class DataAcquisitionView(QMainWindow, DataAcquisition_ui):
     def handle_cam_recording_changed(self, rec):
         pass
 
-    # TODO: move to utils
+    @Slot()
+    def handle_all_regions_rec(self):
+        self.start_stop_button.setDisabled(False)
+
     def convert_cv_qt(self, cv_img):
         """Convert from an opencv image to QPixmap"""
         rgb_image = cv2.cvtColor(cv_img, cv2.COLOR_BGR2RGB)
@@ -157,5 +182,17 @@ class DataAcquisitionView(QMainWindow, DataAcquisition_ui):
                             'Position Data')
         fileutils.save_np_to_txt(
             array, path, file_name='camera.data')
+
+    @Slot(float)
+    def handle_rows_changed(self, value):
+        self.rows_sb.setValue(value)
+
+    @Slot(float)
+    def handle_cols_changed(self, value):
+        self.cols_sb.setValue(value)
+
+    @Slot(float)
+    def handle_padding_changed(self, value):
+        self.pad_sb.setValue(value)
 
     # endregion

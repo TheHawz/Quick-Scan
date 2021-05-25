@@ -12,7 +12,7 @@ class TestGrid(unittest.TestCase):
         self.cols = [1, 2, 3, 4]
         self.paddings = [10, 20, 30, 40]
 
-        self.grids = []
+        self.grids: list[Grid] = []
         for i in range(len(self.rows)):
             self.grids.append(Grid(self.frame_size,
                                    self.rows[i],
@@ -21,16 +21,17 @@ class TestGrid(unittest.TestCase):
 
     def test_locate_none_points(self):
         for grid in self.grids:
+            # print(grid)
             points = [[0, 0],
                       [grid.padding, grid.padding],
-                      [grid.size_of_frame[1]-grid.padding,
-                          grid.size_of_frame[0]-grid.padding],
+                      [grid.size_of_frame[1]-grid.padding-1,
+                          grid.size_of_frame[0]-grid.padding-1],
                       [grid.size_of_frame[1], grid.size_of_frame[0]]]
             results = np.array(
-                [[0, 0],
+                [None,
                  [0, 0],
                  [grid.number_of_rows-1, grid.number_of_cols-1],
-                 [grid.number_of_rows-1, grid.number_of_cols-1]])
+                 None])
 
             for index in range(len(points)):
                 point = points[index]
@@ -38,7 +39,8 @@ class TestGrid(unittest.TestCase):
                 np.testing.assert_array_equal(
                     grid.locate_point(point),
                     result,
-                    f'Error with point {point}' +
+                    f'Grid: {grid}' +
+                    f'Error with point {point} ' +
                     f'Should have been in grid: {result}')
 
     def test_points(self):

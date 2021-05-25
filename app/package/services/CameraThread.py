@@ -15,15 +15,16 @@ from .mask import get_mask, get_circles
 
 # TODO: make configurable
 # GRID DEFINITION
-NUMBER_OF_ROWS = 3
-NUMBER_OF_COLS = 4
-PADDING = 100
+# NUMBER_OF_ROWS = 3
+# NUMBER_OF_COLS = 4
+# PADDING = 100
 
 
 class CameraThread(QThread):
     update_frame = Signal(np.ndarray)
     on_stop_recording = Signal(object)
     on_camera_caracteristics_detected = Signal(tuple)
+    on_handle_all_regions_rec = Signal()
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -32,6 +33,9 @@ class CameraThread(QThread):
         self.x = -1
         self.y = -1
         self.min_time_rec = -1
+        self.rows = -1
+        self.cols = -1
+        self.padding = -1
 
     def set_min_time(self, time_of_rec):
         self.min_time_rec = time_of_rec
@@ -58,10 +62,11 @@ class CameraThread(QThread):
         # 4 => Horizontal
         # 3 => Vertical
         self.frame_size = np.array([int(cap.get(4)), int(cap.get(3))])
-        self._grid = Grid(self.frame_size, NUMBER_OF_ROWS,
-                          NUMBER_OF_COLS, padding=60)
+        self._grid = Grid(self.frame_size, self.rows,
+                          self.cols, padding=self.padding)
 
-        self.times = np.zeros((NUMBER_OF_ROWS, NUMBER_OF_COLS))
+        # self.times = np.zeros((self.rows, self.cols))
+        self.times = None
         self.time = time.time()
 
         _, frame = cap.read()
@@ -77,9 +82,13 @@ class CameraThread(QThread):
             processed_frame = None
 
             if not self._rec:
-                self._grid.config(NUMBER_OF_ROWS, NUMBER_OF_COLS, pad=20)
+                self._grid.config(self.rows, self.cols, pad=self.padding)
                 processed_frame = self.bypass(frame)
             else:
+                if self.times is None:
+                    # This code will only execute once!
+                    self.times = np.zeros((self.rows, self.cols))
+
                 processed_frame = self.process_frame(frame)
 
             self.update_frame.emit(processed_frame)
@@ -138,8 +147,9 @@ class CameraThread(QThread):
 
         if self.x != -1 and self.y != -1:
             grid = self._grid.locate_point((self.x, self.y))
-            self.times[grid[0]][grid[1]] += delta
-            imb.draw_text(frame, f'{grid[0], grid[1]}', 15, 15)
+            if grid is not None:
+                self.times[grid[0]][grid[1]] += delta
+                imb.draw_text(frame, f'{grid[0], grid[1]}', 15, 15)
 
         return color_frame
 
@@ -148,12 +158,15 @@ class CameraThread(QThread):
             frame, (self._grid.size_of_frame[1]-30, 30), 8, (0, 0, 255), -1)
 
     def draw_color_display(self, frame, times: np.ndarray, grid: Grid):
-        for row_index, row in enumerate(times):
-            for col_index, t in enumerate(row):
-                alpha = np.clip(t/ActualProjectModel.time_of_rec, 0, 1)
+        alpha = np.clip(times/ActualProjectModel.time_of_rec, 0, 1)
 
-                pt1, pt2 = grid.get_region([row_index, col_index])
-                self.draw_overlay(frame, alpha, pt1, pt2)
+        if (alpha == 1).all():
+            self.on_handle_all_regions_rec.emit()
+
+        for irow, row in enumerate(alpha):
+            for icol, a in enumerate(row):
+                pt1, pt2 = grid.get_region([irow, icol])
+                self.draw_overlay(frame, a, pt1, pt2)
 
         return frame
 
@@ -186,6 +199,15 @@ class CameraThread(QThread):
         self._rec = False
         self._running = False
         print("[CamThread] Stop recording!")
+
+    def setRows(self, value):
+        self.rows = value
+
+    def setCols(self, value):
+        self.cols = value
+
+    def setPadding(self, value):
+        self.padding = value
 
     def stop(self):
         """Sets run flag to False and waits for thread to finish"""

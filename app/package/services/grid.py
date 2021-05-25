@@ -45,18 +45,16 @@ class Grid:
             self.size_of_frame - (self.padding_coords * 2)).astype(int)
 
         self.grid_size = np.array(
-            [self.real_size[0] / self.number_of_rows,
-             self.real_size[1] / self.number_of_cols])
+            [self.real_size[0] / number_of_rows,
+             self.real_size[1] / number_of_cols])
 
-        self.hor_div = [int(self.real_size[0] / self.number_of_rows * i + pad)
-                        for i in range(self.number_of_rows + 1)]
-        self.ver_div = [int(self.real_size[1] / self.number_of_cols * i + pad)
-                        for i in range(self.number_of_cols + 1)]
+        self.hor_div = [int(self.real_size[0] / number_of_rows * i + pad)
+                        for i in range(number_of_rows + 1)]
+        self.ver_div = [int(self.real_size[1] / number_of_cols * i + pad)
+                        for i in range(number_of_cols + 1)]
 
-        print(f'Frame Size: {self.size_of_frame}')
-        print(f'Grid_Size: {self.grid_size}')
-        print(f'Hor_div: {self.hor_div}')
-        print(f'Ver_div: {self.ver_div}')
+        # print(f'Hor div: {self.hor_div}')
+        # print(f'Ver div: {self.ver_div}')
 
     def locate_point(self, point: list):
         """ Located a point in the actual grid system.
@@ -81,15 +79,10 @@ class Grid:
 
         # Todo: this can be simplified => using boolean indexes to acces
         # Todo: the array.
-        if (result[0] < 0):
-            result[0] = 0
-        if (result[0] >= self.number_of_rows):
-            result[0] = self.number_of_rows-1
-
-        if (result[1] < 0):
-            result[1] = 0
-        if (result[1] >= self.number_of_cols):
-            result[1] = self.number_of_cols-1
+        if result[0] >= self.number_of_rows \
+                or result[1] >= self.number_of_cols \
+                or (result < 0).any():
+            return None
         return result
 
     def get_region(self, region: tuple[int, int]):
@@ -123,12 +116,12 @@ class Grid:
     def draw_grid(self, frame, color=(180, 180, 180), thickness=1):
         for div in self.hor_div:
             start_point = (self.padding, div)
-            end_point = (self.size_of_frame[0]-self.padding, div)
+            end_point = (self.size_of_frame[1]-self.padding, div)
             cv2.line(frame, start_point, end_point, color, thickness)
 
         for div in self.ver_div:
             start_point = (div, self.padding)
-            end_point = (div, self.size_of_frame[1]-self.padding)
+            end_point = (div, self.size_of_frame[0]-self.padding)
             cv2.line(frame, start_point, end_point, color, thickness)
 
         return frame

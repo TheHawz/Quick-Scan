@@ -44,3 +44,15 @@ class DataAcquisitionController(QObject):
 
         self._model.mic_recording = not rec
         self._model.cam_recording = not rec
+
+    def change_rows(self, value):
+        self._model.rows = value
+        self._model.camThread.setRows(value)
+
+    def change_cols(self, value):
+        self._model.cols = value
+        self._model.camThread.setCols(value)
+
+    def change_padding(self, value):
+        self._model.padding = value
+        self._model.camThread.setPadding(value)
