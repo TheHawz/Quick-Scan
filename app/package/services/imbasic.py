@@ -65,14 +65,31 @@ def draw_text(img, text, x, y, color=(255, 255, 255)):
     return cv2.putText(img, text, (x, y), cv2.FONT_HERSHEY_PLAIN, 1, color, 1)
 
 
-def draw_filled_rectangle(img, pt1, pt2, gray, alpha):
+def draw_filled_rectangle(img, pt1, pt2, color, alpha):
+    """Draw a color rectangle in img from pt1 to pt2 of color "Gray" with
+    alpha of "alpha"
+
+    Args:
+        img ([type]): [description]
+        pt1 (list | np.array | tuple): [x1, y1]
+        pt2 (list | np.array | tuple): [x2, y2]
+        gray ([type]): [description]
+        alpha ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
     # First we crop the sub-rect from the image
     x1, y1 = pt1
     x2, y2 = pt2
 
     sub_img = img[y1:y2, x1:x2]
-    white_rect = np.ones(sub_img.shape, dtype=np.uint8) * gray
-    res = cv2.addWeighted(sub_img, 0.5, white_rect, 0.5, 1.0)
+    white_rect = np.ones(sub_img.shape, dtype=np.uint8) * \
+        np.array(color, dtype=np.uint8)
+
+    # Added with the form:
+    res = cv2.addWeighted(sub_img, 1-alpha, white_rect,
+                          alpha, 0.0, dtype=8)
 
     # Putting the image back to its position
     img[y1:y2, x1:x2] = res
