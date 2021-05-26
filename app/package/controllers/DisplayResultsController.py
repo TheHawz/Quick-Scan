@@ -221,7 +221,6 @@ class DisplayResultsController(QObject):
         for key in [*audio_segments]:
             print(f'Processing grid: {key}')
             audio = np.transpose(audio_segments[key])
-            print(audio)
 
             if len(audio) == 0:
                 continue

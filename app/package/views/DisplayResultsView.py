@@ -1,5 +1,4 @@
 # This Python file uses the following encoding: utf-8
-from app.package.models.DisplayResultsModel import DisplayResultsModel
 import numpy as np
 
 from PySide2.QtWidgets import QMainWindow
