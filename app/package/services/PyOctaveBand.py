@@ -56,11 +56,11 @@ def octavefilter(x, fs, fraction=1, order=6, limits=None, show=0):
 
 def _typesignal(x):
     if type(x) is list:
-        return x
+        return np.array(x)
     elif type(x) is np.ndarray:
-        return x.tolist()
+        return x
     elif type(x) is tuple:
-        return list(x)
+        return np.array(list(x))
 
 
 def _buttersosfilter(freq, freq_d, freq_u, fs, order, factor, show=0):
