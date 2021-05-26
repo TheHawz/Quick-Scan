@@ -20,5 +20,9 @@ def getTimeOfRecording(lowest_freq, e=0.1, frac=3, fs=48000):
     return _getTime(sb, e)
 
 
-def get_spectrum(audio, fs):
-    return PyOctaveBand.octavefilter(audio, fs=fs, fraction=3)
+def get_spectrum(audio, fs, limits=None):
+    spl, freq = PyOctaveBand.octavefilter(audio,
+                                          fs=fs,
+                                          fraction=3,
+                                          limits=limits)
+    return spl, freq

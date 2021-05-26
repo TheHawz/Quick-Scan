@@ -1,16 +1,18 @@
 import numpy as np
 
 from PySide2.QtCore import QObject, Signal
+from ..services.grid import Grid
 
 
 class DisplayResultsModel(QObject):
 
     # Signals: to announce changes to the View
-    data_x_changed = Signal(np.ndarray)
-    data_y_changed = Signal(np.ndarray)
-    audio_data_changed = Signal(list)
-    audio_fs_changed = Signal(int)
+    on_data_x_changed = Signal(np.ndarray)
+    on_data_y_changed = Signal(np.ndarray)
+    on_audio_data_changed = Signal(list)
+    on_audio_fs_changed = Signal(int)
     on_freq_range_changed = Signal(list)
+    on_grid_changed = Signal(object)
 
     def __init__(self):
         super().__init__()
@@ -19,6 +21,10 @@ class DisplayResultsModel(QObject):
     def clear_state(self):
         self._data_x = np.array([])
         self._data_y = np.array([])
+        self._grid: Grid = None
+        self._audio_data = []
+        self._audio_fs = -1
+        self._fps = -1
 
     # region Props & Setters
 
@@ -29,7 +35,7 @@ class DisplayResultsModel(QObject):
     @data_x.setter
     def data_x(self, value):
         self._data_x = value
-        self.data_x_changed.emit(value)
+        self.on_data_x_changed.emit(value)
 
     # --- --- --- --- --- --- --- --- --- ---
 
@@ -40,7 +46,7 @@ class DisplayResultsModel(QObject):
     @data_y.setter
     def data_y(self, value):
         self._data_y = value
-        self.data_y_changed.emit(value)
+        self.on_data_y_changed.emit(value)
 
     # --- --- --- --- --- --- --- --- --- ---
 
@@ -62,7 +68,7 @@ class DisplayResultsModel(QObject):
     @audio_data.setter
     def audio_data(self, value):
         self._audio_data = value
-        self.audio_data_changed.emit(value)
+        self.on_audio_data_changed.emit(value)
 
     # --- --- --- --- --- --- --- --- --- ---
 
@@ -73,6 +79,29 @@ class DisplayResultsModel(QObject):
     @audio_fs.setter
     def audio_fs(self, value):
         self._audio_fs = int(value)
-        self.audio_fs_changed.emit(int(value))
+        self.on_audio_fs_changed.emit(int(value))
+
+    # --- --- --- --- --- --- --- --- --- ---
+
+    @property
+    def grid(self):
+        return self._grid
+
+    @grid.setter
+    def grid(self, value: Grid):
+        self._grid = value
+        self.on_grid_changed.emit("Changed!")
+
+    # --- --- --- --- --- --- --- --- --- ---
+
+    @property
+    def fps(self):
+        return self._fps
+
+    @fps.setter
+    def fps(self, value):
+        self._fps = value
+
+    # --- --- --- --- --- --- --- --- --- ---
 
     # endregion

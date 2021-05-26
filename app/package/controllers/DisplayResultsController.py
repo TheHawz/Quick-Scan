@@ -1,3 +1,4 @@
+from app.package.models.DisplayResultsModel import DisplayResultsModel
 from app.package.models.ActualProjectModel import ActualProjectModel
 import os
 from typing import Tuple
@@ -10,12 +11,6 @@ from ..services.grid import Grid
 from ..services.path import interpolate_coords
 from ..services import dsp
 
-# TODO: make configurable
-# GRID DEFINITION
-NUMBER_OF_ROWS = 4
-NUMBER_OF_COLS = 4
-PADDING = 100
-
 
 def log(msg):
     print(f'[Display Results] {msg}')
@@ -23,7 +18,7 @@ def log(msg):
 
 class DisplayResultsController(QObject):
 
-    def __init__(self, model, navigator):
+    def __init__(self, model: DisplayResultsModel, navigator):
         super().__init__()
         self._model = model
         self._navigator = navigator
@@ -43,6 +38,12 @@ class DisplayResultsController(QObject):
     @Slot(list)
     def set_freq_range(self, value):
         self._model.freq_range = value
+
+    @Slot()
+    def set_grid(self, grid_info):
+        self._model.grid = Grid(self._model.frame_size,
+                                int(grid_info[0]), int(grid_info[1]),
+                                int(grid_info[2]))
 
     # region LOADERS
 
@@ -67,17 +68,20 @@ class DisplayResultsController(QObject):
 
         data_dir = os.path.join(project_path, 'Position Data')
         files_path = [os.path.join(data_dir, 'data.x'),
-                      os.path.join(data_dir, 'data.y')]
+                      os.path.join(data_dir, 'data.y'),
+                      os.path.join(data_dir, 'grid.config')]
 
         try:
             _x = np.loadtxt(files_path[0])
             _y = np.loadtxt(files_path[1])
+            rows, cols, padding = np.loadtxt(files_path[2])
 
             if len(_x) == 0 or len(_y) == 0:
                 raise FileNotFoundError('File is empty')
 
             self.set_data_x(_x)
             self.set_data_y(_y)
+            self.set_grid([rows, cols, padding])
 
         except FileNotFoundError:
             raise Exception('File is empty')
@@ -150,13 +154,10 @@ class DisplayResultsController(QObject):
     def segment_video(self) -> dict[tuple, list[tuple]]:
         data = np.transpose(np.array([self._model.data_x, self._model.data_y]))
 
-        grid = Grid(self._model.frame_size, NUMBER_OF_ROWS,
-                    NUMBER_OF_COLS, PADDING)
-
         spatial_segmentation: dict[tuple, list[tuple]] = {}
-        for i in range(NUMBER_OF_COLS):
-            for j in range(NUMBER_OF_ROWS):
-                spatial_segmentation[i, j] = []
+        for i in range(self._model.grid.number_of_cols):
+            for j in range(self._model.grid.number_of_rows):
+                spatial_segmentation[j, i] = []
 
         start = 0
         end = 0
@@ -165,7 +166,11 @@ class DisplayResultsController(QObject):
         for index in range(len(data)):
             x, y = data[index]
 
-            actual_grid_id = grid.locate_point((x, y))
+            actual_grid_id = self._model.grid.locate_point((x, y))
+            if actual_grid_id is None:
+                # If the point was outside of the Grid itself (padding...).
+                continue
+
             # np.array to python list
             actual_grid_id = [int(i) for i in actual_grid_id]
 
@@ -187,8 +192,7 @@ class DisplayResultsController(QObject):
     def segment_audio(self,
                       segmentation: dict[tuple, list[tuple]]
                       ) -> dict[tuple, list[tuple]]:
-        # todo: get fps from camera
-        fps = 30
+        fps = self._model.fps
         fs = self._model.audio_fs
         conversion_ratio = fs / fps
 
@@ -208,13 +212,25 @@ class DisplayResultsController(QObject):
 
     def analyze(self, audio_segments):
         spectrum = []
-        for key in [*audio_segments]:
-            audio = np.transpose(audio_segments[key])
-            print(key)
-            if len(audio) != 0:
-                _spectrum = dsp.get_spectrum(audio, self._model.audio_fs)
-                spectrum.append(_spectrum)
+        freq = []
+        limits = self._model.freq_range
+        fs = self._model.audio_fs
 
+        print(f'Limits: {limits}')
+
+        for key in [*audio_segments]:
+            print(f'Processing grid: {key}')
+            audio = np.transpose(audio_segments[key])
+            print(audio)
+
+            if len(audio) == 0:
+                continue
+
+            _spl, _freq = dsp.get_spectrum(audio, fs, limits)
+            freq = _freq
+            spectrum.append(_spl)
+
+        print(f'Freq array: {freq}')
         fileutils.save_np_to_txt(spectrum, os.path.join(
             ActualProjectModel.project_location, 'Results'), 'results.spec')
 

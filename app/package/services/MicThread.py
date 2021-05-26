@@ -79,7 +79,7 @@ class MicThread(QThread):
         if status:
             print(status, file=sys.stderr)
 
-        outdata[:] = indata
+        # outdata[:] = indata
         # self.update_volume.emit(indata.copy())
 
         self.q.put(indata.copy())

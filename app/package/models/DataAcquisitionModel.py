@@ -24,6 +24,16 @@ class DataAcquisitionModel(QObject):
         self.micThread = None
         self.camThread = None
 
+    def get_grid_as_list(self):
+        return [self.rows, self.cols, self.padding]
+
+    # def get_grid_as_dict(self):
+    #     return {
+    #         "rows": self.rows,
+    #         "cols": self.cols,
+    #         "padding": self.padding,
+    #     }
+
     # region Props & Setters
 
     @property

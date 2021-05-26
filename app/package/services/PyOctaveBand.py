@@ -28,7 +28,7 @@ def octavefilter(x, fs, fraction=1, order=6, limits=None, show=0):
     :param show: Boolean for plot o not the filter response.
     :returns: Sound Pressure Level and Frequency array
     """
-    print("aaa")
+
     if limits is None:
         limits = [12, 20000]
 
@@ -49,9 +49,8 @@ def octavefilter(x, fs, fraction=1, order=6, limits=None, show=0):
     for idx in range(len(freq)):
         sd = signal.decimate(x, factor[idx])
         y = signal.sosfilt(sos[idx], sd)
-        return y.shape
-        raise Exception('aa')
         spl[idx] = 20 * np.log10(np.std(y) / 2e-5)
+
     return spl.tolist(), freq
 
 

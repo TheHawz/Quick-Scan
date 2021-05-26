@@ -129,6 +129,7 @@ class DataAcquisitionView(QMainWindow, DataAcquisition_ui):
     def save_positon_data(self, value):
         ActualProjectModel.data_x = value["x_data"]
         ActualProjectModel.data_y = value["y_data"]
+        ActualProjectModel.grid = self._model.get_grid_as_list()
 
         # Write data to disk
         path = os.path.join(ActualProjectModel.project_location,
@@ -137,6 +138,8 @@ class DataAcquisitionView(QMainWindow, DataAcquisition_ui):
 
         fileutils.save_np_to_txt(value["x_data"], path, file_name="data.x")
         fileutils.save_np_to_txt(value["y_data"], path, file_name="data.y")
+        fileutils.save_np_to_txt(
+            self._model.get_grid_as_list(), path, file_name='grid.config')
 
     def handle_mic_recording_changed(self, rec):
         if rec:
