@@ -21,7 +21,7 @@ class ActualProjectModel(object):
 
     data_x = np.array([])
     data_y = np.array([])
-    grid: tuple[int, int, int] = []
+    grid = []
 
     def __init__(self):
         super().__init__()

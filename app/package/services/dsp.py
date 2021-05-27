@@ -37,8 +37,8 @@ def get_spectrum(audio: np.ndarray, fs, limits=None):
     audio = audio[0]
 
     win_type = 'square'
-    win_size = 2**13
-    overlap = 0.2
+    win_size = 2**15
+    overlap = 0.1
     len_audio = audio.shape[0]
     fraction = 1
 
@@ -48,14 +48,13 @@ def get_spectrum(audio: np.ndarray, fs, limits=None):
     freq, _, _ = PyOctaveBand._genfreqs(limits, fraction, fs)
     num_of_win = get_num_of_windows(len_audio, win_size, overlap)
     spls = np.zeros([num_of_win, len(freq)])
-    freqs = []
 
-    print(f'len_audio = {len_audio}')
-    print(f'num_of_win = {num_of_win}')
+    # print(f'len_audio = {len_audio}')
+    # print(f'num_of_win = {num_of_win}')
 
     while i+win_size < len_audio:
         if index % 50 == 0:
-            print(f'{index} / {num_of_win}')
+            print(f'Progres: {index} / {num_of_win}...')
 
         start = i
         end = i+win_size
@@ -63,9 +62,8 @@ def get_spectrum(audio: np.ndarray, fs, limits=None):
         if win_type == 'square':
             audio_windowed = audio[start:end]
 
-        _spl, _freq = PyOctaveBand.octavefilter(
+        _spl, _ = PyOctaveBand.octavefilter(
             audio_windowed, fs, fraction, 6, limits, False)
-        freqs = _freq
 
         spls[index] = _spl
 
@@ -76,4 +74,4 @@ def get_spectrum(audio: np.ndarray, fs, limits=None):
 
     spl = np.mean(spls, 0)
 
-    return spl, freqs
+    return spl, freq

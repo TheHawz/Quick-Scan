@@ -85,7 +85,7 @@ class Grid:
             return None
         return result
 
-    def get_region(self, region: tuple[int, int]):
+    def get_region(self, region):
         """
         Args:
             region (tuple[int, int]): [row, col]
