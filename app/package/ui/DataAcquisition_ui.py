@@ -60,6 +60,14 @@ class Ui_MainWindow(object):
         self.left_frame.setObjectName(u"left_frame")
         self.left_frame.setFrameShape(QFrame.StyledPanel)
         self.left_frame.setFrameShadow(QFrame.Raised)
+        self.horizontalLayout_8 = QHBoxLayout(self.left_frame)
+        self.horizontalLayout_8.setObjectName(u"horizontalLayout_8")
+        self.capture_bt = QPushButton(self.left_frame)
+        self.capture_bt.setObjectName(u"capture_bt")
+        self.capture_bt.setMinimumSize(QSize(100, 0))
+
+        self.horizontalLayout_8.addWidget(self.capture_bt)
+
 
         self.horizontalLayout.addWidget(self.left_frame)
 
@@ -144,6 +152,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
         self.start_stop_button = QPushButton(self.right_frame)
         self.start_stop_button.setObjectName(u"start_stop_button")
+        self.start_stop_button.setMinimumSize(QSize(100, 0))
 
         self.horizontalLayout_4.addWidget(self.start_stop_button)
 
@@ -173,6 +182,7 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
         self.cam_view.setText("")
+        self.capture_bt.setText(QCoreApplication.translate("MainWindow", u"Take picture!", None))
         self.mid_groupBox.setTitle(QCoreApplication.translate("MainWindow", u"Grid Configuration:", None))
         self.label.setText(QCoreApplication.translate("MainWindow", u"n\u00ba Rows", None))
         self.label_2.setText(QCoreApplication.translate("MainWindow", u"n\u00ba Cols", None))

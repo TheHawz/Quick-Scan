@@ -1,4 +1,9 @@
+import numpy as np
+
 from PySide2.QtCore import QObject, Signal
+
+from app.package.services.MicThread import MicThread
+from app.package.services.CameraThread import CameraThread
 
 
 class DataAcquisitionModel(QObject):
@@ -11,6 +16,7 @@ class DataAcquisitionModel(QObject):
     on_rows_changed = Signal(int)
     on_cols_changed = Signal(int)
     on_padding_changed = Signal(int)
+    on_bg_img_changed = Signal(np.ndarray)
 
     def __init__(self):
         super().__init__()
@@ -21,18 +27,12 @@ class DataAcquisitionModel(QObject):
         self._cam_thread_running = False
         self._mic_recording = False
         self._cam_recording = False
-        self.micThread = None
-        self.camThread = None
+        self.micThread: MicThread = None
+        self.camThread: CameraThread = None
+        self._bg_img: np.ndarray = None
 
     def get_grid_as_list(self):
         return [self.rows, self.cols, self.padding]
-
-    # def get_grid_as_dict(self):
-    #     return {
-    #         "rows": self.rows,
-    #         "cols": self.cols,
-    #         "padding": self.padding,
-    #     }
 
     # region Props & Setters
 
@@ -121,5 +121,16 @@ class DataAcquisitionModel(QObject):
     def padding(self, value):
         self._padding = value
         self.on_padding_changed.emit(value)
+
+    # --- --- --- --- --- --- --- --- --- ---
+
+    @property
+    def bg_img(self):
+        return self._bg_img
+
+    @bg_img.setter
+    def bg_img(self, value):
+        self._bg_img = value
+        self.on_bg_img_changed.emit(value)
 
     # endregion
