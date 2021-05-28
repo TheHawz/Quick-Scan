@@ -17,20 +17,181 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(800, 600)
+        MainWindow.resize(827, 651)
+        self.actionOpen_Project = QAction(MainWindow)
+        self.actionOpen_Project.setObjectName(u"actionOpen_Project")
+        self.actionAbout = QAction(MainWindow)
+        self.actionAbout.setObjectName(u"actionAbout")
+        self.action_Quit = QAction(MainWindow)
+        self.action_Quit.setObjectName(u"action_Quit")
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
-        self.pushButton = QPushButton(self.centralwidget)
-        self.pushButton.setObjectName(u"pushButton")
-        self.pushButton.setGeometry(QRect(290, 170, 271, 151))
+        self.horizontalLayout = QHBoxLayout(self.centralwidget)
+        self.horizontalLayout.setObjectName(u"horizontalLayout")
+        self.frame = QFrame(self.centralwidget)
+        self.frame.setObjectName(u"frame")
+        self.frame.setFrameShape(QFrame.StyledPanel)
+        self.frame.setFrameShadow(QFrame.Raised)
+        self.verticalLayout = QVBoxLayout(self.frame)
+        self.verticalLayout.setObjectName(u"verticalLayout")
+        self.frame_2 = QFrame(self.frame)
+        self.frame_2.setObjectName(u"frame_2")
+        self.frame_2.setFrameShape(QFrame.StyledPanel)
+        self.frame_2.setFrameShadow(QFrame.Raised)
+        self.horizontalLayout_2 = QHBoxLayout(self.frame_2)
+        self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
+        self.frame_5 = QFrame(self.frame_2)
+        self.frame_5.setObjectName(u"frame_5")
+        self.frame_5.setFrameShape(QFrame.StyledPanel)
+        self.frame_5.setFrameShadow(QFrame.Raised)
+        self.horizontalLayout_4 = QHBoxLayout(self.frame_5)
+        self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
+        self.bg_img_label = QLabel(self.frame_5)
+        self.bg_img_label.setObjectName(u"bg_img_label")
+
+        self.horizontalLayout_4.addWidget(self.bg_img_label)
+
+
+        self.horizontalLayout_2.addWidget(self.frame_5)
+
+        self.frame_4 = QFrame(self.frame_2)
+        self.frame_4.setObjectName(u"frame_4")
+        self.frame_4.setFrameShape(QFrame.StyledPanel)
+        self.frame_4.setFrameShadow(QFrame.Raised)
+        self.horizontalLayout_3 = QHBoxLayout(self.frame_4)
+        self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
+        self.spectrum_label = QLabel(self.frame_4)
+        self.spectrum_label.setObjectName(u"spectrum_label")
+
+        self.horizontalLayout_3.addWidget(self.spectrum_label)
+
+
+        self.horizontalLayout_2.addWidget(self.frame_4)
+
+
+        self.verticalLayout.addWidget(self.frame_2)
+
+        self.frame_3 = QFrame(self.frame)
+        self.frame_3.setObjectName(u"frame_3")
+        self.frame_3.setFrameShape(QFrame.StyledPanel)
+        self.frame_3.setFrameShadow(QFrame.Raised)
+        self.horizontalLayout_5 = QHBoxLayout(self.frame_3)
+        self.horizontalLayout_5.setObjectName(u"horizontalLayout_5")
+        self.groupBox = QGroupBox(self.frame_3)
+        self.groupBox.setObjectName(u"groupBox")
+        self.verticalLayout_2 = QVBoxLayout(self.groupBox)
+        self.verticalLayout_2.setObjectName(u"verticalLayout_2")
+        self.frame_7 = QFrame(self.groupBox)
+        self.frame_7.setObjectName(u"frame_7")
+        self.frame_7.setFrameShape(QFrame.StyledPanel)
+        self.frame_7.setFrameShadow(QFrame.Raised)
+        self.horizontalLayout_7 = QHBoxLayout(self.frame_7)
+        self.horizontalLayout_7.setObjectName(u"horizontalLayout_7")
+        self.label_2 = QLabel(self.frame_7)
+        self.label_2.setObjectName(u"label_2")
+        self.label_2.setMinimumSize(QSize(250, 0))
+        self.label_2.setMaximumSize(QSize(250, 16777215))
+
+        self.horizontalLayout_7.addWidget(self.label_2)
+
+        self.pr_name = QLabel(self.frame_7)
+        self.pr_name.setObjectName(u"pr_name")
+
+        self.horizontalLayout_7.addWidget(self.pr_name)
+
+
+        self.verticalLayout_2.addWidget(self.frame_7)
+
+        self.frame_9 = QFrame(self.groupBox)
+        self.frame_9.setObjectName(u"frame_9")
+        self.frame_9.setFrameShape(QFrame.StyledPanel)
+        self.frame_9.setFrameShadow(QFrame.Raised)
+        self.horizontalLayout_8 = QHBoxLayout(self.frame_9)
+        self.horizontalLayout_8.setObjectName(u"horizontalLayout_8")
+        self.label_4 = QLabel(self.frame_9)
+        self.label_4.setObjectName(u"label_4")
+        self.label_4.setMinimumSize(QSize(250, 0))
+        self.label_4.setMaximumSize(QSize(250, 16777215))
+
+        self.horizontalLayout_8.addWidget(self.label_4)
+
+        self.grid_config = QLabel(self.frame_9)
+        self.grid_config.setObjectName(u"grid_config")
+
+        self.horizontalLayout_8.addWidget(self.grid_config)
+
+
+        self.verticalLayout_2.addWidget(self.frame_9)
+
+        self.frame_8 = QFrame(self.groupBox)
+        self.frame_8.setObjectName(u"frame_8")
+        self.frame_8.setFrameShape(QFrame.StyledPanel)
+        self.frame_8.setFrameShadow(QFrame.Raised)
+        self.horizontalLayout_9 = QHBoxLayout(self.frame_8)
+        self.horizontalLayout_9.setObjectName(u"horizontalLayout_9")
+        self.label_6 = QLabel(self.frame_8)
+        self.label_6.setObjectName(u"label_6")
+        self.label_6.setMinimumSize(QSize(250, 0))
+        self.label_6.setMaximumSize(QSize(250, 16777215))
+
+        self.horizontalLayout_9.addWidget(self.label_6)
+
+        self.audio_info = QLabel(self.frame_8)
+        self.audio_info.setObjectName(u"audio_info")
+
+        self.horizontalLayout_9.addWidget(self.audio_info)
+
+
+        self.verticalLayout_2.addWidget(self.frame_8)
+
+
+        self.horizontalLayout_5.addWidget(self.groupBox)
+
+
+        self.verticalLayout.addWidget(self.frame_3)
+
+        self.frame_6 = QFrame(self.frame)
+        self.frame_6.setObjectName(u"frame_6")
+        self.frame_6.setFrameShape(QFrame.StyledPanel)
+        self.frame_6.setFrameShadow(QFrame.Raised)
+        self.horizontalLayout_6 = QHBoxLayout(self.frame_6)
+        self.horizontalLayout_6.setObjectName(u"horizontalLayout_6")
+        self.label = QLabel(self.frame_6)
+        self.label.setObjectName(u"label")
+        self.label.setMinimumSize(QSize(250, 0))
+
+        self.horizontalLayout_6.addWidget(self.label)
+
+        self.progressBar = QProgressBar(self.frame_6)
+        self.progressBar.setObjectName(u"progressBar")
+        self.progressBar.setValue(24)
+
+        self.horizontalLayout_6.addWidget(self.progressBar)
+
+
+        self.verticalLayout.addWidget(self.frame_6)
+
+
+        self.horizontalLayout.addWidget(self.frame)
+
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 800, 21))
+        self.menubar.setGeometry(QRect(0, 0, 827, 22))
+        self.menuArchive = QMenu(self.menubar)
+        self.menuArchive.setObjectName(u"menuArchive")
+        self.menuHelp = QMenu(self.menubar)
+        self.menuHelp.setObjectName(u"menuHelp")
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QStatusBar(MainWindow)
         self.statusbar.setObjectName(u"statusbar")
         MainWindow.setStatusBar(self.statusbar)
+
+        self.menubar.addAction(self.menuArchive.menuAction())
+        self.menubar.addAction(self.menuHelp.menuAction())
+        self.menuArchive.addAction(self.actionOpen_Project)
+        self.menuArchive.addAction(self.action_Quit)
+        self.menuHelp.addAction(self.actionAbout)
 
         self.retranslateUi(MainWindow)
 
@@ -39,6 +200,32 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
-        self.pushButton.setText(QCoreApplication.translate("MainWindow", u"PushButton", None))
+        self.actionOpen_Project.setText(QCoreApplication.translate("MainWindow", u"New Project", None))
+#if QT_CONFIG(tooltip)
+        self.actionOpen_Project.setToolTip(QCoreApplication.translate("MainWindow", u"Create a new project or load an old one", None))
+#endif // QT_CONFIG(tooltip)
+#if QT_CONFIG(shortcut)
+        self.actionOpen_Project.setShortcut(QCoreApplication.translate("MainWindow", u"Ctrl+N", None))
+#endif // QT_CONFIG(shortcut)
+        self.actionAbout.setText(QCoreApplication.translate("MainWindow", u"About", None))
+        self.action_Quit.setText(QCoreApplication.translate("MainWindow", u"Quit", None))
+#if QT_CONFIG(tooltip)
+        self.action_Quit.setToolTip(QCoreApplication.translate("MainWindow", u"Close the program safely", None))
+#endif // QT_CONFIG(tooltip)
+#if QT_CONFIG(shortcut)
+        self.action_Quit.setShortcut(QCoreApplication.translate("MainWindow", u"Ctrl+Q", None))
+#endif // QT_CONFIG(shortcut)
+        self.bg_img_label.setText("")
+        self.spectrum_label.setText("")
+        self.groupBox.setTitle(QCoreApplication.translate("MainWindow", u"Project Information", None))
+        self.label_2.setText(QCoreApplication.translate("MainWindow", u"Project Name:", None))
+        self.pr_name.setText(QCoreApplication.translate("MainWindow", u"TextLabel", None))
+        self.label_4.setText(QCoreApplication.translate("MainWindow", u"Grid Config:", None))
+        self.grid_config.setText(QCoreApplication.translate("MainWindow", u"TextLabel", None))
+        self.label_6.setText(QCoreApplication.translate("MainWindow", u"Sample Rate and Frequency Range: ", None))
+        self.audio_info.setText(QCoreApplication.translate("MainWindow", u"TextLabel", None))
+        self.label.setText(QCoreApplication.translate("MainWindow", u"TextLabel", None))
+        self.menuArchive.setTitle(QCoreApplication.translate("MainWindow", u"Archive", None))
+        self.menuHelp.setTitle(QCoreApplication.translate("MainWindow", u"Help", None))
     # retranslateUi
 

@@ -1,13 +1,23 @@
 # This Python file uses the following encoding: utf-8
 import numpy as np
+import cv2
 
 from PySide2.QtWidgets import QMainWindow
 from PySide2.QtCore import Slot
+from PySide2.QtGui import QImage, QPixmap
 
 from ..models.ActualProjectModel import ActualProjectModel
 from ..ui.DisplayResults_ui import Ui_MainWindow as DisplayResults_ui
 from ..models.DisplayResultsModel import DisplayResultsModel
 from ..controllers.DisplayResultsController import DisplayResultsController
+
+progress_msgs = {
+    0: 'Finish trim, start clean data',
+    1: 'Finish clean data, start segment video',
+    2: 'Finish segment video, start segment audio',
+    3: 'Finish segment audio, start analyze audio',
+    4: 'Finish analyze audio',
+}
 
 
 def log(msg: str) -> None:
@@ -23,6 +33,7 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
         self._controller = controller
 
         self.setupUi(self)
+        self.create_threads()
         self.connect_to_controller()
         self.connect_to_model()
         self.set_default_values()
@@ -36,6 +47,9 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
 
     # region HELPER FUNCTIONS AND CALLBACKS
 
+    def create_threads(self):
+        self._controller.create_thread()
+
     def connect_to_controller(self):
         pass
 
@@ -45,6 +59,9 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
         self._model.on_audio_data_changed.connect(
             self.handle_audio_data_changed)
         self._model.on_audio_fs_changed.connect(self.handle_audio_fs_changed)
+        self._model.on_thread_status_update.connect(
+            self.handle_update_status)
+        self._model.on_image_changed.connect(self.display_image)
 
     def set_default_values(self):
         pass
@@ -74,12 +91,14 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
         self._controller.set_freq_range(
             [ActualProjectModel.low_freq, ActualProjectModel.high_freq])
 
-        self._controller.dsp()
-        # try:
-        #     self._controller.dsp()
-        # except Exception as e:
-        #     log(e)
-        #     # TODO: show Error msg...
+        self._controller.load_bg_img(ActualProjectModel.project_location)
+
+        self.pr_name.setText(ActualProjectModel.project_name)
+        self.audio_info.setText(
+            f'fs = {self._model.audio_fs}. ' +
+            'Frequency Range: ' +
+            f'{ActualProjectModel.low_freq}-{ActualProjectModel.high_freq}')
+        self.grid_config.setText(str(self._model.grid))
 
     @Slot(np.ndarray)
     def handle_data_x_changed(self, value):
@@ -94,3 +113,28 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
 
     def handle_audio_fs_changed(self, value):
         log(f'Audio: fs -> {value}')
+
+    @Slot(list)
+    def handle_update_status(self, value: int) -> None:
+        pass
+        # total_grids = self._model.grid.number_of_cols * \
+        #     self._model.grid.number_of_rows
+        # log(f' *** Grid nº {value+1} of {total_grids}')
+        # self.progressBar.setValue((value+1)/total_grids*100)
+
+    @Slot(np.ndarray)
+    def display_image(self, cv_img):
+        """Updates the image_label with a new opencv image"""
+        qt_img = self.convert_cv_qt(cv_img)
+        self.bg_img_label.setPixmap(qt_img)
+
+        self._controller.start_thread()
+
+    def convert_cv_qt(self, cv_img):
+        """Convert from an opencv image to QPixmap"""
+        rgb_image = cv2.cvtColor(cv_img, cv2.COLOR_BGR2RGB)
+        h, w, ch = rgb_image.shape
+        bytes_per_line = ch * w
+        qt_format = QImage(
+            rgb_image.data, w, h, bytes_per_line, QImage.Format_RGB888)
+        return QPixmap.fromImage(qt_format)

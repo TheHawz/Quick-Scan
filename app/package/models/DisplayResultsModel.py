@@ -1,6 +1,7 @@
 import numpy as np
 
 from PySide2.QtCore import QObject, Signal
+# from ..services.DspThread import DspThread
 from ..services.grid import Grid
 
 
@@ -13,6 +14,8 @@ class DisplayResultsModel(QObject):
     on_audio_fs_changed = Signal(int)
     on_freq_range_changed = Signal(list)
     on_grid_changed = Signal(object)
+    on_thread_status_update = Signal(int)
+    on_image_changed = Signal(object)
 
     def __init__(self):
         super().__init__()
@@ -25,6 +28,8 @@ class DisplayResultsModel(QObject):
         self._audio_data = []
         self._audio_fs = -1
         self._fps = -1
+        self._image = np.array([])
+        self.dsp_thread = None
 
     # region Props & Setters
 
@@ -101,6 +106,17 @@ class DisplayResultsModel(QObject):
     @fps.setter
     def fps(self, value):
         self._fps = value
+
+    # --- --- --- --- --- --- --- --- --- ---
+
+    @property
+    def image(self):
+        return self._image
+
+    @image.setter
+    def image(self, value):
+        self._image = value
+        self.on_image_changed.emit(value)
 
     # --- --- --- --- --- --- --- --- --- ---
 

@@ -28,17 +28,35 @@ class Ui_MainWindow(object):
         self.frame.setFrameShadow(QFrame.Raised)
         self.verticalLayout = QVBoxLayout(self.frame)
         self.verticalLayout.setObjectName(u"verticalLayout")
-        self.top_frame = QFrame(self.frame)
-        self.top_frame.setObjectName(u"top_frame")
-        self.top_frame.setFrameShape(QFrame.StyledPanel)
-        self.top_frame.setFrameShadow(QFrame.Raised)
-        self.horizontalLayout_5 = QHBoxLayout(self.top_frame)
+        self.frame_5 = QFrame(self.frame)
+        self.frame_5.setObjectName(u"frame_5")
+        self.frame_5.setFrameShape(QFrame.StyledPanel)
+        self.frame_5.setFrameShadow(QFrame.Raised)
+        self.horizontalLayout_9 = QHBoxLayout(self.frame_5)
+        self.horizontalLayout_9.setObjectName(u"horizontalLayout_9")
+        self.pushButton = QPushButton(self.frame_5)
+        self.pushButton.setObjectName(u"pushButton")
+
+        self.horizontalLayout_9.addWidget(self.pushButton)
+
+        self.horizontalSpacer_3 = QSpacerItem(658, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
+        self.horizontalLayout_9.addItem(self.horizontalSpacer_3)
+
+
+        self.verticalLayout.addWidget(self.frame_5)
+
+        self.mid_frame = QFrame(self.frame)
+        self.mid_frame.setObjectName(u"mid_frame")
+        self.mid_frame.setFrameShape(QFrame.StyledPanel)
+        self.mid_frame.setFrameShadow(QFrame.Raised)
+        self.horizontalLayout_5 = QHBoxLayout(self.mid_frame)
         self.horizontalLayout_5.setObjectName(u"horizontalLayout_5")
         self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
         self.horizontalLayout_5.addItem(self.horizontalSpacer)
 
-        self.cam_view = QLabel(self.top_frame)
+        self.cam_view = QLabel(self.mid_frame)
         self.cam_view.setObjectName(u"cam_view")
 
         self.horizontalLayout_5.addWidget(self.cam_view)
@@ -48,7 +66,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_5.addItem(self.horizontalSpacer_2)
 
 
-        self.verticalLayout.addWidget(self.top_frame)
+        self.verticalLayout.addWidget(self.mid_frame)
 
         self.bottom_frame = QFrame(self.frame)
         self.bottom_frame.setObjectName(u"bottom_frame")
@@ -181,6 +199,7 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
+        self.pushButton.setText(QCoreApplication.translate("MainWindow", u"Go Back", None))
         self.cam_view.setText("")
         self.capture_bt.setText(QCoreApplication.translate("MainWindow", u"Take picture!", None))
         self.mid_groupBox.setTitle(QCoreApplication.translate("MainWindow", u"Grid Configuration:", None))
