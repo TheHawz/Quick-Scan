@@ -7,17 +7,9 @@ from PySide2.QtCore import QThread, Signal
 
 from ..models.ActualProjectModel import ActualProjectModel
 
-# from ..services import colorSegmentation as cs  # Credits to Lara!
 from .grid import Grid
 from . import imbasic as imb
 from .mask import get_mask, get_circles
-
-
-# TODO: make configurable
-# GRID DEFINITION
-# NUMBER_OF_ROWS = 3
-# NUMBER_OF_COLS = 4
-# PADDING = 100
 
 
 class CameraThread(QThread):
@@ -36,6 +28,7 @@ class CameraThread(QThread):
         self.rows = -1
         self.cols = -1
         self.padding = -1
+        self.last_frame = None
 
     def set_min_time(self, time_of_rec):
         self.min_time_rec = time_of_rec
@@ -49,37 +42,18 @@ class CameraThread(QThread):
         self._running = True
         self._rec = False
 
-        fps = cv2.VideoCapture(
-            ActualProjectModel.video_device).get(cv2.CAP_PROP_FPS)
-
-        cap = cv2.VideoCapture(ActualProjectModel.video_device + cv2.CAP_DSHOW)
-
-        # Trying DSHOW driver
-        ret, _ = cap.read()
-        if not ret:
-            cap = cv2.VideoCapture(ActualProjectModel.video_device)
-
-        # 4 => Horizontal
-        # 3 => Vertical
-        self.frame_size = np.array([int(cap.get(4)), int(cap.get(3))])
-        self._grid = Grid(self.frame_size, self.rows,
-                          self.cols, padding=self.padding)
+        cap = self.setup_camera()
 
         # self.times = np.zeros((self.rows, self.cols))
         self.times = None
         self.time = time.time()
 
-        _, frame = cap.read()
-        self.on_camera_caracteristics_detected.emit(
-            (frame.shape[0], frame.shape[1], fps))
-
         while self._running:
             ret, frame = cap.read()
+            processed_frame = None
 
             if not ret:
                 break
-
-            processed_frame = None
 
             if not self._rec:
                 self._grid.config(self.rows, self.cols, pad=self.padding)
@@ -98,6 +72,28 @@ class CameraThread(QThread):
         cv2.destroyAllWindows()
         cap.release()
 
+    def setup_camera(self):
+        fps = cv2.VideoCapture(
+            ActualProjectModel.video_device).get(cv2.CAP_PROP_FPS)
+
+        # Trying DSHOW driver
+        cap = cv2.VideoCapture(ActualProjectModel.video_device + cv2.CAP_DSHOW)
+        ret, _ = cap.read()
+        if not ret:
+            cap = cv2.VideoCapture(ActualProjectModel.video_device)
+
+        # 4 => Horizontal
+        # 3 => Vertical
+        self.frame_size = np.array([int(cap.get(4)), int(cap.get(3))])
+        self._grid = Grid(self.frame_size, self.rows,
+                          self.cols, padding=self.padding)
+
+        _, frame = cap.read()
+        self.on_camera_caracteristics_detected.emit(
+            (frame.shape[0], frame.shape[1], fps))
+
+        return cap
+
     def process_circles(self, frame, circles):
         """Appends data to the arrays and draws circles in the frame
 
@@ -105,8 +101,8 @@ class CameraThread(QThread):
            y_data. De esta forma se tendrá sincronizado el momento en el
            que el micro se coloca en posición
         Args:
-            frame ([type]): [description]
-            circles ([type]): [description]
+            frame (np.ndarray): Image in numpy format
+            circles (np.ndarray): Circles in array format
         """
         if circles is None:
 
@@ -114,6 +110,8 @@ class CameraThread(QThread):
             self.x_data.append(np.nan)
             self.y_data.append(np.nan)
         else:
+            # todo: Improve circle selection => select the one which is closer
+            # todo: to the previous detection
             circles = np.round(circles[0, :]).astype("int")
 
             x, y, r = circles[0]
@@ -188,6 +186,9 @@ class CameraThread(QThread):
     def bypass(self, frame):
         # TODO: quitar flip en prod.
         frame = cv2.flip(frame, 1)
+
+        self.last_frame = np.copy(frame)
+
         self._grid.draw_grid(frame)
         return frame
 

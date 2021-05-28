@@ -20,6 +20,10 @@ from ..models.DataAcquisitionModel import DataAcquisitionModel
 from ..ui.DataAcquisition_ui import Ui_MainWindow as DataAcquisition_ui
 
 
+def log(msg: str) -> None:
+    print(f'[DataAcquisition/View] {msg}')
+
+
 class DataAcquisitionView(QMainWindow, DataAcquisition_ui):
 
     def __init__(self,
@@ -64,12 +68,10 @@ class DataAcquisitionView(QMainWindow, DataAcquisition_ui):
     def connect_to_controller(self):
         self.start_stop_button.clicked.connect(
             self._controller.toogle_recording)
-        self.rows_sb.valueChanged.connect(
-            self._controller.change_rows)
-        self.cols_sb.valueChanged.connect(
-            self._controller.change_cols)
-        self.pad_sb.valueChanged.connect(
-            self._controller.change_padding)
+        self.rows_sb.valueChanged.connect(self._controller.change_rows)
+        self.cols_sb.valueChanged.connect(self._controller.change_cols)
+        self.pad_sb.valueChanged.connect(self._controller.change_padding)
+        self.capture_bt.clicked.connect(self._controller.take_bg_picture)
 
     def connect_to_model(self):
         self._model.on_mic_thread_running_changed.connect(
@@ -83,6 +85,7 @@ class DataAcquisitionView(QMainWindow, DataAcquisition_ui):
         self._model.on_rows_changed.connect(self.handle_rows_changed)
         self._model.on_cols_changed.connect(self.handle_cols_changed)
         self._model.on_padding_changed.connect(self.handle_padding_changed)
+        self._model.on_bg_img_changed.connect(self.handle_bg_img_changed)
 
     def set_default_values(self):
         self.q = queue.Queue()
@@ -197,5 +200,16 @@ class DataAcquisitionView(QMainWindow, DataAcquisition_ui):
     @Slot(float)
     def handle_padding_changed(self, value):
         self.pad_sb.setValue(value)
+
+    @Slot(np.ndarray)
+    def handle_bg_img_changed(self, img: np.ndarray) -> None:
+        dirpath = os.path.join(
+            ActualProjectModel.project_location, 'Images')
+        fileutils.mkdir(dirpath)
+        filename = os.path.join(dirpath, 'bg.png')
+
+        log(f'Saving image in {filename}')
+        log(f'Img shape = {img.shape}')
+        cv2.imwrite(filename, img)
 
     # endregion

@@ -1,9 +1,14 @@
 from PySide2.QtCore import QObject, Slot
+from app.package.models.DataAcquisitionModel import DataAcquisitionModel
+
+
+def log(msg: str) -> None:
+    print('[DataAcquisition/Controller] ' + msg)
 
 
 class DataAcquisitionController(QObject):
 
-    def __init__(self, model, navigator):
+    def __init__(self, model: DataAcquisitionModel, navigator):
         super().__init__()
         self._model = model
         self._navigator = navigator
@@ -56,3 +61,10 @@ class DataAcquisitionController(QObject):
     def change_padding(self, value):
         self._model.padding = value
         self._model.camThread.setPadding(value)
+
+    def take_bg_picture(self):
+        img = self._model.camThread.last_frame
+        if img is None:
+            log('[ERROR] while getting picture...')
+
+        self._model.bg_img = img
