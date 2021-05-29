@@ -1,7 +1,7 @@
 import os
 import numpy as np
 
-from PySide2.QtCore import QThread, Signal
+from PySide2.QtCore import QObject, Signal
 
 from ..models.DisplayResultsModel import DisplayResultsModel
 from ..models.ActualProjectModel import ActualProjectModel
@@ -11,47 +11,44 @@ from ..services.path import interpolate_coords
 from ..services import dsp
 
 
-class DspThread(QThread):
-    on_update_status = Signal(int)
-    on_finished = Signal()
+class DspThread(QObject):
+    update_status = Signal(int)
+    finished = Signal()
 
-    def __init__(self, model: DisplayResultsModel, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self._model = model
-        self.init_values()
+    # def __init__(self, model: DisplayResultsModel, *args, **kwargs):
+    #     super().__init__(*args, **kwargs)
+    #     model = model
+    #     self.init_values()
 
-    def init_values(self):
-        self.trimmed_audio: np.ndarray = None
+    # def init_values(self):
+    #     self.trimmed_audio: np.ndarray = None
 
     @staticmethod
     def log(msg: str) -> None:
         print(f'[DSP Thread] {msg}')
 
-    def run(self):
-        """
-            Callback function executed whenever someone starts the QThreat
-            (thread.start())
-        """
+    def process(self, model: DisplayResultsModel):
+
         self.log('Running!')
 
-        self.trimmed_audio = self.trim_audio()
-        shift, trim = self.clean_data_position()
-        self._model.audio_data = self.trimmed_audio[shift:-trim]
+        self.trimmed_audio = self.trim_audio(model)
+        shift, trim = self.clean_data_position(model)
+        model.audio_data = self.trimmed_audio[shift:-trim]
 
-        spatial_segmentation = self.segment_video()
-        audio_segments = self.segment_audio(spatial_segmentation)
+        spatial_segmentation = self.segment_video(model)
+        audio_segments = self.segment_audio(model, spatial_segmentation)
 
-        freq, spec = self.analyze(audio_segments)
-        self._model.spectrum = spec
-        self._model.freq = freq
+        freq, spec = self.analyze(model, audio_segments)
+        model.spectrum = spec
+        model.freq = freq
 
-        self.on_finished.emit()
+        self.finished.emit()
 
-    def trim_audio(self) -> np.ndarray:
-        audio_len = len(self._model.audio_data)
-        video_len = len(self._model.data_x)
-        fs = self._model.audio_fs
-        fps = self._model.fps
+    def trim_audio(self, model) -> np.ndarray:
+        audio_len = len(model.audio_data)
+        video_len = len(model.data_x)
+        fs = model.audio_fs
+        fps = model.fps
 
         if (audio_len/fs < video_len/fps):
             # raise Exception('ERROR: Audio is shorter than needed...')
@@ -63,33 +60,33 @@ class DspThread(QThread):
             position_data_to_remove = int(diff_in_samples/fs*fps)+1
             self.log(f'position_data_to_remove: {position_data_to_remove}')
 
-            self._model.data_x = self._model.data_x[:-position_data_to_remove]
-            self._model.data_y = self._model.data_y[:-position_data_to_remove]
+            model.data_x = model.data_x[:-position_data_to_remove]
+            model.data_y = model.data_y[:-position_data_to_remove]
 
-        max_audio_len = int(video_len * self._model.audio_fs / self._model.fps)
+        max_audio_len = int(video_len * model.audio_fs / model.fps)
 
         self.log(f'Trimming the last {abs(audio_len-max_audio_len)} ' +
                  'samples from audio')
 
-        return self._model.audio_data[:max_audio_len]
+        return model.audio_data[:max_audio_len]
 
-    def clean_data_position(self) -> tuple:
-        if np.isnan(self._model.data_x).all():
+    def clean_data_position(self, model) -> tuple:
+        if np.isnan(model.data_x).all():
             self.log('ERROR: There is no localization data to analyze')
             raise Exception('...')
 
-        self._model.data_x, shift, trim = interpolate_coords(
-            self._model.data_x)
-        self._model.data_y, _, _ = interpolate_coords(self._model.data_y)
+        model.data_x, shift, trim = interpolate_coords(
+            model.data_x)
+        model.data_y, _, _ = interpolate_coords(model.data_y)
 
         return shift, trim
 
-    def segment_video(self) -> dict[tuple, list[tuple]]:
-        data = np.transpose(np.array([self._model.data_x, self._model.data_y]))
+    def segment_video(self, model) -> dict[tuple, list[tuple]]:
+        data = np.transpose(np.array([model.data_x, model.data_y]))
 
         spatial_segmentation: dict[tuple, list[tuple]] = {}
-        for i in range(self._model.grid.number_of_cols):
-            for j in range(self._model.grid.number_of_rows):
+        for i in range(model.grid.number_of_cols):
+            for j in range(model.grid.number_of_rows):
                 spatial_segmentation[j, i] = []
 
         start = 0
@@ -99,7 +96,7 @@ class DspThread(QThread):
         for index in range(len(data)):
             x, y = data[index]
 
-            actual_grid_id = self._model.grid.locate_point((x, y))
+            actual_grid_id = model.grid.locate_point((x, y))
 
             # TODO: fix this
             if actual_grid_id is None:
@@ -127,11 +124,11 @@ class DspThread(QThread):
 
         return spatial_segmentation
 
-    def segment_audio(self,
+    def segment_audio(self, model,
                       segmentation: dict[tuple, list[tuple]]
                       ) -> dict[tuple, list[tuple]]:
-        fps = self._model.fps
-        fs = self._model.audio_fs
+        fps = model.fps
+        fs = model.audio_fs
         conversion_ratio = fs / fps
 
         audio_segments: dict[tuple, list[tuple]] = {}
@@ -141,27 +138,27 @@ class DspThread(QThread):
             for range in segmentation[grid_id]:
                 start = int(range[0] * conversion_ratio)
                 end = int(range[1] * conversion_ratio)
-                audio_segment = self._model.audio_data[start:end]
+                audio_segment = model.audio_data[start:end]
                 audio_segments[grid_id].extend(audio_segment)
 
         return audio_segments
 
-    def analyze(self, audio_segments):
-        cols = self._model.grid.number_of_cols
-        rows = self._model.grid.number_of_rows
+    def analyze(self, model, audio_segments):
+        cols = model.grid.number_of_cols
+        rows = model.grid.number_of_rows
 
         # Spectrum is of shape = (rows, cols, 0)
         spectrum = [[[] for _ in range(cols)]
                     for _ in range(rows)]
         freq = []
-        limits = self._model.freq_range
-        fs = self._model.audio_fs
+        limits = model.freq_range
+        fs = model.audio_fs
 
         self.log(f'Limits: {limits}')
 
         for index, key in enumerate([*audio_segments]):
             self.log(f'Processing grid: {key}')
-            self._model.on_thread_status_update.emit(index)
+            self.update_status.emit(index)
 
             audio = np.transpose(audio_segments[key])
 

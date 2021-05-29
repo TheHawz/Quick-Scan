@@ -1,15 +1,18 @@
 # This Python file uses the following encoding: utf-8
-from app.package.services.grid import Grid
-from ..services import imbasic as imb
-from ..controllers.DisplayResultsController import DisplayResultsController
-from ..models.DisplayResultsModel import DisplayResultsModel
-from ..ui.DisplayResults_ui import Ui_MainWindow as DisplayResults_ui
-from ..models.ActualProjectModel import ActualProjectModel
-from PySide2.QtGui import QImage, QPixmap
-from PySide2.QtCore import Slot
-from PySide2.QtWidgets import QMainWindow
 import numpy as np
 import cv2
+
+from PySide2.QtGui import QImage, QPixmap
+from PySide2.QtCore import Slot, QThread
+from PySide2.QtWidgets import QMainWindow
+
+from ..services.grid import Grid
+from ..services import imbasic as imb
+from ..services.DspThread import DspThread
+from ..controllers.DisplayResultsController import DisplayResultsController
+from ..models.ActualProjectModel import ActualProjectModel
+from ..models.DisplayResultsModel import DisplayResultsModel
+from ..ui.DisplayResults_ui import Ui_MainWindow as DisplayResults_ui
 
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
@@ -101,8 +104,28 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
         self.IMG_WIDTH = 350  # pixels
         self.scale_factor = -1
 
+    def create_thread(self):
+        # thread = QThread()
+        # worker = AccountManager()
+        # worker.moveToThread(thread)
+        # thread.started.connect(lambda: worker.withdraw(person, amount))
+        # worker.updatedBalance.connect(self.updateBalance)
+        # worker.finished.connect(thread.quit)
+        # worker.finished.connect(worker.deleteLater)
+        # thread.finished.connect(thread.deleteLater)
+        # return thread
+        thread = QThread()
+        worker = DspThread()
+        worker.moveToThread(thread)
+
+        thread.started.connect(lambda: worker.process(self._model))
+        worker.update_status.connect(self.handle_update_status)
+        worker.finished.connect(thread.quit)
+        worker.finished.connect(worker.deleteLater)
+        thread.finished.connect(thread.deleteLater)
+        return thread
+
     def on_open(self):
-        self._controller.create_thread()
         self.setupPlottingWidget()
 
         try:
@@ -137,6 +160,9 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
             'Frequency Range: ' +
             f'{ActualProjectModel.low_freq}-{ActualProjectModel.high_freq}')
         self.grid_config.setText(str(self._model.grid))
+
+        self.thread = self.create_thread()
+        self.thread.start()
 
     # region Handlers
 
@@ -177,8 +203,6 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
         self.bg_img_label.setPixmap(qt_img)
 
         self.bg_img_label.mousePressEvent = self.handle_grid_clicked
-
-        self._controller.start_thread()
 
     def handle_grid_clicked(self, event):
         """The (x,y) position of the event it is NOT in reference with
