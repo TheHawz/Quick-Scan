@@ -1,6 +1,4 @@
 {
-  "terminal.integrated.shellArgs.windows": null,
-  "python.pythonPath": "D:\\Bibliotecas\\code\\python\\tfg-Scan-Paint-clone\\venv\\python.exe",
   "python.linting.flake8Enabled": true,
   "python.linting.enabled": true,
   "jupyter.jupyterServerType": "local"
