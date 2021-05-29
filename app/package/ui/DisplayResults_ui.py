@@ -56,6 +56,11 @@ class Ui_MainWindow(object):
 
         self.spectrum_groupBox = QGroupBox(self.frame_2)
         self.spectrum_groupBox.setObjectName(u"spectrum_groupBox")
+        sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.spectrum_groupBox.sizePolicy().hasHeightForWidth())
+        self.spectrum_groupBox.setSizePolicy(sizePolicy)
         self.horizontalLayout_3 = QHBoxLayout(self.spectrum_groupBox)
         self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
         self.spectrum = QVBoxLayout()
@@ -73,8 +78,8 @@ class Ui_MainWindow(object):
         self.frame_3.setObjectName(u"frame_3")
         self.frame_3.setFrameShape(QFrame.StyledPanel)
         self.frame_3.setFrameShadow(QFrame.Raised)
-        self.horizontalLayout_5 = QHBoxLayout(self.frame_3)
-        self.horizontalLayout_5.setObjectName(u"horizontalLayout_5")
+        self.verticalLayout_3 = QVBoxLayout(self.frame_3)
+        self.verticalLayout_3.setObjectName(u"verticalLayout_3")
         self.groupBox = QGroupBox(self.frame_3)
         self.groupBox.setObjectName(u"groupBox")
         self.verticalLayout_2 = QVBoxLayout(self.groupBox)
@@ -143,7 +148,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_2.addWidget(self.frame_8)
 
 
-        self.horizontalLayout_5.addWidget(self.groupBox)
+        self.verticalLayout_3.addWidget(self.groupBox)
 
 
         self.verticalLayout.addWidget(self.frame_3)
