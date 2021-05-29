@@ -92,6 +92,7 @@ class NewProjectController(QObject):
     def load_new_project(self, fpath: str) -> None:
         data = None
         print(f'Loading Project from: {fpath}...')
+
         try:
             with open(fpath) as json_file:
                 data = json.load(json_file)

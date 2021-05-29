@@ -1,4 +1,5 @@
 # This Python file uses the following encoding: utf-8
+from app.package.services.load_project import LoadFilesWorker
 import numpy as np
 import cv2
 
@@ -29,10 +30,6 @@ progress_msgs = {
     3: 'Finish segment audio, start analyze audio',
     4: 'Finish analyze audio',
 }
-
-
-def log(msg: str) -> None:
-    print(f'[DisplayResutls/View] {msg}')
 
 
 class MplCanvas(FigureCanvasQTAgg):
@@ -105,15 +102,6 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
         self.scale_factor = -1
 
     def create_thread(self):
-        # thread = QThread()
-        # worker = AccountManager()
-        # worker.moveToThread(thread)
-        # thread.started.connect(lambda: worker.withdraw(person, amount))
-        # worker.updatedBalance.connect(self.updateBalance)
-        # worker.finished.connect(thread.quit)
-        # worker.finished.connect(worker.deleteLater)
-        # thread.finished.connect(thread.deleteLater)
-        # return thread
         thread = QThread()
         worker = DspThread()
         worker.moveToThread(thread)
@@ -125,34 +113,28 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
         thread.finished.connect(thread.deleteLater)
         return thread
 
+    def create_loading_thread(self):
+        thread = QThread()
+        worker = LoadFilesWorker()
+        worker.moveToThread(thread)
+
+        thread.started.connect(lambda: worker.load(self._model))
+        worker.send_data.connect(self._controller.set_data)
+        worker.send_grid.connect(self._controller.set_grid)
+        worker.send_freq_range.connect(self._controller.set_freq_range)
+
+        worker.finished.connect(thread.quit)
+        thread.finished.connect(lambda: self.dsp_thread.start())
+        worker.finished.connect(worker.deleteLater)
+        thread.finished.connect(thread.deleteLater)
+
+        return thread
+
     def on_open(self):
         self.setupPlottingWidget()
 
-        try:
-            self._controller.load_audio_file(
-                ActualProjectModel.project_location)
-            self._controller.load_frame_size(
-                ActualProjectModel.project_location)
-        except Exception as e:
-            log(f'[ERROR] Error while loading audio file: {e}')
-
-        if len(ActualProjectModel.data_x) == 0:
-            # We are loading a project => so we need to:
-            #  - Load Position Data
-            #  - Load freq. range from .pro
-            self._controller.load_position_data(
-                ActualProjectModel.project_location)
-        else:
-            # We have to move data from 'ActualProjectModel' to the
-            # DisplayResultsModel.
-            self._controller.set_data_x(ActualProjectModel.data_x)
-            self._controller.set_data_y(ActualProjectModel.data_y)
-            self._controller.set_grid(ActualProjectModel.grid)
-
-        self._controller.set_freq_range(
-            [ActualProjectModel.low_freq, ActualProjectModel.high_freq])
-
-        self._controller.load_bg_img(ActualProjectModel.project_location)
+        self.dsp_thread = self.create_thread()
+        self.loading_thread = self.create_loading_thread()
 
         self.pr_name.setText(ActualProjectModel.project_name)
         self.audio_info.setText(
@@ -161,24 +143,23 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
             f'{ActualProjectModel.low_freq}-{ActualProjectModel.high_freq}')
         self.grid_config.setText(str(self._model.grid))
 
-        self.thread = self.create_thread()
-        self.thread.start()
+        self.loading_thread.start()
 
     # region Handlers
 
     @Slot(np.ndarray)
     def handle_data_x_changed(self, value):
-        log(f'Data: X -> length={len(value)}')
+        self.log(f'Data: X -> length={len(value)}')
 
     @Slot(np.ndarray)
     def handle_data_y_changed(self, value):
-        log(f'Data: Y -> length={len(value)}')
+        self.log(f'Data: Y -> length={len(value)}')
 
     def handle_audio_data_changed(self, value):
-        log(f'Audio: data -> length={len(value)}')
+        self.log(f'Audio: data -> length={len(value)}')
 
     def handle_audio_fs_changed(self, value):
-        log(f'Audio: fs -> {value}')
+        self.log(f'Audio: fs -> {value}')
 
     @Slot(Grid)
     def handle_grid_changed(self, grid: Grid) -> None:
