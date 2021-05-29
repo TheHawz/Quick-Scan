@@ -1,15 +1,22 @@
 # This Python file uses the following encoding: utf-8
+from ..services import imbasic as imb
+from ..controllers.DisplayResultsController import DisplayResultsController
+from ..models.DisplayResultsModel import DisplayResultsModel
+from ..ui.DisplayResults_ui import Ui_MainWindow as DisplayResults_ui
+from ..models.ActualProjectModel import ActualProjectModel
+from PySide2.QtGui import QImage, QPixmap
+from PySide2.QtCore import Slot
+from PySide2.QtWidgets import QMainWindow
 import numpy as np
 import cv2
 
-from PySide2.QtWidgets import QMainWindow
-from PySide2.QtCore import Slot
-from PySide2.QtGui import QImage, QPixmap
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
+from matplotlib.figure import Figure
+import matplotlib
+from matplotlib import pyplot as plt
 
-from ..models.ActualProjectModel import ActualProjectModel
-from ..ui.DisplayResults_ui import Ui_MainWindow as DisplayResults_ui
-from ..models.DisplayResultsModel import DisplayResultsModel
-from ..controllers.DisplayResultsController import DisplayResultsController
+matplotlib.use('Qt5Agg')
+plt.style.use('fivethirtyeight')
 
 progress_msgs = {
     0: 'Finish trim, start clean data',
@@ -24,6 +31,14 @@ def log(msg: str) -> None:
     print(f'[DisplayResutls/View] {msg}')
 
 
+class MplCanvas(FigureCanvasQTAgg):
+
+    def __init__(self, parent=None, width=5, height=4, dpi=100):
+        fig = Figure(figsize=(width, height), dpi=dpi)
+        self.ax = fig.add_subplot(111)
+        super(MplCanvas, self).__init__(fig)
+
+
 class DisplayResultsView(QMainWindow, DisplayResults_ui):
     def __init__(self,
                  model: DisplayResultsModel,
@@ -33,6 +48,7 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
         self._controller = controller
 
         self.setupUi(self)
+        self.setupPlottingWidget()
         self.create_threads()
         self.connect_to_controller()
         self.connect_to_model()
@@ -50,8 +66,24 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
     def create_threads(self):
         self._controller.create_thread()
 
+    def setupPlottingWidget(self):
+        sc = MplCanvas(self, width=5, height=4, dpi=100)
+
+        # Show octave spectrum
+        # sc.ax.plot([0, 1, 2, 3, 4], [10, 1, 20, 3, 40])
+        sc.ax.grid(which='major')
+        sc.ax.grid(which='minor', linestyle=':')
+        sc.ax.set_xlabel(r'Frequency [Hz]')
+        sc.ax.set_ylabel('Level [dB]')
+        plt.xlim(11, 25000)
+
+        # we save a reference to the widget, to then modify it
+        self.sc = sc
+        self.spectrum.addWidget(sc)
+
     def connect_to_controller(self):
-        pass
+        self.row_sb.valueChanged.connect(self._controller.select_row)
+        self.col_sb.valueChanged.connect(self._controller.select_col)
 
     def connect_to_model(self):
         self._model.on_data_x_changed.connect(self.handle_data_x_changed)
@@ -62,9 +94,12 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
         self._model.on_thread_status_update.connect(
             self.handle_update_status)
         self._model.on_image_changed.connect(self.display_image)
+        self._model.on_row_changed.connect(self.handle_row_changed)
+        self._model.on_col_changed.connect(self.handle_col_changed)
 
     def set_default_values(self):
-        pass
+        self.row_sb.setValue(1)
+        self.col_sb.setValue(1)
 
     def on_open(self):
         try:
@@ -125,6 +160,8 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
     @Slot(np.ndarray)
     def display_image(self, cv_img):
         """Updates the image_label with a new opencv image"""
+        cv_img = imb.resize(cv_img, width=250)
+
         qt_img = self.convert_cv_qt(cv_img)
         self.bg_img_label.setPixmap(qt_img)
 
@@ -138,3 +175,33 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
         qt_format = QImage(
             rgb_image.data, w, h, bytes_per_line, QImage.Format_RGB888)
         return QPixmap.fromImage(qt_format)
+
+    @Slot(int)
+    def handle_row_changed(self, value):
+        if len(self._model.spectrum) == 0:
+            return
+
+        sp = self._model.spectrum[value-1, self._model.col-1]
+        freq = self._model.freq
+        self.redraw(freq, sp)
+
+    @Slot(int)
+    def handle_col_changed(self, value):
+        if len(self._model.spectrum) == 0:
+            return
+
+        sp = self._model.spectrum[self._model.row-1, value-1]
+        freq = self._model.freq
+        self.redraw(freq, sp)
+
+    def redraw(self, freq, spectrum):
+        self.sc.ax.cla()  # Clear the canvas.
+
+        self.sc.ax.bar(freq, spectrum, width=[freq])
+
+        self.sc.ax.grid(which='major')
+        self.sc.ax.grid(which='minor', linestyle=':')
+        self.sc.ax.set_xlabel(r'Frequency [Hz]')
+        self.sc.ax.set_ylabel('Level [dB]')
+
+        self.sc.draw()

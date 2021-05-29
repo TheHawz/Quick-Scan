@@ -53,6 +53,14 @@ class DisplayResultsController(QObject):
                                 int(grid_info[0]), int(grid_info[1]),
                                 int(grid_info[2]))
 
+    @Slot(int)
+    def select_row(self, value):
+        self._model.row = value
+
+    @Slot(int)
+    def select_col(self, value):
+        self._model.col = value
+
     # region LOADERS
 
     def load_audio_file(self, project_path: str) -> None:

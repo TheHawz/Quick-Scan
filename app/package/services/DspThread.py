@@ -41,8 +41,9 @@ class DspThread(QThread):
         spatial_segmentation = self.segment_video()
         audio_segments = self.segment_audio(spatial_segmentation)
 
-        spectrum = self.analyze(audio_segments)
-        print(spectrum)
+        freq, spec = self.analyze(audio_segments)
+        self._model.spectrum = spec
+        self._model.freq = freq
 
         self.on_finished.emit()
 
@@ -142,15 +143,19 @@ class DspThread(QThread):
         return audio_segments
 
     def analyze(self, audio_segments):
-        spectrum = []
+        cols = self._model.grid.number_of_cols
+        rows = self._model.grid.number_of_rows
+        # Spectrum is of shape = (rows, cols, 0)
+        spectrum = [[[] for _ in range(cols)]
+                    for _ in range(rows)]
         freq = []
         limits = self._model.freq_range
         fs = self._model.audio_fs
 
-        print(f'Limits: {limits}')
+        self.log(f'Limits: {limits}')
 
         for index, key in enumerate([*audio_segments]):
-            print(f'Processing grid: {key}')
+            self.log(f'Processing grid: {key}')
             self._model.on_thread_status_update.emit(index)
 
             audio = np.transpose(audio_segments[key])
@@ -160,10 +165,22 @@ class DspThread(QThread):
 
             _spl, _freq = dsp.get_spectrum(audio, fs, limits)
             freq = _freq
-            spectrum.append(_spl)
+            spectrum[key[0]][key[1]] = _spl
 
-        print(f'Freq array: {freq}')
+        self.log(f'Freq array: {freq}')
+
+        self.save(spectrum, freq)
+
+        return np.array(freq), np.array(spectrum)
+
+    def save(self, sp, freq):
+        spectrum = []
+        for row in sp:
+            for col in row:
+                print(col)
+                # spectrum.append(col)
+
         fileutils.save_np_to_txt(spectrum, os.path.join(
             ActualProjectModel.project_location, 'Results'), 'results.spec')
-
-        return spectrum
+        fileutils.save_np_to_txt(freq, os.path.join(
+            ActualProjectModel.project_location, 'Results'), 'resutls.freq')

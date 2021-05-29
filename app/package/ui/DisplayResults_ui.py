@@ -54,19 +54,19 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_2.addWidget(self.frame_5)
 
-        self.frame_4 = QFrame(self.frame_2)
-        self.frame_4.setObjectName(u"frame_4")
-        self.frame_4.setFrameShape(QFrame.StyledPanel)
-        self.frame_4.setFrameShadow(QFrame.Raised)
-        self.horizontalLayout_3 = QHBoxLayout(self.frame_4)
+        self.spectrum_frame = QFrame(self.frame_2)
+        self.spectrum_frame.setObjectName(u"spectrum_frame")
+        self.spectrum_frame.setFrameShape(QFrame.StyledPanel)
+        self.spectrum_frame.setFrameShadow(QFrame.Raised)
+        self.horizontalLayout_3 = QHBoxLayout(self.spectrum_frame)
         self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
-        self.spectrum_label = QLabel(self.frame_4)
-        self.spectrum_label.setObjectName(u"spectrum_label")
+        self.spectrum = QVBoxLayout()
+        self.spectrum.setObjectName(u"spectrum")
 
-        self.horizontalLayout_3.addWidget(self.spectrum_label)
+        self.horizontalLayout_3.addLayout(self.spectrum)
 
 
-        self.horizontalLayout_2.addWidget(self.frame_4)
+        self.horizontalLayout_2.addWidget(self.spectrum_frame)
 
 
         self.verticalLayout.addWidget(self.frame_2)
@@ -144,32 +144,30 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_2.addWidget(self.frame_8)
 
+        self.horizontalLayout_10 = QHBoxLayout()
+        self.horizontalLayout_10.setObjectName(u"horizontalLayout_10")
+        self.row_sb = QSpinBox(self.groupBox)
+        self.row_sb.setObjectName(u"row_sb")
+
+        self.horizontalLayout_10.addWidget(self.row_sb)
+
+        self.col_sb = QSpinBox(self.groupBox)
+        self.col_sb.setObjectName(u"col_sb")
+
+        self.horizontalLayout_10.addWidget(self.col_sb)
+
+        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
+        self.horizontalLayout_10.addItem(self.horizontalSpacer)
+
+
+        self.verticalLayout_2.addLayout(self.horizontalLayout_10)
+
 
         self.horizontalLayout_5.addWidget(self.groupBox)
 
 
         self.verticalLayout.addWidget(self.frame_3)
-
-        self.frame_6 = QFrame(self.frame)
-        self.frame_6.setObjectName(u"frame_6")
-        self.frame_6.setFrameShape(QFrame.StyledPanel)
-        self.frame_6.setFrameShadow(QFrame.Raised)
-        self.horizontalLayout_6 = QHBoxLayout(self.frame_6)
-        self.horizontalLayout_6.setObjectName(u"horizontalLayout_6")
-        self.label = QLabel(self.frame_6)
-        self.label.setObjectName(u"label")
-        self.label.setMinimumSize(QSize(250, 0))
-
-        self.horizontalLayout_6.addWidget(self.label)
-
-        self.progressBar = QProgressBar(self.frame_6)
-        self.progressBar.setObjectName(u"progressBar")
-        self.progressBar.setValue(24)
-
-        self.horizontalLayout_6.addWidget(self.progressBar)
-
-
-        self.verticalLayout.addWidget(self.frame_6)
 
 
         self.horizontalLayout.addWidget(self.frame)
@@ -216,7 +214,6 @@ class Ui_MainWindow(object):
         self.action_Quit.setShortcut(QCoreApplication.translate("MainWindow", u"Ctrl+Q", None))
 #endif // QT_CONFIG(shortcut)
         self.bg_img_label.setText("")
-        self.spectrum_label.setText("")
         self.groupBox.setTitle(QCoreApplication.translate("MainWindow", u"Project Information", None))
         self.label_2.setText(QCoreApplication.translate("MainWindow", u"Project Name:", None))
         self.pr_name.setText(QCoreApplication.translate("MainWindow", u"TextLabel", None))
@@ -224,7 +221,6 @@ class Ui_MainWindow(object):
         self.grid_config.setText(QCoreApplication.translate("MainWindow", u"TextLabel", None))
         self.label_6.setText(QCoreApplication.translate("MainWindow", u"Sample Rate and Frequency Range: ", None))
         self.audio_info.setText(QCoreApplication.translate("MainWindow", u"TextLabel", None))
-        self.label.setText(QCoreApplication.translate("MainWindow", u"TextLabel", None))
         self.menuArchive.setTitle(QCoreApplication.translate("MainWindow", u"Archive", None))
         self.menuHelp.setTitle(QCoreApplication.translate("MainWindow", u"Help", None))
     # retranslateUi
