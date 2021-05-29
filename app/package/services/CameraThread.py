@@ -20,6 +20,9 @@ class CameraThread(QThread):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.init_values()
+
+    def init_values(self):
         self.x_data = []
         self.y_data = []
         self.x = -1

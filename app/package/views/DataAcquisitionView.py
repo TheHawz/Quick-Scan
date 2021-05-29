@@ -167,7 +167,7 @@ class DataAcquisitionView(QMainWindow, DataAcquisition_ui):
             rgb_image.data, w, h, bytes_per_line, QImage.Format_RGB888)
         return QPixmap.fromImage(qt_format)
 
-    @ Slot(np.ndarray)
+    @Slot(np.ndarray)
     def handle_new_image(self, cv_img):
         """Updates the image_label with a new opencv image"""
         qt_img = self.convert_cv_qt(cv_img)
