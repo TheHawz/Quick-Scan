@@ -121,6 +121,10 @@ class DspThread(QThread):
                 end = index
                 prev_grid_id = actual_grid_id
 
+        self.log('Spatial segmentation results: ')
+        for grid_id in [*spatial_segmentation]:
+            self.log(f' - {grid_id} -> {spatial_segmentation[grid_id]}')
+
         return spatial_segmentation
 
     def segment_audio(self,
@@ -145,6 +149,7 @@ class DspThread(QThread):
     def analyze(self, audio_segments):
         cols = self._model.grid.number_of_cols
         rows = self._model.grid.number_of_rows
+
         # Spectrum is of shape = (rows, cols, 0)
         spectrum = [[[] for _ in range(cols)]
                     for _ in range(rows)]
@@ -161,6 +166,7 @@ class DspThread(QThread):
             audio = np.transpose(audio_segments[key])
 
             if len(audio) == 0:
+                self.log('Len audio == 0. Continuing...')
                 continue
 
             _spl, _freq = dsp.get_spectrum(audio, fs, limits)
@@ -171,7 +177,7 @@ class DspThread(QThread):
 
         self.save(spectrum, freq)
 
-        return np.array(freq), np.array(spectrum)
+        return np.array(freq), np.array(spectrum, dtype=object)
 
     def save(self, sp, freq):
         spectrum = []

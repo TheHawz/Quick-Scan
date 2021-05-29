@@ -32,7 +32,6 @@ class DisplayResultsController(QObject):
 
     @Slot()
     def start_thread(self):
-        self._model.dsp_thread = DspThread(self._model)
         self._model.dsp_thread.start()
 
     @Slot(np.ndarray)

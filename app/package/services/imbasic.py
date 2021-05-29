@@ -51,14 +51,19 @@ def imshow(frame, win_name="img", size=None, width=None):
     cv2.imshow(win_name, resized_frame)
 
 
-def resize(frame, size=None, width=None):
+def resize(frame, size=None, width=None, return_scale_factor=False):
     if width is None:
         scale_factor = 1
     else:
         w = frame.shape[1]
         scale_factor = width/w
 
-    return cv2.resize(frame, size, fx=scale_factor, fy=scale_factor)
+    frame = cv2.resize(frame, size, fx=scale_factor, fy=scale_factor)
+
+    if return_scale_factor:
+        return frame, scale_factor
+
+    return frame
 
 
 def draw_text(img, text, x, y, color=(255, 255, 255)):

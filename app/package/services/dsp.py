@@ -53,8 +53,8 @@ def get_spectrum(audio: np.ndarray, fs, limits=None):
     # print(f'num_of_win = {num_of_win}')
 
     while i+win_size < len_audio:
-        if index % 50 == 0:
-            print(f'Progres: {index} / {num_of_win}...')
+        # if index % 50 == 0:
+        #     print(f'Progres: {index} / {num_of_win}...')
 
         start = i
         end = i+win_size
@@ -70,7 +70,7 @@ def get_spectrum(audio: np.ndarray, fs, limits=None):
         index += 1
         i += round(win_size-win_size*overlap)
 
-    print(f'max index: {index}')
+    # print(f'max index: {index}')
 
     spl = np.mean(spls, 0)
 

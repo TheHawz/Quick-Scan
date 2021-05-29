@@ -1,4 +1,5 @@
 # This Python file uses the following encoding: utf-8
+from app.package.services.grid import Grid
 from ..services import imbasic as imb
 from ..controllers.DisplayResultsController import DisplayResultsController
 from ..models.DisplayResultsModel import DisplayResultsModel
@@ -48,8 +49,6 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
         self._controller = controller
 
         self.setupUi(self)
-        self.setupPlottingWidget()
-        self.create_threads()
         self.connect_to_controller()
         self.connect_to_model()
         self.set_default_values()
@@ -61,10 +60,11 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
     def close(self):
         self.hide()
 
-    # region HELPER FUNCTIONS AND CALLBACKS
+    @staticmethod
+    def log(msg: str) -> None:
+        print(f'[DisplayResults/View] {msg}')
 
-    def create_threads(self):
-        self._controller.create_thread()
+    # region HELPER FUNCTIONS AND CALLBACKS
 
     def setupPlottingWidget(self):
         sc = MplCanvas(self, width=5, height=4, dpi=100)
@@ -82,8 +82,7 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
         self.spectrum.addWidget(sc)
 
     def connect_to_controller(self):
-        self.row_sb.valueChanged.connect(self._controller.select_row)
-        self.col_sb.valueChanged.connect(self._controller.select_col)
+        pass
 
     def connect_to_model(self):
         self._model.on_data_x_changed.connect(self.handle_data_x_changed)
@@ -96,12 +95,16 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
         self._model.on_image_changed.connect(self.display_image)
         self._model.on_row_changed.connect(self.handle_row_changed)
         self._model.on_col_changed.connect(self.handle_col_changed)
+        self._model.on_grid_changed.connect(self.handle_grid_changed)
 
     def set_default_values(self):
-        self.row_sb.setValue(1)
-        self.col_sb.setValue(1)
+        self.IMG_WIDTH = 350  # pixels
+        self.scale_factor = -1
 
     def on_open(self):
+        self._controller.create_thread()
+        self.setupPlottingWidget()
+
         try:
             self._controller.load_audio_file(
                 ActualProjectModel.project_location)
@@ -135,6 +138,8 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
             f'{ActualProjectModel.low_freq}-{ActualProjectModel.high_freq}')
         self.grid_config.setText(str(self._model.grid))
 
+    # region Handlers
+
     @Slot(np.ndarray)
     def handle_data_x_changed(self, value):
         log(f'Data: X -> length={len(value)}')
@@ -149,23 +154,62 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
     def handle_audio_fs_changed(self, value):
         log(f'Audio: fs -> {value}')
 
+    @Slot(Grid)
+    def handle_grid_changed(self, grid: Grid) -> None:
+        self.log(f'Setting maximum possible grid values: {grid}')
+
     @Slot(list)
     def handle_update_status(self, value: int) -> None:
-        pass
-        # total_grids = self._model.grid.number_of_cols * \
-        #     self._model.grid.number_of_rows
-        # log(f' *** Grid nº {value+1} of {total_grids}')
+        total_grids = self._model.grid.number_of_cols * \
+            self._model.grid.number_of_rows
+        self.log(f' *** Grid nº {value+1} of {total_grids}')
         # self.progressBar.setValue((value+1)/total_grids*100)
 
     @Slot(np.ndarray)
     def display_image(self, cv_img):
         """Updates the image_label with a new opencv image"""
-        cv_img = imb.resize(cv_img, width=250)
+        cv_img, scale_factor = imb.resize(cv_img, width=self.IMG_WIDTH,
+                                          return_scale_factor=True)
+
+        self.scale_factor = scale_factor
 
         qt_img = self.convert_cv_qt(cv_img)
         self.bg_img_label.setPixmap(qt_img)
 
+        self.bg_img_label.mousePressEvent = self.handle_grid_clicked
+
         self._controller.start_thread()
+
+    def handle_grid_clicked(self, event):
+        """The (x,y) position of the event it is NOT in reference with
+        the grid system. The coordinates must be scaled by a factor
+        of 1/'self.scale_factor'
+        See method 'display_image' for more info.
+
+        Args:
+            event ([type]): [description]
+        """
+
+        try:
+            x = event.pos().x()
+            y = event.pos().y()
+
+            x, y = x/self.scale_factor, y/self.scale_factor
+
+            grid_coord = self._model.grid.locate_point([x, y])
+
+            # Check for hits in the padding zone (inside of the image, but
+            # outside the grid system)
+            if grid_coord is None:
+                return
+
+            self.log(f'Clicked on (x: {x} ,y: {y})')
+            self.log(f'Corresponding to grid: {grid_coord}')
+
+            self._controller.select_row(grid_coord[0])
+            self._controller.select_col(grid_coord[1])
+        except Exception as e:
+            self.log(f'Error: {e}')
 
     def convert_cv_qt(self, cv_img):
         """Convert from an opencv image to QPixmap"""
@@ -181,27 +225,47 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
         if len(self._model.spectrum) == 0:
             return
 
-        sp = self._model.spectrum[value-1, self._model.col-1]
+        sp = self._model.spectrum[value, self._model.col]
         freq = self._model.freq
-        self.redraw(freq, sp)
+
+        print(sp, freq)
+
+        if len(sp) == len(freq):
+            self.redraw(freq, sp)
+        else:
+            self.log('Error len(sp) != len(freq)')
 
     @Slot(int)
     def handle_col_changed(self, value):
         if len(self._model.spectrum) == 0:
             return
 
-        sp = self._model.spectrum[self._model.row-1, value-1]
+        sp = self._model.spectrum[self._model.row, value]
         freq = self._model.freq
-        self.redraw(freq, sp)
+
+        print(sp, freq)
+
+        if len(sp) == len(freq):
+            self.redraw(freq, sp)
+        else:
+            self.log('Error len(sp) != len(freq)')
 
     def redraw(self, freq, spectrum):
         self.sc.ax.cla()  # Clear the canvas.
 
-        self.sc.ax.bar(freq, spectrum, width=[freq])
+        xtick = [int(f) for f in freq]
+        xticklabel = [str(round(f)) if f < 1000 else str(
+            round(f/1000, 1))+'k' for f in freq]
 
-        self.sc.ax.grid(which='major')
-        self.sc.ax.grid(which='minor', linestyle=':')
+        self.sc.ax.bar(freq, spectrum, width=np.array(freq)*2/5)
+
+        self.sc.ax.set_xscale('log')
         self.sc.ax.set_xlabel(r'Frequency [Hz]')
         self.sc.ax.set_ylabel('Level [dB]')
 
+        self.sc.ax.set_xticks(xtick)
+        self.sc.ax.set_xticklabels(xticklabel)
+
         self.sc.draw()
+
+    # endregion

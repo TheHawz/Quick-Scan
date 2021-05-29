@@ -101,7 +101,7 @@ class DisplayResultsModel(QObject):
     @grid.setter
     def grid(self, value: Grid):
         self._grid = value
-        self.on_grid_changed.emit("Changed!")
+        self.on_grid_changed.emit(value)
 
     # --- --- --- --- --- --- --- --- --- ---
 

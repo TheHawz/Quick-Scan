@@ -54,11 +54,9 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_2.addWidget(self.frame_5)
 
-        self.spectrum_frame = QFrame(self.frame_2)
-        self.spectrum_frame.setObjectName(u"spectrum_frame")
-        self.spectrum_frame.setFrameShape(QFrame.StyledPanel)
-        self.spectrum_frame.setFrameShadow(QFrame.Raised)
-        self.horizontalLayout_3 = QHBoxLayout(self.spectrum_frame)
+        self.spectrum_groupBox = QGroupBox(self.frame_2)
+        self.spectrum_groupBox.setObjectName(u"spectrum_groupBox")
+        self.horizontalLayout_3 = QHBoxLayout(self.spectrum_groupBox)
         self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
         self.spectrum = QVBoxLayout()
         self.spectrum.setObjectName(u"spectrum")
@@ -66,7 +64,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_3.addLayout(self.spectrum)
 
 
-        self.horizontalLayout_2.addWidget(self.spectrum_frame)
+        self.horizontalLayout_2.addWidget(self.spectrum_groupBox)
 
 
         self.verticalLayout.addWidget(self.frame_2)
@@ -144,25 +142,6 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_2.addWidget(self.frame_8)
 
-        self.horizontalLayout_10 = QHBoxLayout()
-        self.horizontalLayout_10.setObjectName(u"horizontalLayout_10")
-        self.row_sb = QSpinBox(self.groupBox)
-        self.row_sb.setObjectName(u"row_sb")
-
-        self.horizontalLayout_10.addWidget(self.row_sb)
-
-        self.col_sb = QSpinBox(self.groupBox)
-        self.col_sb.setObjectName(u"col_sb")
-
-        self.horizontalLayout_10.addWidget(self.col_sb)
-
-        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
-
-        self.horizontalLayout_10.addItem(self.horizontalSpacer)
-
-
-        self.verticalLayout_2.addLayout(self.horizontalLayout_10)
-
 
         self.horizontalLayout_5.addWidget(self.groupBox)
 
@@ -214,6 +193,7 @@ class Ui_MainWindow(object):
         self.action_Quit.setShortcut(QCoreApplication.translate("MainWindow", u"Ctrl+Q", None))
 #endif // QT_CONFIG(shortcut)
         self.bg_img_label.setText("")
+        self.spectrum_groupBox.setTitle(QCoreApplication.translate("MainWindow", u"3rd Octave Spectrum", None))
         self.groupBox.setTitle(QCoreApplication.translate("MainWindow", u"Project Information", None))
         self.label_2.setText(QCoreApplication.translate("MainWindow", u"Project Name:", None))
         self.pr_name.setText(QCoreApplication.translate("MainWindow", u"TextLabel", None))
