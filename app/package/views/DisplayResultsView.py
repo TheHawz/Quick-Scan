@@ -23,18 +23,10 @@ from matplotlib import pyplot as plt
 matplotlib.use('Qt5Agg')
 plt.style.use('fivethirtyeight')
 
-progress_msgs = {
-    0: 'Finish trim, start clean data',
-    1: 'Finish clean data, start segment video',
-    2: 'Finish segment video, start segment audio',
-    3: 'Finish segment audio, start analyze audio',
-    4: 'Finish analyze audio',
-}
-
 
 class MplCanvas(FigureCanvasQTAgg):
 
-    def __init__(self, parent=None, width=5, height=4, dpi=100):
+    def __init__(self, parent=None, width=4, height=3, dpi=300):
         fig = Figure(figsize=(width, height), dpi=dpi)
         self.ax = fig.add_subplot(111)
         super(MplCanvas, self).__init__(fig)
@@ -101,34 +93,51 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
         self.IMG_WIDTH = 350  # pixels
         self.scale_factor = -1
 
+    # region Create Threads
+
     def create_thread(self):
+        # Create worker and thread
         thread = QThread()
         worker = DspThread()
         worker.moveToThread(thread)
 
+        # Conect the 'started' signal of the Thread
+        # to the corresponding function in the worker
         thread.started.connect(lambda: worker.process(self._model))
         worker.update_status.connect(self.handle_update_status)
+
+        # Connect the finished signal of thread & worker
+        # with the corresponding stuff
+        worker.finished.connect(lambda: self._controller.select_row(0))
+        worker.finished.connect(lambda: self._controller.select_col(0))
         worker.finished.connect(thread.quit)
         worker.finished.connect(worker.deleteLater)
         thread.finished.connect(thread.deleteLater)
         return thread
 
     def create_loading_thread(self):
+        # Create worker and thread
         thread = QThread()
         worker = LoadFilesWorker()
         worker.moveToThread(thread)
 
+        # Conect the 'started' signal of the Thread
+        # to the corresponding function in the worker
         thread.started.connect(lambda: worker.load(self._model))
         worker.send_data.connect(self._controller.set_data)
         worker.send_grid.connect(self._controller.set_grid)
         worker.send_freq_range.connect(self._controller.set_freq_range)
 
+        # Connect the finished signal of thread & worker
+        # with the corresponding stuff
         worker.finished.connect(thread.quit)
+        worker.finished.connect(self.show_project_info)
         thread.finished.connect(lambda: self.dsp_thread.start())
         worker.finished.connect(worker.deleteLater)
         thread.finished.connect(thread.deleteLater)
 
         return thread
+    # endregion
 
     def on_open(self):
         self.setupPlottingWidget()
@@ -136,41 +145,43 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
         self.dsp_thread = self.create_thread()
         self.loading_thread = self.create_loading_thread()
 
+        self.loading_thread.start()
+
+    def show_project_info(self):
         self.pr_name.setText(ActualProjectModel.project_name)
+
         self.audio_info.setText(
             f'fs = {self._model.audio_fs}. ' +
             'Frequency Range: ' +
             f'{ActualProjectModel.low_freq}-{ActualProjectModel.high_freq}')
-        self.grid_config.setText(str(self._model.grid))
 
-        self.loading_thread.start()
+        self.grid_config.setText(str(self._model.grid))
 
     # region Handlers
 
     @Slot(np.ndarray)
     def handle_data_x_changed(self, value):
-        self.log(f'Data: X -> length={len(value)}')
+        pass
 
     @Slot(np.ndarray)
     def handle_data_y_changed(self, value):
-        self.log(f'Data: Y -> length={len(value)}')
+        pass
 
     def handle_audio_data_changed(self, value):
-        self.log(f'Audio: data -> length={len(value)}')
+        pass
 
     def handle_audio_fs_changed(self, value):
-        self.log(f'Audio: fs -> {value}')
+        pass
 
     @Slot(Grid)
     def handle_grid_changed(self, grid: Grid) -> None:
-        self.log(f'Setting maximum possible grid values: {grid}')
+        self.num_of_cells = grid.number_of_cols * \
+            grid.number_of_rows
 
     @Slot(list)
     def handle_update_status(self, value: int) -> None:
-        total_grids = self._model.grid.number_of_cols * \
-            self._model.grid.number_of_rows
-        self.log(f' *** Grid nº {value+1} of {total_grids}')
         # self.progressBar.setValue((value+1)/total_grids*100)
+        self.log(f' *** Grid nº {value+1} of {self.num_of_cells}')
 
     @Slot(np.ndarray)
     def display_image(self, cv_img):
@@ -233,8 +244,6 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
         sp = self._model.spectrum[value, self._model.col]
         freq = self._model.freq
 
-        print(sp, freq)
-
         if len(sp) == len(freq):
             self.redraw(freq, sp)
         else:
@@ -248,21 +257,18 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
         sp = self._model.spectrum[self._model.row, value]
         freq = self._model.freq
 
-        print(sp, freq)
-
         if len(sp) == len(freq):
             self.redraw(freq, sp)
         else:
             self.log('Error len(sp) != len(freq)')
 
     def redraw(self, freq, spectrum):
+        # TODO: can improve performance => just change data on the axes
         self.sc.ax.cla()  # Clear the canvas.
 
-        xtick = [int(f) for f in freq]
-        xticklabel = [str(round(f)) if f < 1000 else str(
-            round(f/1000, 1))+'k' for f in freq]
+        xtick, xticklabel = self.get_xtick(freq)
 
-        self.sc.ax.bar(freq, spectrum, width=np.array(freq)*2/5)
+        self.sc.ax.bar(freq, spectrum, width=np.array(freq)*1/6)
 
         self.sc.ax.set_xscale('log')
         self.sc.ax.set_xlabel(r'Frequency [Hz]')
@@ -272,5 +278,21 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
         self.sc.ax.set_xticklabels(xticklabel)
 
         self.sc.draw()
+
+    @staticmethod
+    def freq_to_str(f) -> str:
+        if f < 1000:
+            return str(round(f))
+        else:
+            return str(round(f/1000, 1))+'k'
+
+    def get_xtick(self, freq):
+        xtick = np.round(freq)
+
+        # Apply freq_to_str to every-other element in freq array
+        xticklabel = [self.freq_to_str(f) if ii % 3 == 0 else ''
+                      for ii, f in enumerate(freq)]
+
+        return xtick, xticklabel
 
     # endregion
