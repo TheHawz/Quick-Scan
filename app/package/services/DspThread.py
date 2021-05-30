@@ -38,10 +38,9 @@ class DspThread(QObject):
         spatial_segmentation = self.segment_video(model)
         audio_segments = self.segment_audio(model, spatial_segmentation)
 
-        freq, spec = self.analyze(model, audio_segments)
-        model.spectrum = spec
-        model.freq = freq
-
+        model.freq, model.spectrum = self.analyze(model, audio_segments)
+        model.full_band_spec = self.get_full_band(model, audio_segments)
+        print(model.full_band_spec)
         self.finished.emit()
 
     def trim_audio(self, model) -> np.ndarray:
@@ -183,6 +182,20 @@ class DspThread(QObject):
         self.save(spectrum, freq)
 
         return np.array(freq), np.array(spectrum, dtype=object)
+
+    def get_full_band(self, model, audio_segments):
+        cols = model.grid.number_of_cols
+        rows = model.grid.number_of_rows
+
+        spectrum = [[0 for _ in range(cols)]
+                    for _ in range(rows)]
+
+        for key in [*audio_segments]:
+            self.log(f'Processing grid: {key}')
+            spl = 20 * np.log10(np.std(audio_segments[key]) / 2e-5)
+            spectrum[key[0]][key[1]] = spl
+
+        return spectrum
 
     def save(self, sp, freq):
         spectrum = []

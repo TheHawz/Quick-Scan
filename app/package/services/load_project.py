@@ -119,12 +119,7 @@ class LoadFilesWorker(QObject):
             if img is None:
                 raise Exception('Image is empty.')
 
-            print(f'*** Grid: {model.grid}')
-            print(f'*** img.shape: {img.shape}')
-            print(f'*** img.dtype: {img.dtype}')
-
-            imgb = model.grid.draw_grid(img)
-            model.image = imgb
+            model.image = img
 
         except FileNotFoundError:
             raise Exception('File is empty')

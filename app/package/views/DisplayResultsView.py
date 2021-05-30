@@ -49,6 +49,9 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
         self.show()
         self.on_open()
 
+        # self.actionOpen_Project.triggered.connect(
+        # self._controller._navigator.navigate('new_project'))
+
     def close(self):
         self.hide()
 
@@ -184,12 +187,18 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
         self.log(f' *** Grid nº {value+1} of {self.num_of_cells}')
 
     @Slot(np.ndarray)
-    def display_image(self, cv_img):
+    def display_image(self, cv_img: np.ndarray, grid=None):
         """Updates the image_label with a new opencv image"""
-        cv_img, scale_factor = imb.resize(cv_img, width=self.IMG_WIDTH,
-                                          return_scale_factor=True)
+        self.img = cv_img.copy()
+        cv_img = self._model.grid.draw_grid(cv_img)
 
-        self.scale_factor = scale_factor
+        if grid is not None:
+            pt1, pt2 = self._model.grid.get_region(grid)
+            cv_img = imb.draw_border(cv_img, pt1, pt2,
+                                     color=(0, 0, 255))
+
+        cv_img, self.scale_factor = imb.resize(cv_img, width=self.IMG_WIDTH,
+                                               return_scale_factor=True)
 
         qt_img = self.convert_cv_qt(cv_img)
         self.bg_img_label.setPixmap(qt_img)
@@ -251,6 +260,7 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
         if len(self._model.spectrum) == 0:
             return
 
+        self.display_image(self.img, [self._model.row, self._model.col])
         sp = self._model.spectrum[self._model.row, value]
         freq = self._model.freq
 
