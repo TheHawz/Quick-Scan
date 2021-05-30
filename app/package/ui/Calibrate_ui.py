@@ -39,10 +39,10 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_2.addWidget(self.label)
 
-        self.lineEdit = QLineEdit(self.frame_2)
-        self.lineEdit.setObjectName(u"lineEdit")
+        self.spl_value = QLineEdit(self.frame_2)
+        self.spl_value.setObjectName(u"spl_value")
 
-        self.horizontalLayout_2.addWidget(self.lineEdit)
+        self.horizontalLayout_2.addWidget(self.spl_value)
 
 
         self.verticalLayout.addWidget(self.frame_2)
@@ -53,10 +53,10 @@ class Ui_MainWindow(object):
         self.frame_3.setFrameShadow(QFrame.Raised)
         self.horizontalLayout_3 = QHBoxLayout(self.frame_3)
         self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
-        self.pushButton = QPushButton(self.frame_3)
-        self.pushButton.setObjectName(u"pushButton")
+        self.calibrate_button = QPushButton(self.frame_3)
+        self.calibrate_button.setObjectName(u"calibrate_button")
 
-        self.horizontalLayout_3.addWidget(self.pushButton)
+        self.horizontalLayout_3.addWidget(self.calibrate_button)
 
 
         self.verticalLayout.addWidget(self.frame_3)
@@ -104,7 +104,7 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
         self.label.setText(QCoreApplication.translate("MainWindow", u" -> Sonometer medition", None))
-        self.pushButton.setText(QCoreApplication.translate("MainWindow", u"Calibrate!", None))
+        self.calibrate_button.setText(QCoreApplication.translate("MainWindow", u"Calibrate!", None))
         self.label_2.setText(QCoreApplication.translate("MainWindow", u"The user will have to recalibrate the system each time any of the following happen:", None))
         self.label_3.setText(QCoreApplication.translate("MainWindow", u" - The user change the input gain of the system.", None))
         self.label_4.setText(QCoreApplication.translate("MainWindow", u" - The user change the microphone, the audio interface or any of the components that form the recording chain.", None))
