@@ -214,13 +214,10 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
 
             grid_coord = self._model.grid.locate_point([x, y])
 
-            self.log(f'Clicked on (x: {x} ,y: {y})')
             # Check for hits in the padding zone (inside of the image, but
             # outside the grid system)
             if grid_coord is None:
                 return
-
-            self.log(f'Corresponding to grid: {grid_coord}')
 
             self._controller.select_row(grid_coord[0])
             self._controller.select_col(grid_coord[1])
@@ -264,6 +261,9 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
 
     def redraw(self, freq, spectrum):
         # TODO: can improve performance => just change data on the axes
+        max_val = np.max(self._model.spectrum) * 1.05
+        min_val = np.min(self._model.spectrum) * 0.95
+
         self.sc.ax.cla()  # Clear the canvas.
 
         xtick, xticklabel = self.get_xtick(freq)
@@ -271,6 +271,7 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
         self.sc.ax.bar(freq, spectrum, width=np.array(freq)*1/6)
 
         self.sc.ax.set_xscale('log')
+        self.sc.ax.set_ylim(min_val, max_val)
         self.sc.ax.set_xlabel(r'Frequency [Hz]')
         self.sc.ax.set_ylabel('Level [dB]')
 

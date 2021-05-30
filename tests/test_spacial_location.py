@@ -34,7 +34,7 @@ class TestSpatialSegmentation(unittest.TestCase):
         model.data_y = data_y
         model.grid = self.grid
 
-        d = worker.segment_video(model)
+        _ = worker.segment_video(model)
         # self.log(d)
 
 

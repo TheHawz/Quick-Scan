@@ -13,6 +13,7 @@ from ..services.MicThread import MicThread
 from ..models.ActualProjectModel import ActualProjectModel
 from ..services import file as fileutils
 from ..services.dsp import getTimeOfRecording
+from ..services.imbasic import resize
 
 from ..controllers.DataAcquisitionController import DataAcquisitionController
 from ..models.DataAcquisitionModel import DataAcquisitionModel
@@ -170,7 +171,7 @@ class DataAcquisitionView(QMainWindow, DataAcquisition_ui):
     @Slot(np.ndarray)
     def handle_new_image(self, cv_img):
         """Updates the image_label with a new opencv image"""
-        qt_img = self.convert_cv_qt(cv_img)
+        qt_img = self.convert_cv_qt(resize(cv_img, width=400))
         self.cam_view.setPixmap(qt_img)
 
     @ Slot(int)

@@ -188,8 +188,7 @@ class DspThread(QObject):
         spectrum = []
         for row in sp:
             for col in row:
-                print(col)
-                # spectrum.append(col)
+                spectrum.append(col)
 
         fileutils.save_np_to_txt(spectrum, os.path.join(
             ActualProjectModel.project_location, 'Results'), 'results.spec')
