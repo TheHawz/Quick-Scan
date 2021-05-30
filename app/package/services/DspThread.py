@@ -93,10 +93,14 @@ class DspThread(QObject):
         end = 0
         prev_grid_id = -1
 
-        for index in range(len(data)):
-            x, y = data[index]
+        x, y = data[0]
+        prev_grid_id = model.grid.locate_point((x, y)).astype(int).tolist()
+
+        for index, point in enumerate(data[1:]):
+            x, y = point
 
             actual_grid_id = model.grid.locate_point((x, y))
+            print(index, ' -> ', actual_grid_id)
 
             # TODO: fix this
             if actual_grid_id is None:
@@ -104,19 +108,23 @@ class DspThread(QObject):
                 continue
 
             # np.array to python list
-            actual_grid_id = [int(i) for i in actual_grid_id]
-
-            if index == 1:
-                prev_grid_id = actual_grid_id
+            actual_grid_id = actual_grid_id.astype(int).tolist()
 
             if prev_grid_id == actual_grid_id:
                 end = index
             else:
-                key = (actual_grid_id[0], actual_grid_id[1])
+                # add element to the dict
+                key = (prev_grid_id[0], prev_grid_id[1])
                 spatial_segmentation[key].append((start, end))
+
+                # reestart "counter"
                 start = index
                 end = index
                 prev_grid_id = actual_grid_id
+
+        # adding last bit
+        key = (actual_grid_id[0], actual_grid_id[1])
+        spatial_segmentation[key].append((start, end))
 
         self.log('Spatial segmentation results: ')
         for grid_id in [*spatial_segmentation]:

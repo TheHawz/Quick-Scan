@@ -214,12 +214,12 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
 
             grid_coord = self._model.grid.locate_point([x, y])
 
+            self.log(f'Clicked on (x: {x} ,y: {y})')
             # Check for hits in the padding zone (inside of the image, but
             # outside the grid system)
             if grid_coord is None:
                 return
 
-            self.log(f'Clicked on (x: {x} ,y: {y})')
             self.log(f'Corresponding to grid: {grid_coord}')
 
             self._controller.select_row(grid_coord[0])

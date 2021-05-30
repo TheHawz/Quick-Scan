@@ -52,6 +52,9 @@ class NewProjectController(QObject):
         error_dialog.setWindowTitle("Error")
         error_dialog.exec_()
 
+    def calibrate(self):
+        self._navigator.navigate('calibrate')
+
     def create_new_project(self):
         # Checking if the Project Location is available
         print(f'Checking if {self._model.project_location} is available')

@@ -43,9 +43,9 @@ class LoadFilesWorker(QObject):
         else:
             # We have to move data from 'ActualProjectModel' to the
             # DisplayResultsModel.
-            self.send_data.emit(ActualProjectModel.data_x,
-                                ActualProjectModel.data_y)
-            self.send_data.emit(ActualProjectModel.grid)
+            self.send_data.emit((ActualProjectModel.data_x,
+                                ActualProjectModel.data_y))
+            self.send_grid.emit(ActualProjectModel.grid)
 
         self.send_freq_range.emit(
             [ActualProjectModel.low_freq, ActualProjectModel.high_freq])

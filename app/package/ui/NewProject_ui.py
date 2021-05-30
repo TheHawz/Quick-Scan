@@ -17,7 +17,9 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(542, 696)
+        MainWindow.resize(426, 597)
+        self.actionCalibrate = QAction(MainWindow)
+        self.actionCalibrate.setObjectName(u"actionCalibrate")
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         self.centralwidget.setEnabled(True)
@@ -74,6 +76,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_4.setContentsMargins(0, 0, 0, 0)
         self.label_3 = QLabel(self.frame1)
         self.label_3.setObjectName(u"label_3")
+        self.label_3.setMargin(2)
 
         self.verticalLayout_4.addWidget(self.label_3)
 
@@ -157,6 +160,7 @@ class Ui_MainWindow(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.label_4.sizePolicy().hasHeightForWidth())
         self.label_4.setSizePolicy(sizePolicy)
+        self.label_4.setMargin(2)
 
         self.verticalLayout_7.addWidget(self.label_4)
 
@@ -401,11 +405,16 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 542, 22))
+        self.menubar.setGeometry(QRect(0, 0, 426, 22))
+        self.menuTools = QMenu(self.menubar)
+        self.menuTools.setObjectName(u"menuTools")
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QStatusBar(MainWindow)
         self.statusbar.setObjectName(u"statusbar")
         MainWindow.setStatusBar(self.statusbar)
+
+        self.menubar.addAction(self.menuTools.menuAction())
+        self.menuTools.addAction(self.actionCalibrate)
 
         self.retranslateUi(MainWindow)
 
@@ -414,9 +423,10 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
+        self.actionCalibrate.setText(QCoreApplication.translate("MainWindow", u"Calibrate", None))
         self.bottom_frame.setStyleSheet("")
         self.frame_5.setStyleSheet("")
-        self.label_3.setText(QCoreApplication.translate("MainWindow", u"Audio", None))
+        self.label_3.setText(QCoreApplication.translate("MainWindow", u"Audio (input)", None))
         self.label.setText(QCoreApplication.translate("MainWindow", u"Driver", None))
         self.cb_audio_driver.setItemText(0, QCoreApplication.translate("MainWindow", u"ASIO", None))
         self.cb_audio_driver.setItemText(1, QCoreApplication.translate("MainWindow", u"Blabla", None))
@@ -434,5 +444,6 @@ class Ui_MainWindow(object):
         self.minimum_time_label.setText(QCoreApplication.translate("MainWindow", u"TextLabel", None))
         self.open_project_button.setText(QCoreApplication.translate("MainWindow", u"Open Project", None))
         self.but_create.setText(QCoreApplication.translate("MainWindow", u"Create", None))
+        self.menuTools.setTitle(QCoreApplication.translate("MainWindow", u"Tools", None))
     # retranslateUi
 

@@ -9,3 +9,6 @@ class CalibrateController(QObject):
         super().__init__()
         self._model = model
         self._navigator = navigator
+
+    def go_back(self):
+        self._navigator.navigate('new_project')

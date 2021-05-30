@@ -9,7 +9,21 @@ from PySide2.QtCore import QObject, Signal, QThread, Slot
 from ..controllers.Calibrate_controller import CalibrateController
 from ..models.Calibrate_model import CalibrateModel
 from ..ui.Calibrate_ui import Ui_MainWindow as Calibrate_ui
-from ..services.dsp import _getTime
+from ..services.file import save_np_to_txt
+
+
+def get_documents_dir():
+    import platform
+    if platform.system() == 'Windows':
+        import ctypes.wintypes
+        CSIDL_PERSONAL = 5       # My Documents
+        SHGFP_TYPE_CURRENT = 0   # Get current, not default value
+
+        buf = ctypes.create_unicode_buffer(ctypes.wintypes.MAX_PATH)
+        ctypes.windll.shell32.SHGetFolderPathW(
+            None, CSIDL_PERSONAL, None, SHGFP_TYPE_CURRENT, buf)
+
+        return buf.value
 
 
 class CalibrationWorker(QObject):
@@ -20,11 +34,10 @@ class CalibrationWorker(QObject):
     def log(msg: str) -> None:
         print(f'[CalibrationWorker] {msg}')
 
-    def process(self, targetSpl, range=[50, 20000]):
+    def process(self, targetSpl):
         self.log('Processing')
         self.log(targetSpl)
 
-        # t = _getTime(B=range[1]-range[0], e=0.1)
         t = 5
         fs = 44100
         self.log(f'Time rec: {t}')
@@ -33,11 +46,17 @@ class CalibrationWorker(QObject):
         sd.wait()
 
         spl = 20 * np.log10(np.std(x) / 2e-5)
-        self.log(f'Got: {spl}')
 
-        self.log(f'Expected: {targetSpl}')
-
+        self.save_calibration_file(spl, targetSpl)
         self.finished.emit()
+
+    def save_calibration_file(self, actual_spl, expected_spl):
+        self.log(f'Got: {actual_spl} dB')
+        self.log(f'Expected: {expected_spl} dB')
+
+        path = os.path.join(get_documents_dir(), 'Scan&Paint Clone')
+        file_name = 'calibration.dat'
+        save_np_to_txt(np.array([expected_spl, actual_spl]), path, file_name)
 
 
 class CalibrateView(QMainWindow, Calibrate_ui):
@@ -64,6 +83,7 @@ class CalibrateView(QMainWindow, Calibrate_ui):
 
     def connect_to_controller(self):
         self.calibrate_button.clicked.connect(self.start_calibration)
+        self.go_back_button.clicked.connect(self._controller.go_back)
         pass
 
     def connect_to_model(self):
@@ -94,6 +114,7 @@ class CalibrateView(QMainWindow, Calibrate_ui):
         # Connect the finished signal of thread & worker
         # with the corresponding stuff
         worker.finished.connect(thread.quit)
+        worker.finished.connect(self.go_back)
         worker.finished.connect(worker.deleteLater)
         thread.finished.connect(thread.deleteLater)
         self.thread = thread
@@ -102,5 +123,9 @@ class CalibrateView(QMainWindow, Calibrate_ui):
     @Slot(str)
     def handle_update_status(self, value):
         print(value)
+
+    @Slot()
+    def go_back(self):
+        self._controller._navigator.navigate('new_project')
 
     # endregion

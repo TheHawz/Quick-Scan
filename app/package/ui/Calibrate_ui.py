@@ -20,8 +20,8 @@ class Ui_MainWindow(object):
         MainWindow.resize(429, 596)
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
-        self.horizontalLayout = QHBoxLayout(self.centralwidget)
-        self.horizontalLayout.setObjectName(u"horizontalLayout")
+        self.verticalLayout_2 = QVBoxLayout(self.centralwidget)
+        self.verticalLayout_2.setObjectName(u"verticalLayout_2")
         self.frame = QFrame(self.centralwidget)
         self.frame.setObjectName(u"frame")
         self.frame.setFrameShape(QFrame.StyledPanel)
@@ -85,7 +85,26 @@ class Ui_MainWindow(object):
         self.verticalLayout.addItem(self.verticalSpacer)
 
 
-        self.horizontalLayout.addWidget(self.frame)
+        self.verticalLayout_2.addWidget(self.frame)
+
+        self.horizontalLayout_4 = QHBoxLayout()
+        self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
+        self.horizontalLayout = QHBoxLayout()
+        self.horizontalLayout.setObjectName(u"horizontalLayout")
+        self.go_back_button = QPushButton(self.centralwidget)
+        self.go_back_button.setObjectName(u"go_back_button")
+
+        self.horizontalLayout.addWidget(self.go_back_button)
+
+        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
+        self.horizontalLayout.addItem(self.horizontalSpacer)
+
+
+        self.horizontalLayout_4.addLayout(self.horizontalLayout)
+
+
+        self.verticalLayout_2.addLayout(self.horizontalLayout_4)
 
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
@@ -103,10 +122,11 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
-        self.label.setText(QCoreApplication.translate("MainWindow", u" -> Sonometer medition", None))
+        self.label.setText(QCoreApplication.translate("MainWindow", u"Sonometer medition (Full band - dB SPL value)", None))
         self.calibrate_button.setText(QCoreApplication.translate("MainWindow", u"Calibrate!", None))
         self.label_2.setText(QCoreApplication.translate("MainWindow", u"The user will have to recalibrate the system each time any of the following happen:", None))
         self.label_3.setText(QCoreApplication.translate("MainWindow", u" - The user change the input gain of the system.", None))
         self.label_4.setText(QCoreApplication.translate("MainWindow", u" - The user change the microphone, the audio interface or any of the components that form the recording chain.", None))
+        self.go_back_button.setText(QCoreApplication.translate("MainWindow", u"Go Back", None))
     # retranslateUi
 

@@ -44,12 +44,16 @@ class Ui_MainWindow(object):
         self.frame_5.setObjectName(u"frame_5")
         self.frame_5.setFrameShape(QFrame.StyledPanel)
         self.frame_5.setFrameShadow(QFrame.Raised)
-        self.horizontalLayout_4 = QHBoxLayout(self.frame_5)
-        self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
+        self.verticalLayout_4 = QVBoxLayout(self.frame_5)
+        self.verticalLayout_4.setObjectName(u"verticalLayout_4")
         self.bg_img_label = QLabel(self.frame_5)
         self.bg_img_label.setObjectName(u"bg_img_label")
 
-        self.horizontalLayout_4.addWidget(self.bg_img_label)
+        self.verticalLayout_4.addWidget(self.bg_img_label)
+
+        self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+
+        self.verticalLayout_4.addItem(self.verticalSpacer)
 
 
         self.horizontalLayout_2.addWidget(self.frame_5)

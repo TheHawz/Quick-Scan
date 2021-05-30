@@ -4,7 +4,7 @@ import os
 
 from PySide2.QtWidgets import QMainWindow, QFileDialog
 from PySide2.QtCore import Slot
-from PySide2.QtWidgets import QMessageBox
+from PySide2.QtWidgets import QMessageBox, QAction
 
 from ..ui.NewProject_ui import Ui_MainWindow as NewProject_ui
 from ..models.ActualProjectModel import ActualProjectModel
@@ -93,7 +93,7 @@ class NewProjectView(QMainWindow, NewProject_ui):
 
             if msgBox.clickedButton() == calibrateButton:
                 print('Go to calibrate!')
-                self._controller._navigator.navigate('calibrate')
+                self._controller.calibrate()
             elif msgBox.clickedButton() == cancelButton:
                 pass
 
@@ -116,6 +116,9 @@ class NewProjectView(QMainWindow, NewProject_ui):
         self.high_freq_dial.valueChanged.connect(
             self._controller.change_high_freq)
         self.open_project_button.clicked.connect(self.open_project)
+
+        self.actionCalibrate.triggered.connect(
+            self._controller.calibrate)
 
     def connect_to_model(self):
         self._model.project_name_changed.connect(self.project_name_changed)
