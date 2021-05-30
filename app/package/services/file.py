@@ -27,11 +27,11 @@ def check_for_existance(path) -> tuple:
     """
     isdir = os.path.isdir(path)
     if isdir:
-        return isdir, False
+        return True, False
 
     isfile = os.path.isfile(path)
     if isfile:
-        return isfile, True
+        return True, True
 
     return False, None
 

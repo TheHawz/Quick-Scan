@@ -10,4 +10,5 @@ class Navigator(QObject):
 
     # @Slot(str)
     def navigate(self, value):
+        print(f'[Navigator] navigate -> {value}')
         self.navigator.emit(value)
