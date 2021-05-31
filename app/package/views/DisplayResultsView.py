@@ -192,6 +192,8 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
         self.img = cv_img.copy()
         cv_img = self._model.grid.draw_grid(cv_img)
 
+        cv_img = self.draw_map(cv_img, spl=self._model.full_band_spec)
+
         if grid is not None:
             pt1, pt2 = self._model.grid.get_region(grid)
             cv_img = imb.draw_border(cv_img, pt1, pt2,
@@ -204,6 +206,31 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
         self.bg_img_label.setPixmap(qt_img)
 
         self.bg_img_label.mousePressEvent = self.handle_grid_clicked
+
+    @staticmethod
+    def create_color_map(color0=(255, 0, 0), color1=(0, 0, 255)):
+        LUT = np.linspace(color0, color1, 100, dtype=np.uint8)
+        return LUT
+
+    def draw_map(self, img, spl=[]):
+        if spl == []:
+            return img
+
+        spl = np.array(spl, dtype=int)
+        min = np.min(spl)
+        max = np.max(spl)
+        lut = self.create_color_map()
+
+        for irow, row in enumerate(spl):
+            for icol, value in enumerate(row):
+                pt1, pt2 = self._model.grid.get_region([irow, icol])
+
+                index = int((value-min)*len(lut) / (max-min)) - 1
+                img = imb.draw_filled_rectangle(img,
+                                                pt1, pt2,
+                                                lut[index],
+                                                0.4)
+        return img
 
     def handle_grid_clicked(self, event):
         """The (x,y) position of the event it is NOT in reference with
