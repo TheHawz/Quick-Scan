@@ -1,4 +1,5 @@
 # This Python file uses the following encoding: utf-8
+from app.package.services.load_project import LoadFilesWorker
 import numpy as np
 import cv2
 
@@ -22,22 +23,10 @@ from matplotlib import pyplot as plt
 matplotlib.use('Qt5Agg')
 plt.style.use('fivethirtyeight')
 
-progress_msgs = {
-    0: 'Finish trim, start clean data',
-    1: 'Finish clean data, start segment video',
-    2: 'Finish segment video, start segment audio',
-    3: 'Finish segment audio, start analyze audio',
-    4: 'Finish analyze audio',
-}
-
-
-def log(msg: str) -> None:
-    print(f'[DisplayResutls/View] {msg}')
-
 
 class MplCanvas(FigureCanvasQTAgg):
 
-    def __init__(self, parent=None, width=5, height=4, dpi=100):
+    def __init__(self, parent=None, width=4, height=3, dpi=300):
         fig = Figure(figsize=(width, height), dpi=dpi)
         self.ax = fig.add_subplot(111)
         super(MplCanvas, self).__init__(fig)
@@ -59,6 +48,9 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
     def open(self):
         self.show()
         self.on_open()
+
+        # self.actionOpen_Project.triggered.connect(
+        # self._controller._navigator.navigate('new_project'))
 
     def close(self):
         self.hide()
@@ -104,105 +96,141 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
         self.IMG_WIDTH = 350  # pixels
         self.scale_factor = -1
 
+    # region Create Threads
+
     def create_thread(self):
-        # thread = QThread()
-        # worker = AccountManager()
-        # worker.moveToThread(thread)
-        # thread.started.connect(lambda: worker.withdraw(person, amount))
-        # worker.updatedBalance.connect(self.updateBalance)
-        # worker.finished.connect(thread.quit)
-        # worker.finished.connect(worker.deleteLater)
-        # thread.finished.connect(thread.deleteLater)
-        # return thread
+        # Create worker and thread
         thread = QThread()
         worker = DspThread()
         worker.moveToThread(thread)
 
+        # Conect the 'started' signal of the Thread
+        # to the corresponding function in the worker
         thread.started.connect(lambda: worker.process(self._model))
         worker.update_status.connect(self.handle_update_status)
+
+        # Connect the finished signal of thread & worker
+        # with the corresponding stuff
+        worker.finished.connect(lambda: self._controller.select_row(0))
+        worker.finished.connect(lambda: self._controller.select_col(0))
         worker.finished.connect(thread.quit)
         worker.finished.connect(worker.deleteLater)
         thread.finished.connect(thread.deleteLater)
         return thread
 
+    def create_loading_thread(self):
+        # Create worker and thread
+        thread = QThread()
+        worker = LoadFilesWorker()
+        worker.moveToThread(thread)
+
+        # Conect the 'started' signal of the Thread
+        # to the corresponding function in the worker
+        thread.started.connect(lambda: worker.load(self._model))
+        worker.send_data.connect(self._controller.set_data)
+        worker.send_grid.connect(self._controller.set_grid)
+        worker.send_freq_range.connect(self._controller.set_freq_range)
+
+        # Connect the finished signal of thread & worker
+        # with the corresponding stuff
+        worker.finished.connect(thread.quit)
+        worker.finished.connect(self.show_project_info)
+        thread.finished.connect(lambda: self.dsp_thread.start())
+        worker.finished.connect(worker.deleteLater)
+        thread.finished.connect(thread.deleteLater)
+
+        return thread
+    # endregion
+
     def on_open(self):
         self.setupPlottingWidget()
 
-        try:
-            self._controller.load_audio_file(
-                ActualProjectModel.project_location)
-            self._controller.load_frame_size(
-                ActualProjectModel.project_location)
-        except Exception as e:
-            log(f'[ERROR] Error while loading audio file: {e}')
+        self.dsp_thread = self.create_thread()
+        self.loading_thread = self.create_loading_thread()
 
-        if len(ActualProjectModel.data_x) == 0:
-            # We are loading a project => so we need to:
-            #  - Load Position Data
-            #  - Load freq. range from .pro
-            self._controller.load_position_data(
-                ActualProjectModel.project_location)
-        else:
-            # We have to move data from 'ActualProjectModel' to the
-            # DisplayResultsModel.
-            self._controller.set_data_x(ActualProjectModel.data_x)
-            self._controller.set_data_y(ActualProjectModel.data_y)
-            self._controller.set_grid(ActualProjectModel.grid)
+        self.loading_thread.start()
 
-        self._controller.set_freq_range(
-            [ActualProjectModel.low_freq, ActualProjectModel.high_freq])
-
-        self._controller.load_bg_img(ActualProjectModel.project_location)
-
+    def show_project_info(self):
         self.pr_name.setText(ActualProjectModel.project_name)
+
         self.audio_info.setText(
             f'fs = {self._model.audio_fs}. ' +
             'Frequency Range: ' +
             f'{ActualProjectModel.low_freq}-{ActualProjectModel.high_freq}')
-        self.grid_config.setText(str(self._model.grid))
 
-        self.thread = self.create_thread()
-        self.thread.start()
+        self.grid_config.setText(str(self._model.grid))
 
     # region Handlers
 
     @Slot(np.ndarray)
     def handle_data_x_changed(self, value):
-        log(f'Data: X -> length={len(value)}')
+        pass
 
     @Slot(np.ndarray)
     def handle_data_y_changed(self, value):
-        log(f'Data: Y -> length={len(value)}')
+        pass
 
     def handle_audio_data_changed(self, value):
-        log(f'Audio: data -> length={len(value)}')
+        pass
 
     def handle_audio_fs_changed(self, value):
-        log(f'Audio: fs -> {value}')
+        pass
 
     @Slot(Grid)
     def handle_grid_changed(self, grid: Grid) -> None:
-        self.log(f'Setting maximum possible grid values: {grid}')
+        self.num_of_cells = grid.number_of_cols * \
+            grid.number_of_rows
 
     @Slot(list)
     def handle_update_status(self, value: int) -> None:
-        total_grids = self._model.grid.number_of_cols * \
-            self._model.grid.number_of_rows
-        self.log(f' *** Grid nº {value+1} of {total_grids}')
         # self.progressBar.setValue((value+1)/total_grids*100)
+        self.log(f' *** Grid nº {value+1} of {self.num_of_cells}')
 
     @Slot(np.ndarray)
-    def display_image(self, cv_img):
+    def display_image(self, cv_img: np.ndarray, grid=None):
         """Updates the image_label with a new opencv image"""
-        cv_img, scale_factor = imb.resize(cv_img, width=self.IMG_WIDTH,
-                                          return_scale_factor=True)
+        self.img = cv_img.copy()
+        cv_img = self._model.grid.draw_grid(cv_img)
 
-        self.scale_factor = scale_factor
+        cv_img = self.draw_map(cv_img, spl=self._model.full_band_spec)
+
+        if grid is not None:
+            pt1, pt2 = self._model.grid.get_region(grid)
+            cv_img = imb.draw_border(cv_img, pt1, pt2,
+                                     color=(0, 0, 255))
+
+        cv_img, self.scale_factor = imb.resize(cv_img, width=self.IMG_WIDTH,
+                                               return_scale_factor=True)
 
         qt_img = self.convert_cv_qt(cv_img)
         self.bg_img_label.setPixmap(qt_img)
 
         self.bg_img_label.mousePressEvent = self.handle_grid_clicked
+
+    @staticmethod
+    def create_color_map(color0=(255, 0, 0), color1=(0, 0, 255)):
+        LUT = np.linspace(color0, color1, 100, dtype=np.uint8)
+        return LUT
+
+    def draw_map(self, img, spl=[]):
+        if spl == []:
+            return img
+
+        spl = np.array(spl, dtype=int)
+        min = np.min(spl)
+        max = np.max(spl)
+        lut = self.create_color_map()
+
+        for irow, row in enumerate(spl):
+            for icol, value in enumerate(row):
+                pt1, pt2 = self._model.grid.get_region([irow, icol])
+
+                index = int((value-min)*len(lut) / (max-min)) - 1
+                img = imb.draw_filled_rectangle(img,
+                                                pt1, pt2,
+                                                lut[index],
+                                                0.4)
+        return img
 
     def handle_grid_clicked(self, event):
         """The (x,y) position of the event it is NOT in reference with
@@ -227,9 +255,6 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
             if grid_coord is None:
                 return
 
-            self.log(f'Clicked on (x: {x} ,y: {y})')
-            self.log(f'Corresponding to grid: {grid_coord}')
-
             self._controller.select_row(grid_coord[0])
             self._controller.select_col(grid_coord[1])
         except Exception as e:
@@ -252,8 +277,6 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
         sp = self._model.spectrum[value, self._model.col]
         freq = self._model.freq
 
-        print(sp, freq)
-
         if len(sp) == len(freq):
             self.redraw(freq, sp)
         else:
@@ -264,10 +287,9 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
         if len(self._model.spectrum) == 0:
             return
 
+        self.display_image(self.img, [self._model.row, self._model.col])
         sp = self._model.spectrum[self._model.row, value]
         freq = self._model.freq
-
-        print(sp, freq)
 
         if len(sp) == len(freq):
             self.redraw(freq, sp)
@@ -275,15 +297,18 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
             self.log('Error len(sp) != len(freq)')
 
     def redraw(self, freq, spectrum):
+        # TODO: can improve performance => just change data on the axes
+        max_val = np.max(self._model.spectrum) * 1.05
+        min_val = np.min(self._model.spectrum) * 0.95
+
         self.sc.ax.cla()  # Clear the canvas.
 
-        xtick = [int(f) for f in freq]
-        xticklabel = [str(round(f)) if f < 1000 else str(
-            round(f/1000, 1))+'k' for f in freq]
+        xtick, xticklabel = self.get_xtick(freq)
 
-        self.sc.ax.bar(freq, spectrum, width=np.array(freq)*2/5)
+        self.sc.ax.bar(freq, spectrum, width=np.array(freq)*1/6)
 
         self.sc.ax.set_xscale('log')
+        self.sc.ax.set_ylim(min_val, max_val)
         self.sc.ax.set_xlabel(r'Frequency [Hz]')
         self.sc.ax.set_ylabel('Level [dB]')
 
@@ -291,5 +316,21 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
         self.sc.ax.set_xticklabels(xticklabel)
 
         self.sc.draw()
+
+    @staticmethod
+    def freq_to_str(f) -> str:
+        if f < 1000:
+            return str(round(f))
+        else:
+            return str(round(f/1000, 1))+'k'
+
+    def get_xtick(self, freq):
+        xtick = np.round(freq)
+
+        # Apply freq_to_str to every-other element in freq array
+        xticklabel = [self.freq_to_str(f) if ii % 3 == 0 else ''
+                      for ii, f in enumerate(freq)]
+
+        return xtick, xticklabel
 
     # endregion

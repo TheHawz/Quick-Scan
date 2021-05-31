@@ -36,6 +36,7 @@ class DisplayResultsModel(QObject):
         self._freq = []
         self._row = -1
         self._col = -1
+        self._full_band_spec = []
 
     # region Props & Setters
 
@@ -165,6 +166,16 @@ class DisplayResultsModel(QObject):
     @spectrum.setter
     def spectrum(self, value):
         self._spectrum = value
+
+    # --- --- --- --- --- --- --- --- --- ---
+
+    @property
+    def full_band_spec(self):
+        return self._full_band_spec
+
+    @full_band_spec.setter
+    def full_band_spec(self, value):
+        self._full_band_spec = value
 
     # --- --- --- --- --- --- --- --- --- ---
 

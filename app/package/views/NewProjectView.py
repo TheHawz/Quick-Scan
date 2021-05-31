@@ -1,12 +1,17 @@
 # This Python file uses the following encoding: utf-8
-from app.package.models.ActualProjectModel import ActualProjectModel
 import math
 import os
 
 from PySide2.QtWidgets import QMainWindow, QFileDialog
 from PySide2.QtCore import Slot
+from PySide2.QtWidgets import QMessageBox, QAction
 
 from ..ui.NewProject_ui import Ui_MainWindow as NewProject_ui
+from ..models.ActualProjectModel import ActualProjectModel
+from ..models.NewProjectModel import NewProjectModel
+from ..controllers.NewProjectController import NewProjectController
+
+from ..services import file as fileutils
 
 
 # TODO: move to utils
@@ -19,7 +24,13 @@ def freq_to_text(value: float) -> str:
 
 class NewProjectView(QMainWindow, NewProject_ui):
 
-    def __init__(self, model, controller):
+    @staticmethod
+    def log(msg: str) -> None:
+        print(f'[NewProject/View] {msg}')
+
+    def __init__(self,
+                 model: NewProjectModel,
+                 controller: NewProjectController):
         super(NewProjectView, self).__init__()
         self._model = model
         self._controller = controller
@@ -31,9 +42,60 @@ class NewProjectView(QMainWindow, NewProject_ui):
 
     def open(self):
         self.show()
+        self.on_open()
 
     def close(self):
         self.hide()
+
+    # todo: move to utils
+    @staticmethod
+    def get_documents_dir():
+        import platform
+        if platform.system() == 'Windows':
+            import ctypes.wintypes
+            CSIDL_PERSONAL = 5       # My Documents
+            SHGFP_TYPE_CURRENT = 0   # Get current, not default value
+
+            buf = ctypes.create_unicode_buffer(ctypes.wintypes.MAX_PATH)
+            ctypes.windll.shell32.SHGetFolderPathW(
+                None, CSIDL_PERSONAL, None, SHGFP_TYPE_CURRENT, buf)
+
+            return buf.value
+
+    def on_open(self):
+        # Checking for calibration file
+        documents = self.get_documents_dir()
+        if documents is None:
+            raise Exception('Documents folder not found. ' +
+                            'We only support MS Windows right now')
+
+        fileutils.mkdir(os.path.join(documents, 'Scan&Paint Clone'))
+
+        exists, isFile = fileutils.check_for_existance(os.path.join(
+            documents, 'Scan&Paint Clone', 'calibration.dat'))
+
+        if not exists:
+            msg = ''
+            msg += 'Sorry, the calibration file was not found. '
+            msg += 'You can calibrate the system now, or choose not to do it. '
+            msg += 'The results wont be precise'
+
+            msgBox = QMessageBox()
+            msgBox.setText(msg)
+            msgBox.setIcon(QMessageBox.Information)
+            msgBox.setWindowTitle("Calibration file not found!")
+
+            calibrateButton = msgBox.addButton(
+                self.tr("Calibrate"), QMessageBox.ActionRole)
+            cancelButton = msgBox.addButton(QMessageBox.Cancel)
+
+            msgBox.exec_()
+
+            if msgBox.clickedButton() == calibrateButton:
+                print('Go to calibrate!')
+                self._controller.calibrate()
+            elif msgBox.clickedButton() == cancelButton:
+                pass
 
     def connect_to_controller(self):
         self.line_project_name.textChanged.connect(
@@ -54,6 +116,9 @@ class NewProjectView(QMainWindow, NewProject_ui):
         self.high_freq_dial.valueChanged.connect(
             self._controller.change_high_freq)
         self.open_project_button.clicked.connect(self.open_project)
+
+        self.actionCalibrate.triggered.connect(
+            self._controller.calibrate)
 
     def connect_to_model(self):
         self._model.project_name_changed.connect(self.project_name_changed)

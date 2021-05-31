@@ -17,7 +17,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(827, 651)
+        MainWindow.resize(819, 594)
         self.actionOpen_Project = QAction(MainWindow)
         self.actionOpen_Project.setObjectName(u"actionOpen_Project")
         self.actionAbout = QAction(MainWindow)
@@ -44,18 +44,27 @@ class Ui_MainWindow(object):
         self.frame_5.setObjectName(u"frame_5")
         self.frame_5.setFrameShape(QFrame.StyledPanel)
         self.frame_5.setFrameShadow(QFrame.Raised)
-        self.horizontalLayout_4 = QHBoxLayout(self.frame_5)
-        self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
+        self.verticalLayout_4 = QVBoxLayout(self.frame_5)
+        self.verticalLayout_4.setObjectName(u"verticalLayout_4")
         self.bg_img_label = QLabel(self.frame_5)
         self.bg_img_label.setObjectName(u"bg_img_label")
 
-        self.horizontalLayout_4.addWidget(self.bg_img_label)
+        self.verticalLayout_4.addWidget(self.bg_img_label)
+
+        self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+
+        self.verticalLayout_4.addItem(self.verticalSpacer)
 
 
         self.horizontalLayout_2.addWidget(self.frame_5)
 
         self.spectrum_groupBox = QGroupBox(self.frame_2)
         self.spectrum_groupBox.setObjectName(u"spectrum_groupBox")
+        sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.spectrum_groupBox.sizePolicy().hasHeightForWidth())
+        self.spectrum_groupBox.setSizePolicy(sizePolicy)
         self.horizontalLayout_3 = QHBoxLayout(self.spectrum_groupBox)
         self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
         self.spectrum = QVBoxLayout()
@@ -73,8 +82,8 @@ class Ui_MainWindow(object):
         self.frame_3.setObjectName(u"frame_3")
         self.frame_3.setFrameShape(QFrame.StyledPanel)
         self.frame_3.setFrameShadow(QFrame.Raised)
-        self.horizontalLayout_5 = QHBoxLayout(self.frame_3)
-        self.horizontalLayout_5.setObjectName(u"horizontalLayout_5")
+        self.verticalLayout_3 = QVBoxLayout(self.frame_3)
+        self.verticalLayout_3.setObjectName(u"verticalLayout_3")
         self.groupBox = QGroupBox(self.frame_3)
         self.groupBox.setObjectName(u"groupBox")
         self.verticalLayout_2 = QVBoxLayout(self.groupBox)
@@ -143,7 +152,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_2.addWidget(self.frame_8)
 
 
-        self.horizontalLayout_5.addWidget(self.groupBox)
+        self.verticalLayout_3.addWidget(self.groupBox)
 
 
         self.verticalLayout.addWidget(self.frame_3)
@@ -154,7 +163,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 827, 22))
+        self.menubar.setGeometry(QRect(0, 0, 819, 22))
         self.menuArchive = QMenu(self.menubar)
         self.menuArchive.setObjectName(u"menuArchive")
         self.menuHelp = QMenu(self.menubar)

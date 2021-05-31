@@ -40,7 +40,7 @@ def get_spectrum(audio: np.ndarray, fs, limits=None):
     win_size = 2**15
     overlap = 0.1
     len_audio = audio.shape[0]
-    fraction = 1
+    fraction = 3
 
     i = 0
     index = 0

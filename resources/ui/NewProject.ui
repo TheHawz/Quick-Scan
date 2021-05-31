@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>542</width>
-    <height>696</height>
+    <width>426</width>
+    <height>597</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -183,7 +183,10 @@
                       <item>
                        <widget class="QLabel" name="label_3">
                         <property name="text">
-                         <string>Audio</string>
+                         <string>Audio (input)</string>
+                        </property>
+                        <property name="margin">
+                         <number>2</number>
                         </property>
                        </widget>
                       </item>
@@ -364,6 +367,9 @@
                         </property>
                         <property name="text">
                          <string>Video</string>
+                        </property>
+                        <property name="margin">
+                         <number>2</number>
                         </property>
                        </widget>
                       </item>
@@ -800,12 +806,24 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>542</width>
+     <width>426</width>
      <height>22</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuTools">
+    <property name="title">
+     <string>Tools</string>
+    </property>
+    <addaction name="actionCalibrate"/>
+   </widget>
+   <addaction name="menuTools"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionCalibrate">
+   <property name="text">
+    <string>Calibrate</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>
