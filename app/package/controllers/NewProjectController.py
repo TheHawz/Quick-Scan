@@ -29,6 +29,8 @@ class NewProjectController(QObject):
         project_config['freq_range'] = {
             'low': model.low_freq, 'high': model.high_freq}
 
+        project_config['calibration'] = ActualProjectModel.calibration
+
         path = os.path.join(model.project_location,
                             model.project_name + '.pro')
 
@@ -126,6 +128,7 @@ class NewProjectController(QObject):
 
         metadata = data['metadata']
         freq_range = data['project_config']['freq_range']
+        calibration = data['project_config']['calibration']
 
         ActualProjectModel.project_name = metadata['name']
         ActualProjectModel.project_location = project_location
@@ -134,6 +137,7 @@ class NewProjectController(QObject):
         ActualProjectModel.low_freq = freq_range['low']
         ActualProjectModel.high_freq = freq_range['high']
         ActualProjectModel.path_to_save = fpath
+        ActualProjectModel.calibration = calibration
 
         self._navigator.navigate('display_results')
 

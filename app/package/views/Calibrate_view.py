@@ -1,4 +1,5 @@
 # This Python file uses the following encoding: utf-8
+from app.package.models.ActualProjectModel import ActualProjectModel
 import os
 import numpy as np
 import sounddevice as sd
@@ -53,6 +54,10 @@ class CalibrationWorker(QObject):
     def save_calibration_file(self, actual_spl, expected_spl):
         self.log(f'Got: {actual_spl} dB')
         self.log(f'Expected: {expected_spl} dB')
+
+        ActualProjectModel.calibration = {
+            'actual': actual_spl, 'expected': expected_spl
+        }
 
         path = os.path.join(get_documents_dir(), 'Scan&Paint Clone')
         file_name = 'calibration.dat'

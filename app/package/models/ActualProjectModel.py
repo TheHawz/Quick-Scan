@@ -16,6 +16,7 @@ class ActualProjectModel(object):
     low_freq = -1
     high_freq = -1
     time_of_rec = -1
+    calibration = {'actual': -1, 'expected': -1}
 
     path_to_save = ''
 
