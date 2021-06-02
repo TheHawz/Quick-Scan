@@ -41,7 +41,7 @@ def get_num_of_windows(len_audio, win_size, overlap):
 
     while i+win_size < len_audio:
         num_of_win += 1
-        i += round(win_size-win_size*overlap)
+        i += win_size-round(win_size*overlap)
 
     return num_of_win
 

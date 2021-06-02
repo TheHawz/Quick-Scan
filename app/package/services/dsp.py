@@ -32,6 +32,42 @@ def get_num_of_windows(len_audio, win_size, overlap):
     return num_of_win
 
 
+def get_num_of_windows_2(len_audio, win_size, overlap):
+    """Calculate the number of windows of size Ws that fit into an
+    audio signal of length L with an overlap in a range of [0, 1).
+
+    The while loop that can do this without knowing in advance the
+    number of windows is the following:
+
+    while i+win_size < len_audio:
+        num_of_win += 1
+        i += round(win_size-win_size*overlap)
+
+    So we can deduce N from this inequations:
+     -> L <= 0 + N*Ws - N*round(Ws*overlap) + Ws
+     -> L <= N(Ws - round(Ws*overlap)) + Ws
+     -> N >= L / (2*Ws - round(Ws+overlap))
+
+    Args:
+        len_audio (int):
+            The longitude, in samples, of the audio signal.
+        win_size (int):
+            The longitude, in samples, of the window.
+        overlap (float):
+            The overlap between one window and the next, defined
+            over a range of [0, 1)
+
+    Returns:
+        N (int):
+            The number of windows, or in other words, the
+            rows that we have to pre-allocate or the size
+            of the loop that will iterate over it.
+    """
+
+    N = (len_audio-win_size) / (win_size - round(win_size*overlap))
+    return int(np.ceil(N))
+
+
 def get_spectrum(audio: np.ndarray, fs, limits=None):
     # make mono...
     audio = audio[0]
