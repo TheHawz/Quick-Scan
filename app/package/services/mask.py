@@ -10,19 +10,22 @@ from . import colorSegmentation as cs
 
 # TODO: move to own config file
 TRACKING_COLOR = (220, 198, 43)  # BGR
-BOTTOM_HSV_THRES = (80, 110, 10)
-TOP_HSV_THRES = (130, 255, 255)
+BOTTOM_HSV_THRES = (85, 110, 60)
+TOP_HSV_THRES = (125, 255, 225)
 
 
-def improve_mask(mask, morph_type=cv2.MORPH_ELLIPSE, size=(3, 3)):
+def improve_mask(mask, operation, morph_type=cv2.MORPH_ELLIPSE, size=(3, 3)):
     kernel = cv2.getStructuringElement(morph_type, size)
-    opened = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel)
+    opened = cv2.morphologyEx(mask, operation, kernel)
     return opened
 
 
 def get_mask(frame):
     mask = cs.getColorMask(frame, BOTTOM_HSV_THRES, TOP_HSV_THRES)
-    return improve_mask(mask, cv2.MORPH_ELLIPSE, (7, 7))
+    mask = improve_mask(mask, cv2.MORPH_OPEN, cv2.MORPH_ELLIPSE, (3, 3))
+    mask = improve_mask(mask, cv2.MORPH_CLOSE, cv2.MORPH_ELLIPSE, (15, 15))
+
+    return mask
 
 
 def get_circles(mask):

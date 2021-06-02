@@ -47,9 +47,7 @@ class CameraThread(QThread):
 
         cap = self.setup_camera()
 
-        # self.times = np.zeros((self.rows, self.cols))
         self.times = None
-        self.time = time.time()
 
         while self._running:
             ret, frame = cap.read()
@@ -61,6 +59,7 @@ class CameraThread(QThread):
             if not self._rec:
                 self._grid.config(self.rows, self.cols, pad=self.padding)
                 processed_frame = self.bypass(frame)
+                self.time = time.time()
             else:
                 if self.times is None:
                     # This code will only execute once!
