@@ -1,0 +1,30 @@
+{
+    "description": "",
+    "tags": [],
+    "size": {
+        "height": 480,
+        "width": 640
+    },
+    "objects": [
+        {
+            "id": 741244517,
+            "classId": 2947033,
+            "description": "",
+            "geometryType": "point",
+            "labelerLogin": "hawz",
+            "createdAt": "2021-06-02T17:02:03.561Z",
+            "updatedAt": "2021-06-02T17:02:03.561Z",
+            "tags": [],
+            "classTitle": "mic",
+            "points": {
+                "exterior": [
+                    [
+                        215,
+                        110
+                    ]
+                ],
+                "interior": []
+            }
+        }
+    ]
+}

@@ -20,13 +20,15 @@ def improve_mask(mask, operation, morph_type=cv2.MORPH_ELLIPSE, size=(3, 3)):
     return opened
 
 
-def get_mask(frame):
+def get_mask(frame, openSize=3, closeSize=15):
     mask = cs.getColorMask(frame, BOTTOM_HSV_THRES, TOP_HSV_THRES)
-    mask = improve_mask(mask, cv2.MORPH_OPEN, cv2.MORPH_ELLIPSE, (3, 3))
-    mask = improve_mask(mask, cv2.MORPH_CLOSE, cv2.MORPH_ELLIPSE, (15, 15))
+    mask = improve_mask(mask, cv2.MORPH_OPEN,
+                        cv2.MORPH_ELLIPSE, (openSize, openSize))
+    mask = improve_mask(mask, cv2.MORPH_CLOSE,
+                        cv2.MORPH_ELLIPSE, (closeSize, closeSize))
 
     return mask
 
 
-def get_circles(mask):
-    return cv2.HoughCircles(mask, cv2.HOUGH_GRADIENT, dp=3, minDist=150)
+def get_circles(mask, dp=3, minDist=150):
+    return cv2.HoughCircles(mask, cv2.HOUGH_GRADIENT, dp=dp, minDist=minDist)
