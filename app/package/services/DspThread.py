@@ -80,56 +80,75 @@ class DspThread(QObject):
 
         return shift, trim
 
-    def segment_video(self, model) -> dict[tuple, list[tuple]]:
-        data = np.transpose(np.array([model.data_x, model.data_y]))
+    @staticmethod
+    def index_of_grid(data, id):
+        ocurrences = []
+        for index, d in enumerate(data):
+            if d is None:
+                continue
+            if (id == d).all():
+                ocurrences.append(index)
 
-        spatial_segmentation: dict[tuple, list[tuple]] = {}
-        for i in range(model.grid.number_of_cols):
-            for j in range(model.grid.number_of_rows):
-                spatial_segmentation[j, i] = []
+        return ocurrences
 
-        start = 0
-        end = 0
-        prev_grid_id = -1
+    @staticmethod
+    def group_consecutives(array):
+        if not len(array) > 0:
+            return
 
-        x, y = data[0]
-        prev_grid_id = model.grid.locate_point((x, y)).astype(int).tolist()
+        ranges = []
 
-        for index, point in enumerate(data[1:]):
-            x, y = point
+        start = array[0]
+        end = array[0]
+        prev_int = -1
 
-            actual_grid_id = model.grid.locate_point((x, y))
-            print(index, ' -> ', actual_grid_id)
-
-            # TODO: fix this
-            if actual_grid_id is None:
-                # If the point was outside of the Grid itself (padding...).
+        for ii, value in enumerate(array):
+            if ii == 0:
+                prev_int = value
                 continue
 
-            # np.array to python list
-            actual_grid_id = actual_grid_id.astype(int).tolist()
-
-            if prev_grid_id == actual_grid_id:
-                end = index
+            if value == prev_int+1:
+                end = value
+                if ii == len(array)-1:
+                    ranges.append([start, end])
             else:
-                # add element to the dict
-                key = (prev_grid_id[0], prev_grid_id[1])
-                spatial_segmentation[key].append((start, end))
+                ranges.append([start, end])
+                start = value
+                end = value
 
-                # reestart "counter"
-                start = index
-                end = index
-                prev_grid_id = actual_grid_id
+            prev_int = value
 
-        # adding last bit
-        key = (actual_grid_id[0], actual_grid_id[1])
-        spatial_segmentation[key].append((start, end))
+        return ranges
 
-        self.log('Spatial segmentation results: ')
-        for grid_id in [*spatial_segmentation]:
-            self.log(f' - {grid_id} -> {spatial_segmentation[grid_id]}')
+    def segment_video(self,
+                      model: DisplayResultsModel) -> dict[tuple, list[tuple]]:
+        print('Segmenting video')
+        data_pts = np.transpose(np.array([model.data_x, model.data_y]))
 
-        return spatial_segmentation
+        data_grids = np.array(list(map(model.grid.locate_point, data_pts)))
+        print(data_grids)
+
+        cols = model.grid.number_of_cols
+        rows = model.grid.number_of_rows
+
+        grids = []
+        for i in range(rows):
+            for j in range(cols):
+                grids.append([i, j])
+
+        d = {}
+        for id in grids:
+            d[tuple(id)] = self.index_of_grid(data_grids, id)
+
+        print('SPATIAL SEGMENTATION: ')
+
+        for key in [*d]:
+            print(f'Grid: {key}')
+            cons = self.group_consecutives(d[key])
+            d[key] = cons
+            print(cons)
+
+        return d
 
     def segment_audio(self, model,
                       segmentation: dict[tuple, list[tuple]]

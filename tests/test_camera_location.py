@@ -17,16 +17,21 @@ def process_circles(frame, circles):
 
 
 def process_frame(frame):
-    frame = cv2.flip(frame, 1)
-    mask = get_mask(frame)
-    frame = process_circles(frame, get_circles(mask))
+    # frame = cv2.flip(frame, 1)
+    mask = get_mask(frame,
+                    openSize=1,
+                    closeSize=11)
+    circles = get_circles(mask,
+                          dp=3,
+                          minDist=250)
+    frame = process_circles(frame, circles)
     return frame, mask
 
 
 def main():
     """Manual testing of the microphone detection system.
     """
-    cap = cv2.VideoCapture(1)
+    cap = cv2.VideoCapture(0)
 
     while True:
         ret, frame = cap.read()

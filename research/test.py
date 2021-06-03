@@ -40,7 +40,7 @@ def main(file=None):
         if not success:
             break
 
-        frame = cv2.flip(frame, 1)
+        # frame = cv2.flip(frame, 1)
 
         mask = get_mask(frame)
         circles = get_circles(mask)

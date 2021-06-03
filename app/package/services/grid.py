@@ -7,6 +7,7 @@ Created on Fri Feb 26 12:57:19 2021
 
 import numpy as np
 import cv2
+from .imbasic import resize
 
 
 class Grid:
@@ -52,9 +53,6 @@ class Grid:
                         for i in range(number_of_rows + 1)]
         self.ver_div = [int(self.real_size[1] / number_of_cols * i + pad)
                         for i in range(number_of_cols + 1)]
-
-        # print(f'Hor div: {self.hor_div}')
-        # print(f'Ver div: {self.ver_div}')
 
     def locate_point(self, point: list):
         """ Located a point in the actual grid system.
@@ -114,14 +112,18 @@ class Grid:
         return [pt1, pt2]
 
     def draw_grid(self, frame, color=(180, 180, 180), thickness=1):
+        # if (frame.shape[:2] != self.size_of_frame).any():
+        w = frame.shape[1]
+        _big_frame = resize(frame, width=self.size_of_frame[1])
+
         for div in self.hor_div:
             start_point = (self.padding, div)
             end_point = (self.size_of_frame[1]-self.padding, div)
-            cv2.line(frame, start_point, end_point, color, thickness)
+            cv2.line(_big_frame, start_point, end_point, color, thickness)
 
         for div in self.ver_div:
             start_point = (div, self.padding)
             end_point = (div, self.size_of_frame[0]-self.padding)
-            cv2.line(frame, start_point, end_point, color, thickness)
+            cv2.line(_big_frame, start_point, end_point, color, thickness)
 
-        return frame
+        return resize(_big_frame, width=w)

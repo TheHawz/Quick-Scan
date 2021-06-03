@@ -135,8 +135,8 @@ class CameraThread(QThread):
             [type]: [description]
         """
         # TODO: quitar flip en production phase
-        frame = cv2.flip(frame, 1)
-        self._grid.draw_grid(frame)
+        # frame = cv2.flip(frame, 1)
+        # self._grid.draw_grid(frame)
         self.process_circles(frame, get_circles(get_mask(frame)))
         self.draw_rec_indicator(frame)
 
@@ -187,11 +187,11 @@ class CameraThread(QThread):
 
     def bypass(self, frame):
         # TODO: quitar flip en prod.
-        frame = cv2.flip(frame, 1)
+        # frame = cv2.flip(frame, 1)
 
         self.last_frame = np.copy(frame)
 
-        self._grid.draw_grid(frame)
+        # self._grid.draw_grid(frame)
         return frame
 
     def rec(self):

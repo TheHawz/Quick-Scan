@@ -41,10 +41,15 @@ class MicThread(QThread):
         self._running = True
 
         # todo: devices!
-        self.stream = sd.Stream(
-            channels=2, callback=self.callback, samplerate=44100)
+        _, _out = sd.default.device
+        _in = actual_project.audio_device_index
+        self.stream = sd.Stream(device=(_in, _out),
+                                channels=2,
+                                callback=self.callback,
+                                samplerate=44100)
         path = os.path.join(actual_project.project_location, 'Audio Files')
         fileutils.mkdir(path)
+
         self.file_stream = sf.SoundFile(os.path.join(path, 'audio.wav'),
                                         mode='w',
                                         samplerate=44100,
@@ -81,5 +86,5 @@ class MicThread(QThread):
 
         # outdata[:] = indata
         # self.update_volume.emit(indata.copy())
-
+        # print(indata)
         self.q.put(indata.copy())

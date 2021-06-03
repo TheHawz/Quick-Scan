@@ -7,10 +7,11 @@ Created on Fri Feb 26 13:06:42 2021
 
 import cv2
 from . import colorSegmentation as cs
+from .imbasic import resize
 
 # TODO: move to own config file
 TRACKING_COLOR = (220, 198, 43)  # BGR
-BOTTOM_HSV_THRES = (85, 110, 60)
+BOTTOM_HSV_THRES = (85, 80, 30)
 TOP_HSV_THRES = (125, 255, 225)
 
 
@@ -21,13 +22,15 @@ def improve_mask(mask, operation, morph_type=cv2.MORPH_ELLIPSE, size=(3, 3)):
 
 
 def get_mask(frame, openSize=3, closeSize=15):
+    w = frame.shape[1]
+    frame = resize(frame, width=500)
     mask = cs.getColorMask(frame, BOTTOM_HSV_THRES, TOP_HSV_THRES)
     mask = improve_mask(mask, cv2.MORPH_OPEN,
                         cv2.MORPH_ELLIPSE, (openSize, openSize))
     mask = improve_mask(mask, cv2.MORPH_CLOSE,
                         cv2.MORPH_ELLIPSE, (closeSize, closeSize))
 
-    return mask
+    return resize(mask, width=w)
 
 
 def get_circles(mask, dp=3, minDist=150):

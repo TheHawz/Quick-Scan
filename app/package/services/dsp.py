@@ -70,7 +70,7 @@ def get_num_of_windows_2(len_audio, win_size, overlap):
 
 def get_spectrum(audio: np.ndarray, fs, limits=None):
     # make mono...
-    audio = audio[0]
+    audio = audio[1]
 
     win_type = 'square'
     win_size = 2**15

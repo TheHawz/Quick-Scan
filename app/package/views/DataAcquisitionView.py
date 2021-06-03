@@ -171,7 +171,11 @@ class DataAcquisitionView(QMainWindow, DataAcquisition_ui):
     @Slot(np.ndarray)
     def handle_new_image(self, cv_img):
         """Updates the image_label with a new opencv image"""
-        qt_img = self.convert_cv_qt(resize(cv_img, width=400))
+        small_img = resize(cv_img, width=400)
+        img_w_grid = self._model.camThread._grid.draw_grid(
+            small_img, thickness=2)
+        qt_img = self.convert_cv_qt(img_w_grid)
+
         self.cam_view.setPixmap(qt_img)
 
     @ Slot(int)
