@@ -96,6 +96,9 @@ class DspThread(QObject):
         if not len(array) > 0:
             return
 
+        if len(array) == 1:
+            return array*2
+
         ranges = []
 
         start = array[0]
@@ -123,10 +126,11 @@ class DspThread(QObject):
     def segment_video(self,
                       model: DisplayResultsModel) -> dict[tuple, list[tuple]]:
         print('Segmenting video')
-        data_pts = np.transpose(np.array([model.data_x, model.data_y]))
+        data_pts = np.transpose([model.data_x, model.data_y])
 
-        data_grids = np.array(list(map(model.grid.locate_point, data_pts)))
-        print(data_grids)
+        data_grids = np.array(
+            list(map(model.grid.locate_point, data_pts)),
+            dtype=object)
 
         cols = model.grid.number_of_cols
         rows = model.grid.number_of_rows
@@ -140,13 +144,13 @@ class DspThread(QObject):
         for id in grids:
             d[tuple(id)] = self.index_of_grid(data_grids, id)
 
-        print('SPATIAL SEGMENTATION: ')
+        # print('SPATIAL SEGMENTATION: ')
 
         for key in [*d]:
-            print(f'Grid: {key}')
+            # print(f'Grid: {key}')
             cons = self.group_consecutives(d[key])
             d[key] = cons
-            print(cons)
+            # print(cons)
 
         return d
 
@@ -163,7 +167,7 @@ class DspThread(QObject):
 
             for range in segmentation[grid_id]:
                 start = int(range[0] * conversion_ratio)
-                end = int(range[1] * conversion_ratio)
+                end = int((range[1]+1) * conversion_ratio)-1
                 audio_segment = model.audio_data[start:end]
                 audio_segments[grid_id].extend(audio_segment)
 

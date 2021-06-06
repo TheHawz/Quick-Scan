@@ -18,6 +18,7 @@ class DisplayResultsModel(QObject):
     on_image_changed = Signal(object)
     on_row_changed = Signal(int)
     on_col_changed = Signal(int)
+    on_freq_changed = Signal(object)
 
     def __init__(self):
         super().__init__()
@@ -156,6 +157,7 @@ class DisplayResultsModel(QObject):
     @freq.setter
     def freq(self, value):
         self._freq = value
+        self.on_freq_changed.emit(value)
 
     # --- --- --- --- --- --- --- --- --- ---
 
