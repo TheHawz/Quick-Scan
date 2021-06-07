@@ -34,7 +34,7 @@
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout_9">
           <item>
-           <widget class="QPushButton" name="pushButton">
+           <widget class="QPushButton" name="go_back_button">
             <property name="text">
              <string>Go Back</string>
             </property>
@@ -280,7 +280,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>22</height>
+     <height>26</height>
     </rect>
    </property>
   </widget>

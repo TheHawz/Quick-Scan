@@ -193,7 +193,8 @@ class NewProjectView(QMainWindow, NewProject_ui):
 
     @Slot(int)
     def handle_audio_device_changed(self, value):
-        print(f'[VIEW]: Audio Device changed: {value}')
+        # print(f'[VIEW]: Audio Device changed: {value}')
+        pass
 
     @Slot(object)
     def handle_video_devices_set(self, value):
@@ -202,7 +203,8 @@ class NewProjectView(QMainWindow, NewProject_ui):
 
     @Slot(int)
     def handle_video_device_changed(self, value):
-        print(f'[VIEW]: Video Device changed: {value}')
+        # print(f'[VIEW]: Video Device changed: {value}')
+        pass
 
     @Slot(int)
     def handle_low_freq_changed(self, value):

@@ -34,10 +34,10 @@ class Ui_MainWindow(object):
         self.frame_5.setFrameShadow(QFrame.Raised)
         self.horizontalLayout_9 = QHBoxLayout(self.frame_5)
         self.horizontalLayout_9.setObjectName(u"horizontalLayout_9")
-        self.pushButton = QPushButton(self.frame_5)
-        self.pushButton.setObjectName(u"pushButton")
+        self.go_back_button = QPushButton(self.frame_5)
+        self.go_back_button.setObjectName(u"go_back_button")
 
-        self.horizontalLayout_9.addWidget(self.pushButton)
+        self.horizontalLayout_9.addWidget(self.go_back_button)
 
         self.horizontalSpacer_3 = QSpacerItem(658, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
@@ -186,7 +186,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 800, 22))
+        self.menubar.setGeometry(QRect(0, 0, 800, 26))
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QStatusBar(MainWindow)
         self.statusbar.setObjectName(u"statusbar")
@@ -199,7 +199,7 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
-        self.pushButton.setText(QCoreApplication.translate("MainWindow", u"Go Back", None))
+        self.go_back_button.setText(QCoreApplication.translate("MainWindow", u"Go Back", None))
         self.cam_view.setText("")
         self.capture_bt.setText(QCoreApplication.translate("MainWindow", u"Take picture!", None))
         self.mid_groupBox.setTitle(QCoreApplication.translate("MainWindow", u"Grid Configuration:", None))

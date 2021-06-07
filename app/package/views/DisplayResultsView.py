@@ -304,8 +304,8 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
 
     def redraw(self, freq, spectrum):
         # TODO: can improve performance => just change data on the axes
-        max_val = np.max(self._model.spectrum) * 1.05
-        min_val = np.min(self._model.spectrum) * 0.95
+        max_val = np.max(self._model.spectrum) * 1.1
+        min_val = np.min(self._model.spectrum) * 0.9
 
         self.sc.ax.cla()  # Clear the canvas.
 

@@ -50,9 +50,12 @@ class DataAcquisitionView(QMainWindow, DataAcquisition_ui):
         self._controller.start_cam_thread(min_time)
         self._controller.start_mic_thread()
 
-        self._controller.change_rows(4)
+        self._controller.change_rows(2)
         self._controller.change_cols(4)
         self._controller.change_padding(40)
+        self._img_saved = False
+        self.start_stop_button.setDisabled(False)
+        self.start_stop_button.setText('Start!')
 
     def close(self):
         self.stop_threads()
@@ -73,6 +76,7 @@ class DataAcquisitionView(QMainWindow, DataAcquisition_ui):
         self.cols_sb.valueChanged.connect(self._controller.change_cols)
         self.pad_sb.valueChanged.connect(self._controller.change_padding)
         self.capture_bt.clicked.connect(self._controller.take_bg_picture)
+        self.go_back_button.clicked.connect(self.go_back)
 
     def connect_to_model(self):
         self._model.on_mic_thread_running_changed.connect(
@@ -91,11 +95,23 @@ class DataAcquisitionView(QMainWindow, DataAcquisition_ui):
     def set_default_values(self):
         self.q = queue.Queue()
 
+    def go_back(self):
+        self.cancel = True
+        self.set_default_values()
+
+        self._controller.stop_cam_thread()
+        self._controller.stop_mic_thread()
+
+        self._model.clear_state()
+        self._controller.navigate('new_project')
+
     # endregion
 
     # region -------------------------- Threads --------------------------
 
     def create_threads(self):
+        self.cancel = False
+
         # 1. Start camera Thread
         self._model.camThread = CameraThread(self)
         self._model.camThread.update_frame.connect(self.handle_new_image)
@@ -119,7 +135,8 @@ class DataAcquisitionView(QMainWindow, DataAcquisition_ui):
     # region ------------------------- Handlers --------------------------
 
     def handle_rec_ended(self):
-        self._controller.navigate('display_results')
+        if not self.cancel:
+            self._controller.navigate('display_results')
 
     @ Slot(bool)
     def handle_mic_thread_running_changed(self, value):
@@ -171,7 +188,15 @@ class DataAcquisitionView(QMainWindow, DataAcquisition_ui):
     @Slot(np.ndarray)
     def handle_new_image(self, cv_img):
         """Updates the image_label with a new opencv image"""
-        small_img = resize(cv_img, width=400)
+        if self._model.camThread is None:
+            return
+
+        width = self.frameGeometry().width() * 0.8
+        if width > 800:
+            width = 800
+
+        small_img = resize(cv_img, width=int(width))
+
         img_w_grid = self._model.camThread._grid.draw_grid(
             small_img, thickness=2)
         qt_img = self.convert_cv_qt(img_w_grid)
@@ -216,5 +241,6 @@ class DataAcquisitionView(QMainWindow, DataAcquisition_ui):
         log(f'Saving image in {filename}')
         log(f'Img shape = {img.shape}')
         cv2.imwrite(filename, img)
+        self._img_saved = True
 
     # endregion
