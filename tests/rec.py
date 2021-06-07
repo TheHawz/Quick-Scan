@@ -1,12 +1,11 @@
-import sounddevice as sd
-from scipy.io.wavfile import write
-import numpy as np
 import os
+import tempfile
 from time import time
 
+import numpy as np
+import sounddevice as sd
 from PySide2.QtWidgets import QApplication, QFileDialog
-
-import tempfile
+from scipy.io.wavfile import write
 
 # Config
 t = 2  # s
