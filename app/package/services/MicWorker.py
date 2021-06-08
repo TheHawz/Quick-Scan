@@ -1,13 +1,14 @@
 import os
+import queue
 import sys
+from time import time
+
 import sounddevice as sd
 import soundfile as sf
-import queue
-
 from PySide2.QtCore import QObject, Signal
 
-from . import file as fileutils
 from ..models.ActualProjectModel import ActualProjectModel as actual_project
+from . import file as fileutils
 
 
 class MicWorker(QObject):
@@ -41,6 +42,7 @@ class MicWorker(QObject):
         self._running = False  # to raise the Exception
 
     def run(self):
+        self.start_time = time()
         self.error = False
 
         self.log("Running!")
@@ -75,6 +77,9 @@ class MicWorker(QObject):
             self.log(e)
         except Exception as e:
             self.log("Unexpected Exception:", e)
+
+        print(f'Time recording: {round(time()-self.start_time,2)}s')
+        print(f'fs = {self.fs}')
 
         self.finished.emit(self.error)
 
