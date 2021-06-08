@@ -8,7 +8,7 @@ from PySide2.QtWidgets import QApplication, QFileDialog
 from scipy.io.wavfile import write
 
 # Config
-t = 2  # s
+t = 20  # s
 fs = 44100
 
 

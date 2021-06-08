@@ -23,7 +23,7 @@ def improve_mask(mask, operation, morph_type=cv2.MORPH_ELLIPSE, size=(3, 3)):
 
 def get_mask(frame, openSize=3, closeSize=15):
     w = frame.shape[1]
-    frame = resize(frame, width=500)
+    frame = resize(frame, width=700)
     mask = cs.getColorMask(frame, BOTTOM_HSV_THRES, TOP_HSV_THRES)
     mask = improve_mask(mask, cv2.MORPH_OPEN,
                         cv2.MORPH_ELLIPSE, (openSize, openSize))
