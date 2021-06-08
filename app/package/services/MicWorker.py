@@ -19,9 +19,16 @@ class MicWorker(QObject):
     def log(msg):
         print(f'[MicWorker] {msg}')
 
-    def config_mic(self, input_device, fs=44100, buffer=1024):
+    def config_mic(self, input_device, buffer=0):
+        """[summary]
+
+        Args:
+            input_device ([type]): index of the actual input mic.
+            fs (int, optional): Sampling frequency 44.1 kHz.
+            buffer (int, optional): Defaults to 0 => automatic blocksize
+        """
         self.io = (input_device, sd.default.device[1])
-        self.fs = fs
+        self.fs = int(sd.query_devices()[input_device]['default_samplerate'])
         self.buffer = buffer
         self.q = queue.Queue()
 
@@ -30,6 +37,7 @@ class MicWorker(QObject):
 
     def rec(self):
         self.log("Start recording!")
+        self.start_time = time()
         self._rec = True
 
     def stop_rec(self):
@@ -42,7 +50,6 @@ class MicWorker(QObject):
         self._running = False  # to raise the Exception
 
     def run(self):
-        self.start_time = time()
         self.error = False
 
         self.log("Running!")
@@ -78,8 +85,12 @@ class MicWorker(QObject):
         except Exception as e:
             self.log("Unexpected Exception:", e)
 
-        print(f'Time recording: {round(time()-self.start_time,2)}s')
-        print(f'fs = {self.fs}')
+        if not self.error:
+            elapsed = time()-self.start_time
+            print(f' -> Time spent recording: {round(elapsed,2)}s')
+            print(f' -> fs = {self.fs}')
+            print(
+                f' -> Theoretical num of samples => {round(elapsed*self.fs)}')
 
         self.finished.emit(self.error)
 

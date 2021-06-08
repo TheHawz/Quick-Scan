@@ -69,7 +69,7 @@ class LoadFilesWorker(QObject):
         fs, data = wavfile.read(file_path)
 
         self.log(f'[Audio] fs = {fs}')
-        self.log(f'[Audio] l = {round(len(data)/fs,2)}s')
+        self.log(f'[Audio] l = {round(len(data)/fs,2)} s')
 
         model.audio_data = data
         model.audio_fs = fs

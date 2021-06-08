@@ -31,9 +31,15 @@ class DspThread(QObject):
 
         self.log('Running!')
 
-        self.trimmed_audio = self.trim_audio(model)
+        model.fps = 15
+
+        # Shift and trim are in audio samples
+        model.audio_data = self.trim_audio(model)
         shift, trim = self.clean_data_position(model)
-        model.audio_data = self.trimmed_audio[shift:-trim]
+        model.audio_data = model.audio_data[shift:-trim]
+
+        self.log(f'Trimming the first {round(shift/model.audio_fs,2)}s')
+        self.log(f'Trimming the last {round(trim/model.audio_fs,2)}s')
 
         spatial_segmentation = self.segment_video(model)
         audio_segments = self.segment_audio(model, spatial_segmentation)
@@ -78,7 +84,10 @@ class DspThread(QObject):
             model.data_x)
         model.data_y, _, _ = interpolate_coords(model.data_y)
 
-        return shift, trim
+        sample_shift = int(shift/model.fps*model.audio_fs)
+        sample_trim = int(trim/model.fps*model.audio_fs)
+
+        return sample_shift, sample_trim
 
     @staticmethod
     def index_of_grid(data, id):
@@ -124,8 +133,10 @@ class DspThread(QObject):
         return ranges
 
     def segment_video(self,
-                      model: DisplayResultsModel) -> dict[tuple, list[tuple]]:
-        print('Segmenting video')
+                      model: DisplayResultsModel
+                      ) -> dict[tuple, list[tuple]]:
+        self.log('Segmenting video')
+
         data_pts = np.transpose([model.data_x, model.data_y])
 
         data_grids = np.array(
@@ -147,10 +158,13 @@ class DspThread(QObject):
         # print('SPATIAL SEGMENTATION: ')
 
         for key in [*d]:
-            # print(f'Grid: {key}')
+            self.log(f'Grid: {key}')
             cons = self.group_consecutives(d[key])
             d[key] = cons
-            # print(cons)
+            for c in cons:
+                start = round(c[0]/model.fps, 2)
+                end = round(c[1]/model.fps, 2)
+                self.log(f' -> from: {start} - to: {end} seconds')
 
         return d
 
@@ -187,7 +201,7 @@ class DspThread(QObject):
         self.log(f'Limits: {limits}')
 
         for index, key in enumerate([*audio_segments]):
-            self.log(f'Processing grid: {key}')
+            # self.log(f'Processing grid: {key}')
             self.update_status.emit(index)
 
             audio = np.transpose(audio_segments[key])
