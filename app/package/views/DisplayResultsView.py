@@ -143,8 +143,9 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
         # with the corresponding stuff
         worker.finished.connect(thread.quit)
         worker.finished.connect(self.show_project_info)
-        thread.finished.connect(lambda: self.dsp_thread.start())
         worker.finished.connect(worker.deleteLater)
+
+        thread.finished.connect(lambda: self.dsp_thread.start())
         thread.finished.connect(thread.deleteLater)
 
         return thread

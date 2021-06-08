@@ -1,8 +1,8 @@
 import numpy as np
 
-from PySide2.QtCore import QObject, Signal
+from PySide2.QtCore import QObject, QThread, Signal
 
-from app.package.services.MicThread import MicThread
+from app.package.services.MicWorker import MicWorker
 from app.package.services.CameraThread import CameraThread
 
 
@@ -27,7 +27,8 @@ class DataAcquisitionModel(QObject):
         self._cam_thread_running = False
         self._mic_recording = False
         self._cam_recording = False
-        self.micThread: MicThread = None
+        self.micWorker: MicWorker = None
+        self.micThread: QThread = None
         self.camThread: CameraThread = None
         self._bg_img: np.ndarray = None
 

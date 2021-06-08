@@ -4,55 +4,60 @@ import sounddevice as sd
 import soundfile as sf
 import queue
 
-from PySide2.QtCore import QThread, Signal
+from PySide2.QtCore import QObject, Signal
 
 from . import file as fileutils
 from ..models.ActualProjectModel import ActualProjectModel as actual_project
 
 
-def log(msg):
-    print(f'[MicThread] {msg}')
-
-
-class MicThread(QThread):
+class MicWorker(QObject):
     update_volume = Signal(object)
-    on_stop_recording = Signal(object)
+    finished = Signal(bool)
 
-    def __init__(self, rate=44100, chunksize=1024, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.rate = rate
-        self.chunksize = chunksize
-        self.device = ""
+    @staticmethod
+    def log(msg):
+        print(f'[MicWorker] {msg}')
+
+    def config_mic(self, input_device, fs=44100, buffer=1024):
+        self.io = (input_device, sd.default.device[1])
+        self.fs = fs
+        self.buffer = buffer
         self.q = queue.Queue()
+
         self._running = False
         self._rec = False
 
     def rec(self):
-        print("[MicThread] Start recording!")
+        self.log("Start recording!")
         self._rec = True
 
     def stop_rec(self):
-        print("[MicThread] Stopping rec...")
+        self.log("Stopping rec...")
         self._rec = False
+        self._running = False
+
+    def stop(self):
+        self.error = True
         self._running = False  # to raise the Exception
 
     def run(self):
-        log("Running!")
+        self.error = False
+
+        self.log("Running!")
         self._running = True
 
-        # todo: devices!
-        _, _out = sd.default.device
-        _in = actual_project.audio_device_index
-        self.stream = sd.Stream(device=(_in, _out),
+        self.stream = sd.Stream(device=self.io,
                                 channels=2,
-                                callback=self.callback,
-                                samplerate=44100)
+                                samplerate=self.fs,
+                                blocksize=self.buffer,
+                                callback=self.callback)
+
         path = os.path.join(actual_project.project_location, 'Audio Files')
         fileutils.mkdir(path)
 
         self.file_stream = sf.SoundFile(os.path.join(path, 'audio.wav'),
                                         mode='w',
-                                        samplerate=44100,
+                                        samplerate=self.fs,
                                         channels=2)
         try:
             with self.file_stream as file:
@@ -67,17 +72,11 @@ class MicThread(QThread):
                             raise KeyboardInterrupt("Recording stopped!")
 
         except KeyboardInterrupt as e:
-            log(e)
+            self.log(e)
         except Exception as e:
-            log("Unexpected Exception:", e)
+            self.log("Unexpected Exception:", e)
 
-        self.on_stop_recording.emit(None)
-
-    def stop(self):
-        log("Stopping audio stream")
-        self._rec = False
-        self._running = False
-        self.wait()
+        self.finished.emit(self.error)
 
     def callback(self, indata, outdata, frames, time, status):
         """This is called (from a separate thread) for each audio block."""

@@ -6,10 +6,10 @@ import queue
 
 from PySide2.QtWidgets import QMainWindow
 from PySide2.QtGui import QImage, QPixmap
-from PySide2.QtCore import QEvent, Slot
+from PySide2.QtCore import QEvent, QThread, Slot
 
 from ..services.CameraThread import CameraThread
-from ..services.MicThread import MicThread
+from ..services.MicWorker import MicWorker
 from ..models.ActualProjectModel import ActualProjectModel
 from ..services import file as fileutils
 from ..services.dsp import getTimeOfRecording
@@ -45,17 +45,20 @@ class DataAcquisitionView(QMainWindow, DataAcquisition_ui):
 
     def open(self):
         self.show()
+
+        # Clear state and initial setup
+        self.set_default_values()
+
+        # Create and start threads
         self.create_threads()
         min_time = getTimeOfRecording(ActualProjectModel.low_freq)
         self._controller.start_cam_thread(min_time)
         self._controller.start_mic_thread()
 
+        # Setup camera thread
         self._controller.change_rows(2)
         self._controller.change_cols(4)
         self._controller.change_padding(40)
-        self._img_saved = False
-        self.start_stop_button.setDisabled(False)
-        self.start_stop_button.setText('Start!')
 
     def close(self):
         self.stop_threads()
@@ -94,15 +97,17 @@ class DataAcquisitionView(QMainWindow, DataAcquisition_ui):
 
     def set_default_values(self):
         self.q = queue.Queue()
+        self._model.clear_state()
+        self._img_saved = False
+        self.start_stop_button.setDisabled(False)
+        self.start_stop_button.setText('Start!')
 
     def go_back(self):
-        self.cancel = True
-        self.set_default_values()
+        log('Going back!')
 
         self._controller.stop_cam_thread()
         self._controller.stop_mic_thread()
 
-        self._model.clear_state()
         self._controller.navigate('new_project')
 
     # endregion
@@ -110,8 +115,6 @@ class DataAcquisitionView(QMainWindow, DataAcquisition_ui):
     # region -------------------------- Threads --------------------------
 
     def create_threads(self):
-        self.cancel = False
-
         # 1. Start camera Thread
         self._model.camThread = CameraThread(self)
         self._model.camThread.update_frame.connect(self.handle_new_image)
@@ -121,10 +124,23 @@ class DataAcquisitionView(QMainWindow, DataAcquisition_ui):
         self._model.camThread.on_handle_all_regions_rec.connect(
             self.handle_all_regions_rec)
 
-        # 2. Start Mic Thread
-        self._model.micThread = MicThread(self)
-        self._model.micThread.update_volume.connect(self.handle_new_audio)
-        self._model.micThread.on_stop_recording.connect(self.handle_rec_ended)
+        # 2. Create Mic Thread
+        micWorker = MicWorker()
+        micThread = QThread()
+        micWorker.moveToThread(micThread)
+
+        micWorker.config_mic(ActualProjectModel.audio_device_index)
+        micThread.started.connect(micWorker.run)
+
+        micWorker.update_volume.connect(self.handle_new_audio)
+        micWorker.finished.connect(self.handle_rec_ended)
+
+        micWorker.finished.connect(micThread.quit)
+        micWorker.finished.connect(micWorker.deleteLater)
+        micThread.finished.connect(micThread.deleteLater)
+
+        self._model.micWorker = micWorker
+        self._model.micThread = micThread
 
     def stop_threads(self):
         self._controller.stop_mic_thread()
@@ -134,9 +150,12 @@ class DataAcquisitionView(QMainWindow, DataAcquisition_ui):
 
     # region ------------------------- Handlers --------------------------
 
-    def handle_rec_ended(self):
-        if not self.cancel:
-            self._controller.navigate('display_results')
+    @Slot(bool)
+    def handle_rec_ended(self, error: bool):
+        if error:
+            return
+
+        self._controller.navigate('display_results')
 
     @ Slot(bool)
     def handle_mic_thread_running_changed(self, value):
@@ -192,8 +211,8 @@ class DataAcquisitionView(QMainWindow, DataAcquisition_ui):
             return
 
         width = self.frameGeometry().width() * 0.8
-        if width > 800:
-            width = 800
+        if width > 1000:
+            width = 1000
 
         small_img = resize(cv_img, width=int(width))
 
