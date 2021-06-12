@@ -5,6 +5,8 @@ from app.package.services.grid import Grid
 import numpy as np
 import unittest
 
+import matplotlib.pyplot as plt
+
 nan = np.nan
 
 
@@ -42,18 +44,45 @@ class TestGrid(unittest.TestCase):
             self.assertEqual(result[1], results[index][1])
             self.assertEqual(result[2], results[index][2])
 
+    def plot_grid(self, model):
+        p = model.grid.padding
+        s = model.grid.size_of_frame
+
+        for h in model.grid.hor_div:
+            plt.plot([0+p, s[1]-p], [h, h], 'k')
+        for v in model.grid.ver_div:
+            plt.plot([v, v], [0+p, s[0]-p], 'k')
+
     def test_segmentation(self):
         worker = DspThread()
         model = DisplayResultsModel()
 
         # Starting on grid and moving inside grid
-        model.data_x = [0, 10, 12,  15,
-                        15, 15, 20, 20, 20, 13, 13, 13, 13]
-        model.data_y = [0, 10,  12, 15,
-                        15, 15, 20, 20, 20, 13, 13, 13, 13]
-        model.grid = Grid([30, 30], 2, 3, 10)
+        model.grid = Grid([50, 40], 4, 3, 5)
+        model.data_x = [6, 7, 6]
+        model.data_x.extend([8, 6])
+        model.data_x.extend([6, 6, 6])
+        model.data_x.extend([9, 9, 9, 9])
+        model.data_y = [6, 6, 8]
+        model.data_y.extend([28, 28])
+        model.data_y.extend([23, 22, 21])
+        model.data_y.extend([6, 6, 8, 12])
+
+        model.data_x = (np.array(model.data_x)*2).tolist()
+        model.data_y = (np.array(model.data_y)*2).tolist()
+
+        self.plot_grid(model)
+        plt.plot(model.data_x, model.data_y, 'o-')
+        plt.xlim((0, model.grid.size_of_frame[1]))
+        plt.ylim((0, model.grid.size_of_frame[0]))
+        plt.xlabel('Horizontal')
+        plt.ylabel('Vertical')
 
         print(worker.segment_video(model))
+
+        # plt.gca().invert_xaxis()
+        plt.gca().invert_yaxis()
+        plt.show()
 
 
 if __name__ == '__main__':

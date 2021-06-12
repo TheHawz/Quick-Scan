@@ -24,6 +24,13 @@ matplotlib.use('Qt5Agg')
 plt.style.use('fivethirtyeight')
 
 
+def freq_to_str(f) -> str:
+    if f < 1000:
+        return str(round(f))
+    else:
+        return str(round(f/1000, 1))+'k'
+
+
 class MplCanvas(FigureCanvasQTAgg):
 
     def __init__(self, parent=None, width=4, height=3, dpi=300):
@@ -77,7 +84,7 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
         self.spectrum.addWidget(sc)
 
     def connect_to_controller(self):
-        pass
+        self.freq_cb.currentIndexChanged.connect(self.handle_octave_change)
 
     def connect_to_model(self):
         self._model.on_data_x_changed.connect(self.handle_data_x_changed)
@@ -91,6 +98,7 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
         self._model.on_row_changed.connect(self.handle_row_changed)
         self._model.on_col_changed.connect(self.handle_col_changed)
         self._model.on_grid_changed.connect(self.handle_grid_changed)
+        self._model.on_freq_changed.connect(self.handle_center_freq)
 
     def set_default_values(self):
         self.IMG_WIDTH = 350  # pixels
@@ -162,11 +170,9 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
 
     # region Handlers
 
-    @Slot(np.ndarray)
     def handle_data_x_changed(self, value):
         pass
 
-    @Slot(np.ndarray)
     def handle_data_y_changed(self, value):
         pass
 
@@ -298,8 +304,8 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
 
     def redraw(self, freq, spectrum):
         # TODO: can improve performance => just change data on the axes
-        max_val = np.max(self._model.spectrum) * 1.05
-        min_val = np.min(self._model.spectrum) * 0.95
+        max_val = np.max(self._model.spectrum) * 1.1
+        min_val = np.min(self._model.spectrum) * 0.9
 
         self.sc.ax.cla()  # Clear the canvas.
 
@@ -317,20 +323,35 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
 
         self.sc.draw()
 
-    @staticmethod
-    def freq_to_str(f) -> str:
-        if f < 1000:
-            return str(round(f))
-        else:
-            return str(round(f/1000, 1))+'k'
-
     def get_xtick(self, freq):
         xtick = np.round(freq)
 
         # Apply freq_to_str to every-other element in freq array
-        xticklabel = [self.freq_to_str(f) if ii % 3 == 0 else ''
+        xticklabel = [freq_to_str(f) if ii % 3 == 0 else ''
                       for ii, f in enumerate(freq)]
 
         return xtick, xticklabel
 
+    def handle_center_freq(self, freqs):
+        self.freq_cb.clear()
+        self.freq_cb.addItem('Full Spectrum')
+        self.freq_cb.addItems(list(map(freq_to_str, freqs)))
+
+    def handle_octave_change(self, index):
+        if index == 0:
+            print('Full Band mode')
+            self.draw_map(self.img, self._model.full_band_spec)
+            return
+
+        index -= 1
+
+        if len(self._model.spectrum) == 0:
+            print('spectrum = []...')
+            return
+
+        spl = self._model.spectrum[:, :, index]
+        print(spl)
+        # self.draw_map(self.img, spl)
+
+    # endregion
     # endregion

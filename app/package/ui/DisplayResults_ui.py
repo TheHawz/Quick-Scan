@@ -17,7 +17,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(819, 594)
+        MainWindow.resize(963, 627)
         self.actionOpen_Project = QAction(MainWindow)
         self.actionOpen_Project.setObjectName(u"actionOpen_Project")
         self.actionAbout = QAction(MainWindow)
@@ -84,6 +84,24 @@ class Ui_MainWindow(object):
         self.frame_3.setFrameShadow(QFrame.Raised)
         self.verticalLayout_3 = QVBoxLayout(self.frame_3)
         self.verticalLayout_3.setObjectName(u"verticalLayout_3")
+        self.frame_4 = QFrame(self.frame_3)
+        self.frame_4.setObjectName(u"frame_4")
+        self.frame_4.setFrameShape(QFrame.StyledPanel)
+        self.frame_4.setFrameShadow(QFrame.Raised)
+        self.horizontalLayout_4 = QHBoxLayout(self.frame_4)
+        self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
+        self.freq_cb = QComboBox(self.frame_4)
+        self.freq_cb.setObjectName(u"freq_cb")
+
+        self.horizontalLayout_4.addWidget(self.freq_cb)
+
+        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
+        self.horizontalLayout_4.addItem(self.horizontalSpacer)
+
+
+        self.verticalLayout_3.addWidget(self.frame_4)
+
         self.groupBox = QGroupBox(self.frame_3)
         self.groupBox.setObjectName(u"groupBox")
         self.verticalLayout_2 = QVBoxLayout(self.groupBox)
@@ -163,7 +181,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 819, 22))
+        self.menubar.setGeometry(QRect(0, 0, 963, 26))
         self.menuArchive = QMenu(self.menubar)
         self.menuArchive.setObjectName(u"menuArchive")
         self.menuHelp = QMenu(self.menubar)

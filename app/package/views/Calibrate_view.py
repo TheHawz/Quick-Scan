@@ -43,7 +43,8 @@ class CalibrationWorker(QObject):
         fs = 44100
         self.log(f'Time rec: {t}')
 
-        x = sd.rec(int(t * fs), channels=1)
+        x = sd.rec(int(t * fs), channels=2)
+        x = np.sum(x, 1)  # change
         sd.wait()
 
         spl = 20 * np.log10(np.std(x) / 2e-5)

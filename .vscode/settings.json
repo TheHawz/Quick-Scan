@@ -2,5 +2,5 @@
   "python.linting.flake8Enabled": true,
   "python.linting.enabled": true,
   "jupyter.jupyterServerType": "local",
-  "python.pythonPath": "C:\\Users\\Pablo\\miniconda3\\python.exe"
+  "python.pythonPath": "C:\\Users\\Pablo\\miniconda3\\envs\\tfg\\python.exe"
 }
