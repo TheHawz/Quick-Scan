@@ -224,8 +224,8 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
             return img
 
         spl = np.array(spl, dtype=int)
-        min = np.min(spl)
-        max = np.max(spl)
+        min = int(np.min(spl)*0.8)
+        max = int(np.max(spl)*1.1)
         lut = self.create_color_map()
 
         for irow, row in enumerate(spl):
@@ -236,7 +236,7 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
                 img = imb.draw_filled_rectangle(img,
                                                 pt1, pt2,
                                                 lut[index],
-                                                0.4)
+                                                0.33)
         return img
 
     def handle_grid_clicked(self, event):
