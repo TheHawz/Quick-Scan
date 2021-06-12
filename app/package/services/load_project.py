@@ -55,7 +55,7 @@ class LoadFilesWorker(QObject):
         self.finished.emit()
 
     def load_audio_file(self, project_path: str, model: DisplayResultsModel):
-        self.log('Loading audio file...')
+        self.log('[Audio] Loading audio file...')
         file_path = os.path.join(project_path,
                                  'Audio Files', 'audio.wav')
         exists, isFile = fileutils.check_for_existance(file_path)
@@ -67,6 +67,10 @@ class LoadFilesWorker(QObject):
             raise Exception('Path exists but is not a file.')
 
         fs, data = wavfile.read(file_path)
+
+        self.log(f'[Audio] fs = {fs}')
+        self.log(f'[Audio] l = {round(len(data)/fs,2)} s')
+
         model.audio_data = data
         model.audio_fs = fs
 

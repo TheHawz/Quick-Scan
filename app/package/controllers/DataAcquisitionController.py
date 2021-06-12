@@ -28,8 +28,8 @@ class DataAcquisitionController(QObject):
         self._model.cam_thread_running = True
 
     def stop_mic_thread(self):
-        if self._model.micThread:
-            self._model.micThread.stop()
+        if self._model.micWorker:
+            self._model.micWorker.stop()
         self._model.mic_thread_running = False
 
     def stop_cam_thread(self):
@@ -41,10 +41,10 @@ class DataAcquisitionController(QObject):
         rec = self._model.cam_recording
 
         if rec:
-            self._model.micThread.stop_rec()
+            self._model.micWorker.stop_rec()
             self._model.camThread.stop_rec()
         else:
-            self._model.micThread.rec()
+            self._model.micWorker.rec()
             self._model.camThread.rec()
 
         self._model.mic_recording = not rec
