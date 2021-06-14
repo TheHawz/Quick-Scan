@@ -1,7 +1,7 @@
 # This Python file uses the following encoding: utf-8
 import cv2
 import numpy as np
-import time
+from time import time
 
 from PySide2.QtCore import QThread, Signal
 
@@ -10,6 +10,13 @@ from ..models.ActualProjectModel import ActualProjectModel
 from .grid import Grid
 from . import imbasic as imb
 from .mask import get_mask, get_circles
+
+
+def invert(x):
+    if x != 0:
+        return 1/x
+    else:
+        return 0
 
 
 class CameraThread(QThread):
@@ -44,6 +51,8 @@ class CameraThread(QThread):
         cap = self.setup_camera()
 
         self.times = None
+        frame_periods = []
+        t1 = time()
 
         while self._running:
             ret, frame = cap.read()
@@ -55,7 +64,7 @@ class CameraThread(QThread):
             if not self._rec:
                 self._grid.config(self.rows, self.cols, pad=self.padding)
                 processed_frame = self.bypass(frame)
-                self.time = time.time()
+                self.time = time()
             else:
                 if self.times is None:
                     # This code will only execute once!
@@ -63,7 +72,23 @@ class CameraThread(QThread):
 
                 processed_frame = self.process_frame(frame)
 
+                frame_periods.append(time()-t1)
+                t1 = time()
+
             self.update_frame.emit(processed_frame)
+
+            # fps estimation update
+
+        fps = np.array(list(map(invert, frame_periods)))
+        print(fps)
+        print('mean ', np.mean(fps))
+        print('median ', np.median(fps))
+
+        m_fps = int(np.median(fps))
+
+        self.on_camera_caracteristics_detected.emit((self.frame_size[0],
+                                                    self.frame_size[1],
+                                                    m_fps))
 
         location_data = {"x_data": self.x_data, "y_data": self.y_data}
         self.on_stop_recording.emit(location_data)
@@ -71,24 +96,22 @@ class CameraThread(QThread):
         cap.release()
 
     def setup_camera(self):
-        fps = cv2.VideoCapture(
-            ActualProjectModel.video_device).get(cv2.CAP_PROP_FPS)
-
         # Trying DSHOW driver
         cap = cv2.VideoCapture(ActualProjectModel.video_device + cv2.CAP_DSHOW)
         ret, _ = cap.read()
         if not ret:
             cap = cv2.VideoCapture(ActualProjectModel.video_device)
 
-        # 4 => Horizontal
-        # 3 => Vertical
-        self.frame_size = np.array([int(cap.get(4)), int(cap.get(3))])
+        # Indices 4 and 3 represent the Horizontal and Vertical size of
+        # the frame. dtype = int performs a floor() underneath.
+        self.frame_size = np.array([cap.get(4), cap.get(3)], dtype=int)
+
         self._grid = Grid(self.frame_size, self.rows,
                           self.cols, padding=self.padding)
 
-        _, frame = cap.read()
-        self.on_camera_caracteristics_detected.emit(
-            (frame.shape[0], frame.shape[1], fps))
+        # _, frame = cap.read()
+        # self.on_camera_caracteristics_detected.emit(
+        # (frame.shape[0], frame.shape[1]))
 
         return cap
 
@@ -138,8 +161,8 @@ class CameraThread(QThread):
 
         color_frame = self.draw_color_display(frame, self.times, self._grid)
 
-        delta = time.time() - self.time
-        self.time = time.time()
+        delta = time() - self.time
+        self.time = time()
 
         if self.x != -1 and self.y != -1:
             grid = self._grid.locate_point((self.x, self.y))

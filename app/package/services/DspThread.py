@@ -31,7 +31,7 @@ class DspThread(QObject):
 
         self.log('Running!')
 
-        model.fps = 15
+        # model.fps = 25
 
         # Shift and trim are in audio samples
         model.audio_data = self.trim_audio(model)
@@ -161,10 +161,11 @@ class DspThread(QObject):
             self.log(f'Grid: {key}')
             cons = self.group_consecutives(d[key])
             d[key] = cons
-            for c in cons:
-                start = round(c[0]/model.fps, 2)
-                end = round(c[1]/model.fps, 2)
-                self.log(f' -> from: {start} - to: {end} seconds')
+            if cons:
+                for c in cons:
+                    start = round(c[0]/model.fps, 2)
+                    end = round(c[1]/model.fps, 2)
+                    self.log(f' -> from: {start} - to: {end} seconds')
 
         return d
 
