@@ -37,10 +37,6 @@ class CameraThread(QThread):
         self.min_time_rec = time_of_rec
 
     def run(self):
-        """
-            Callback function executed whenever someone starts the QThreat
-            (thread.start())
-        """
         print('[CAM] Running!')
         self._running = True
         self._rec = False
@@ -69,8 +65,8 @@ class CameraThread(QThread):
 
             self.update_frame.emit(processed_frame)
 
-        emit_obj = {"x_data": self.x_data, "y_data": self.y_data}
-        self.on_stop_recording.emit(emit_obj)
+        location_data = {"x_data": self.x_data, "y_data": self.y_data}
+        self.on_stop_recording.emit(location_data)
         cv2.destroyAllWindows()
         cap.release()
 

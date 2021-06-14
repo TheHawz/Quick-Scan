@@ -70,6 +70,8 @@ def get_num_of_windows_2(len_audio, win_size, overlap):
 
 def get_spectrum(audio: np.ndarray, fs, limits=None):
     # make mono...
+    # TODO: change this!
+    print('*** *** *** -> ', audio.shape)
     audio = audio[1]
 
     win_type = 'square'
@@ -85,13 +87,7 @@ def get_spectrum(audio: np.ndarray, fs, limits=None):
     num_of_win = get_num_of_windows(len_audio, win_size, overlap)
     spls = np.zeros([num_of_win, len(freq)])
 
-    # print(f'len_audio = {len_audio}')
-    # print(f'num_of_win = {num_of_win}')
-
     while i+win_size < len_audio:
-        # if index % 50 == 0:
-        #     print(f'Progres: {index} / {num_of_win}...')
-
         start = i
         end = i+win_size
 
