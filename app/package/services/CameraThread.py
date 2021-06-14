@@ -51,8 +51,9 @@ class CameraThread(QThread):
         cap = self.setup_camera()
 
         self.times = None
-        frame_periods = []
+
         t1 = time()
+        rec_frames = 0
 
         while self._running:
             ret, frame = cap.read()
@@ -68,22 +69,22 @@ class CameraThread(QThread):
             else:
                 if self.times is None:
                     # This code will only execute once!
+                    # At the start of the recording process
+                    t1 = time()
                     self.times = np.zeros((self.rows, self.cols))
 
                 processed_frame = self.process_frame(frame)
 
-                frame_periods.append(time()-t1)
-                t1 = time()
+                # frame_periods.append(time()-t1)
+                # t1 = time()
+                rec_frames += 1
 
             self.update_frame.emit(processed_frame)
 
             # fps estimation update
 
-        fps = np.array(list(map(invert, frame_periods[2:])))
-        print(fps)
-        print('mean ', np.mean(fps))
-        print('std  ', np.std(fps))
-        m_fps = int(np.mean(fps))
+        m_fps = (time()-t1)/rec_frames
+        print(m_fps)
 
         self.on_camera_caracteristics_detected.emit((self.frame_size[0],
                                                     self.frame_size[1],
