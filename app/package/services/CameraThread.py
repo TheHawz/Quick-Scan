@@ -79,12 +79,11 @@ class CameraThread(QThread):
 
             # fps estimation update
 
-        fps = np.array(list(map(invert, frame_periods)))
+        fps = np.array(list(map(invert, frame_periods[2:])))
         print(fps)
         print('mean ', np.mean(fps))
-        print('median ', np.median(fps))
-
-        m_fps = int(np.median(fps))
+        print('std  ', np.std(fps))
+        m_fps = int(np.mean(fps))
 
         self.on_camera_caracteristics_detected.emit((self.frame_size[0],
                                                     self.frame_size[1],

@@ -28,10 +28,16 @@ class DspThread(QObject):
         print(f'[DSP Thread] {msg}')
 
     def process(self, model: DisplayResultsModel):
-
         self.log('Running!')
 
-        # model.fps = 25
+        # calibrate audio!
+        expected = ActualProjectModel.calibration['expected']
+        actual = ActualProjectModel.calibration['actual']
+        if expected != -1 and actual != -1:
+            calibration_db = expected - actual
+            calibration_factor = np.exp(calibration_db/10)
+            model.audio_data = model.audio_data.astype(
+                np.float64) * calibration_factor.astype(np.float64)
 
         # Shift and trim are in audio samples
         model.audio_data = self.trim_audio(model)

@@ -1,6 +1,7 @@
 # This Python file uses the following encoding: utf-8
 import math
 import os
+import numpy as np
 
 from PySide2.QtWidgets import QMainWindow, QFileDialog
 from PySide2.QtCore import Slot
@@ -62,6 +63,29 @@ class NewProjectView(QMainWindow, NewProject_ui):
 
             return buf.value
 
+    def ask_to_calibrate(self):
+        msg = ''
+        msg += 'Sorry, the calibration file was not found. '
+        msg += 'You can calibrate the system now, or choose not to do it. '
+        msg += 'The results wont be precise'
+
+        msgBox = QMessageBox()
+        msgBox.setText(msg)
+        msgBox.setIcon(QMessageBox.Information)
+        msgBox.setWindowTitle("Calibration file not found!")
+
+        calibrateButton = msgBox.addButton(
+            self.tr("Calibrate"), QMessageBox.ActionRole)
+        cancelButton = msgBox.addButton(QMessageBox.Cancel)
+
+        msgBox.exec_()
+
+        if msgBox.clickedButton() == calibrateButton:
+            print('Go to calibrate!')
+            self._controller.calibrate()
+        elif msgBox.clickedButton() == cancelButton:
+            pass
+
     def on_open(self):
         # Checking for calibration file
         documents = self.get_documents_dir()
@@ -70,32 +94,16 @@ class NewProjectView(QMainWindow, NewProject_ui):
                             'We only support MS Windows right now')
 
         fileutils.mkdir(os.path.join(documents, 'Scan&Paint Clone'))
-
-        exists, isFile = fileutils.check_for_existance(os.path.join(
-            documents, 'Scan&Paint Clone', 'calibration.dat'))
+        file = os.path.join(
+            documents, 'Scan&Paint Clone', 'calibration.dat')
+        exists, isFile = fileutils.check_for_existance(file)
 
         if not exists:
-            msg = ''
-            msg += 'Sorry, the calibration file was not found. '
-            msg += 'You can calibrate the system now, or choose not to do it. '
-            msg += 'The results wont be precise'
-
-            msgBox = QMessageBox()
-            msgBox.setText(msg)
-            msgBox.setIcon(QMessageBox.Information)
-            msgBox.setWindowTitle("Calibration file not found!")
-
-            calibrateButton = msgBox.addButton(
-                self.tr("Calibrate"), QMessageBox.ActionRole)
-            cancelButton = msgBox.addButton(QMessageBox.Cancel)
-
-            msgBox.exec_()
-
-            if msgBox.clickedButton() == calibrateButton:
-                print('Go to calibrate!')
-                self._controller.calibrate()
-            elif msgBox.clickedButton() == cancelButton:
-                pass
+            self.ask_to_calibrate()
+        else:
+            calibration = np.loadtxt(file)
+            ActualProjectModel.calibration['expected'] = calibration[0]
+            ActualProjectModel.calibration['actual'] = calibration[1]
 
     def connect_to_controller(self):
         self.line_project_name.textChanged.connect(
