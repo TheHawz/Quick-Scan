@@ -25,6 +25,10 @@ class CameraThread(QThread):
     on_camera_caracteristics_detected = Signal(tuple)
     on_handle_all_regions_rec = Signal()
 
+    # Mic location estimation
+    open_size = 3
+    close_size = 23
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.init_values()
@@ -146,10 +150,12 @@ class CameraThread(QThread):
         Returns:
             [type]: [description]
         """
-        # TODO: quitar flip en production phase
-        # frame = cv2.flip(frame, 1)
         # self._grid.draw_grid(frame)
-        self.process_circles(frame, get_circles(get_mask(frame)))
+        self.process_circles(frame,
+                             get_circles(get_mask(frame,
+                                                  self.open_size,
+                                                  self.close_size)))
+
         self.draw_rec_indicator(frame)
 
         color_frame = self.draw_color_display(frame, self.times, self._grid)
