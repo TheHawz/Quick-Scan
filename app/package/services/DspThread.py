@@ -35,7 +35,7 @@ class DspThread(QObject):
         actual = ActualProjectModel.calibration['actual']
         if expected != -1 and actual != -1:
             calibration_db = expected - actual
-            calibration_factor = np.exp(calibration_db/10)
+            calibration_factor = np.power(10, calibration_db/20)
             model.audio_data = model.audio_data.astype(
                 np.float64) * calibration_factor.astype(np.float64)
 

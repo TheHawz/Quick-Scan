@@ -62,11 +62,7 @@ class CameraThread(QThread):
             if not ret:
                 break
 
-            if not self._rec:
-                self._grid.config(self.rows, self.cols, pad=self.padding)
-                processed_frame = self.bypass(frame)
-                self.time = time()
-            else:
+            if self._rec:
                 if self.times is None:
                     # This code will only execute once!
                     # At the start of the recording process
@@ -74,21 +70,18 @@ class CameraThread(QThread):
                     self.times = np.zeros((self.rows, self.cols))
 
                 processed_frame = self.process_frame(frame)
-
-                # frame_periods.append(time()-t1)
-                # t1 = time()
                 rec_frames += 1
+
+            else:
+                self._grid.config(self.rows, self.cols, pad=self.padding)
+                processed_frame = self.bypass(frame)
+                self.time = time()
 
             self.update_frame.emit(processed_frame)
 
-            # fps estimation update
-
-        m_fps = (time()-t1)/rec_frames
-        print(m_fps)
-
-        self.on_camera_caracteristics_detected.emit((self.frame_size[0],
-                                                    self.frame_size[1],
-                                                    m_fps))
+        fps = 1/((time()-t1)/rec_frames)
+        cam_setup = (self.frame_size[0], self.frame_size[1], fps)
+        self.on_camera_caracteristics_detected.emit(cam_setup)
 
         location_data = {"x_data": self.x_data, "y_data": self.y_data}
         self.on_stop_recording.emit(location_data)

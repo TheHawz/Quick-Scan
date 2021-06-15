@@ -47,7 +47,8 @@ class CalibrationWorker(QObject):
         x = np.sum(x, 1)  # change
         sd.wait()
 
-        spl = 20 * np.log10(np.std(x) / 2e-5)
+        rms = np.sqrt(np.mean(np.square(s)))
+        spl = 20*np.log10(rms/2e-5)
 
         self.save_calibration_file(spl, targetSpl)
         self.finished.emit()
