@@ -20,7 +20,7 @@ def process_frame(frame):
     # frame = cv2.flip(frame, 1)
     mask = get_mask(frame,
                     openSize=1,
-                    closeSize=13)
+                    closeSize=25)
     circles = get_circles(mask,
                           dp=3,
                           minDist=250)
