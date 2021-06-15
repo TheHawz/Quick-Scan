@@ -15,14 +15,6 @@ class DspThread(QObject):
     update_status = Signal(int)
     finished = Signal()
 
-    # def __init__(self, model: DisplayResultsModel, *args, **kwargs):
-    #     super().__init__(*args, **kwargs)
-    #     model = model
-    #     self.init_values()
-
-    # def init_values(self):
-    #     self.trimmed_audio: np.ndarray = None
-
     @staticmethod
     def log(msg: str) -> None:
         print(f'[DSP Thread] {msg}')
@@ -30,14 +22,7 @@ class DspThread(QObject):
     def process(self, model: DisplayResultsModel):
         self.log('Running!')
 
-        # calibrate audio!
-        expected = ActualProjectModel.calibration['expected']
-        actual = ActualProjectModel.calibration['actual']
-        if expected != -1 and actual != -1:
-            calibration_db = expected - actual
-            calibration_factor = np.power(10, calibration_db/20)
-            model.audio_data = model.audio_data.astype(
-                np.float64) * calibration_factor.astype(np.float64)
+        self.calibrate_audio(model)
 
         # Shift and trim are in audio samples
         model.audio_data = self.trim_audio(model)
@@ -54,6 +39,17 @@ class DspThread(QObject):
         model.full_band_spec = self.get_full_band(model, audio_segments)
         print(model.full_band_spec)
         self.finished.emit()
+
+    def calibrate_audio(self, model):
+        expected = ActualProjectModel.calibration['expected']
+        actual = ActualProjectModel.calibration['actual']
+
+        if expected != -1 and actual != -1:
+            calibration_db = expected - actual
+            calibration_factor = np.power(10, calibration_db/20)
+            model.audio_data = model.audio_data.astype(
+                np.float64) * calibration_factor.astype(np.float64)
+        self.log('No data to calibrate this project. Continuing.')
 
     def trim_audio(self, model) -> np.ndarray:
         audio_len = len(model.audio_data)
