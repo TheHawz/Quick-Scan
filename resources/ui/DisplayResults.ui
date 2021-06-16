@@ -78,7 +78,11 @@
             </property>
             <layout class="QHBoxLayout" name="horizontalLayout_3">
              <item>
-              <layout class="QVBoxLayout" name="spectrum"/>
+              <layout class="QVBoxLayout" name="spectrum">
+               <property name="sizeConstraint">
+                <enum>QLayout::SetNoConstraint</enum>
+               </property>
+              </layout>
              </item>
             </layout>
            </widget>

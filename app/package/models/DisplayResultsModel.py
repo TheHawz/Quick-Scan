@@ -19,6 +19,8 @@ class DisplayResultsModel(QObject):
     on_row_changed = Signal(int)
     on_col_changed = Signal(int)
     on_freq_changed = Signal(object)
+    on_full_band_spec_changed = Signal(object)
+    on_spectrum_changed = Signal(object)
 
     def __init__(self):
         super().__init__()
@@ -168,6 +170,7 @@ class DisplayResultsModel(QObject):
     @spectrum.setter
     def spectrum(self, value):
         self._spectrum = value
+        self.on_spectrum_changed.emit(value)
 
     # --- --- --- --- --- --- --- --- --- ---
 
@@ -178,6 +181,7 @@ class DisplayResultsModel(QObject):
     @full_band_spec.setter
     def full_band_spec(self, value):
         self._full_band_spec = value
+        self.on_full_band_spec_changed.emit(value)
 
     # --- --- --- --- --- --- --- --- --- ---
 

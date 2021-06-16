@@ -33,10 +33,10 @@ def freq_to_str(f) -> str:
 
 class MplCanvas(FigureCanvasQTAgg):
 
-    def __init__(self, parent=None, width=4, height=3, dpi=300):
-        fig = Figure(figsize=(width, height), dpi=dpi)
-        self.ax = fig.add_subplot(111)
-        super(MplCanvas, self).__init__(fig)
+    def __init__(self, parent=None):
+        self.fig = Figure(tight_layout=True)
+        self.ax = self.fig.add_subplot(111)
+        super(MplCanvas, self).__init__(self.fig)
 
 
 class DisplayResultsView(QMainWindow, DisplayResults_ui):
@@ -69,7 +69,7 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
     # region HELPER FUNCTIONS AND CALLBACKS
 
     def setupPlottingWidget(self):
-        sc = MplCanvas(self, width=5, height=4, dpi=100)
+        sc = MplCanvas(self)
 
         # Show octave spectrum
         # sc.ax.plot([0, 1, 2, 3, 4], [10, 1, 20, 3, 40])
@@ -99,10 +99,16 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
         self._model.on_col_changed.connect(self.handle_col_changed)
         self._model.on_grid_changed.connect(self.handle_grid_changed)
         self._model.on_freq_changed.connect(self.handle_center_freq)
+        self._model.on_full_band_spec_changed.connect(
+            self.full_band_spec_changed)
+        self._model.on_spectrum_changed.connect(self.spectrum_changed)
 
     def set_default_values(self):
         self.IMG_WIDTH = 350  # pixels
         self.scale_factor = -1
+        self.active_row, self.active_col = None, None
+        self.max_db, self.min_db = 0, 100
+        self.active_spl = None
 
     # region Create Threads
 
@@ -194,15 +200,18 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
         self.log(f' *** Grid nº {value+1} of {self.num_of_cells}')
 
     @Slot(np.ndarray)
-    def display_image(self, cv_img: np.ndarray, grid=None):
+    def display_image(self, cv_img: np.ndarray):
         """Updates the image_label with a new opencv image"""
+        if cv_img is None:
+            return
         self.img = cv_img.copy()
         cv_img = self._model.grid.draw_grid(cv_img)
 
-        cv_img = self.draw_map(cv_img, spl=self._model.full_band_spec)
+        cv_img = self.draw_map(cv_img)
 
-        if grid is not None:
-            pt1, pt2 = self._model.grid.get_region(grid)
+        if self.active_col is not None:
+            pt1, pt2 = self._model.grid.get_region([self.active_row,
+                                                    self.active_col])
             cv_img = imb.draw_border(cv_img, pt1, pt2,
                                      color=(0, 0, 255))
 
@@ -219,13 +228,14 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
         LUT = np.linspace(color0, color1, 100, dtype=np.uint8)
         return LUT
 
-    def draw_map(self, img, spl=[]):
-        if spl == []:
+    def draw_map(self, img):
+        if self.active_spl is None:
             return img
 
+        spl = self.active_spl
         spl = np.array(spl, dtype=int)
-        min = int(np.min(spl)*0.8)
-        max = int(np.max(spl)*1.1)
+        min = self.min_db
+        max = self.max_db
         lut = self.create_color_map()
 
         for irow, row in enumerate(spl):
@@ -281,6 +291,8 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
         if len(self._model.spectrum) == 0:
             return
 
+        self.active_row = value
+
         sp = self._model.spectrum[value, self._model.col]
         freq = self._model.freq
 
@@ -294,7 +306,9 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
         if len(self._model.spectrum) == 0:
             return
 
-        self.display_image(self.img, [self._model.row, self._model.col])
+        self.active_col = value
+        self.display_image(self.img)
+
         sp = self._model.spectrum[self._model.row, value]
         freq = self._model.freq
 
@@ -305,8 +319,6 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
 
     def redraw(self, freq, spectrum):
         # TODO: can improve performance => just change data on the axes
-        max_val = np.max(self._model.spectrum) * 1.1
-        min_val = np.min(self._model.spectrum) * 0.9
 
         self.sc.ax.cla()  # Clear the canvas.
 
@@ -315,13 +327,16 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
         self.sc.ax.bar(freq, spectrum, width=np.array(freq)*1/6)
 
         self.sc.ax.set_xscale('log')
-        self.sc.ax.set_ylim(min_val, max_val)
-        self.sc.ax.set_xlabel(r'Frequency [Hz]')
-        self.sc.ax.set_ylabel('Level [dB]')
+        self.sc.ax.set_ylim(self.min_db, self.max_db)
+        self.sc.ax.set_xlabel(r'Frequency [Hz]')  # , fontsize=12)
+        self.sc.ax.set_ylabel('Level [dB]')  # , fontsize=12)
 
         self.sc.ax.set_xticks(xtick)
         self.sc.ax.set_xticklabels(xticklabel)
 
+        # self.sc.ax.tick_params(axis='both', labelsize=8)
+        # plt.tight_layout()
+        self.sc.fig.set_tight_layout(True)
         self.sc.draw()
 
     def get_xtick(self, freq):
@@ -338,21 +353,23 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
         self.freq_cb.addItem('Full Spectrum')
         self.freq_cb.addItems(list(map(freq_to_str, freqs)))
 
+    def full_band_spec_changed(self, value):
+        self.active_spl = value
+
+    def spectrum_changed(self, value):
+        self.max_db = np.max(self._model.spectrum) * 1.1
+        self.min_db = np.min(self._model.spectrum) * 0.9
+
     def handle_octave_change(self, index):
-        if index == 0:
-            print('Full Band mode')
-            self.draw_map(self.img, self._model.full_band_spec)
-            return
-
-        index -= 1
-
         if len(self._model.spectrum) == 0:
-            print('spectrum = []...')
             return
 
-        spl = self._model.spectrum[:, :, index]
-        print(spl)
-        self.draw_map(self.img, spl)
+        if index == 0:
+            self.active_spl = self._model.full_band_spec
+        else:
+            self.active_spl = self._model.spectrum[:, :, index-1]
+
+        self.display_image(self.img)
 
     # endregion
     # endregion

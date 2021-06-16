@@ -69,6 +69,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
         self.spectrum = QVBoxLayout()
         self.spectrum.setObjectName(u"spectrum")
+        self.spectrum.setSizeConstraint(QLayout.SetNoConstraint)
 
         self.horizontalLayout_3.addLayout(self.spectrum)
 
