@@ -66,6 +66,10 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_4.addWidget(self.bg_img_label)
 
+        self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+
+        self.verticalLayout_4.addItem(self.verticalSpacer)
+
 
         self.horizontalLayout_2.addWidget(self.gb_color_map)
 
@@ -198,7 +202,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 963, 26))
+        self.menubar.setGeometry(QRect(0, 0, 963, 22))
         self.menuArchive = QMenu(self.menubar)
         self.menuArchive.setObjectName(u"menuArchive")
         self.menuHelp = QMenu(self.menubar)

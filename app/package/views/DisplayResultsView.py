@@ -1,11 +1,11 @@
 # This Python file uses the following encoding: utf-8
-from app.package.services.load_project import LoadFilesWorker
 import numpy as np
 import cv2
+import os
 
 from PySide2.QtGui import QImage, QPixmap, QResizeEvent
 from PySide2.QtCore import Slot, QThread
-from PySide2.QtWidgets import QMainWindow
+from PySide2.QtWidgets import QMainWindow, QProgressBar, QStatusBar
 
 from ..services.grid import Grid
 from ..services import imbasic as imb
@@ -14,14 +14,15 @@ from ..controllers.DisplayResultsController import DisplayResultsController
 from ..models.ActualProjectModel import ActualProjectModel
 from ..models.DisplayResultsModel import DisplayResultsModel
 from ..ui.DisplayResults_ui import Ui_MainWindow as DisplayResults_ui
+from app.package.services.load_project import LoadFilesWorker
 
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
-from matplotlib.figure import Figure
 import matplotlib
 from matplotlib import pyplot as plt
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 
 matplotlib.use('Qt5Agg')
-plt.style.use('fivethirtyeight')
+plt.style.use(os.path.join('app', 'package', 'stylesheet.mplstyle'))
 
 
 def freq_to_str(f) -> str:
@@ -56,7 +57,7 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
         self.show()
         self.on_open()
 
-        self.gb_color_map.resizeEvent = self.onResize
+        self.bg_img_label.resizeEvent = self.onResize
 
         # self.actionOpen_Project.triggered.connect(
         # self._controller._navigator.navigate('new_project'))
@@ -102,8 +103,8 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
         self._model.on_grid_changed.connect(self.handle_grid_changed)
         self._model.on_freq_changed.connect(self.handle_center_freq)
         self._model.on_full_band_spec_changed.connect(
-            self.full_band_spec_changed)
-        self._model.on_spectrum_changed.connect(self.spectrum_changed)
+            self.handle_full_band_spec_changed)
+        self._model.on_spectrum_changed.connect(self.handle_spectrum_changed)
 
     def set_default_values(self):
         self.img = None
@@ -112,6 +113,7 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
         self.active_row, self.active_col = None, None
         self.max_db, self.min_db = 0, 100
         self.active_spl = None
+        self.spl_bar = None
 
     # region Create Threads
 
@@ -124,6 +126,7 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
         # Conect the 'started' signal of the Thread
         # to the corresponding function in the worker
         thread.started.connect(lambda: worker.process(self._model))
+        thread.started.connect(self.start_dsp)
         worker.update_status.connect(self.handle_update_status)
 
         # Connect the finished signal of thread & worker
@@ -133,6 +136,7 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
         worker.finished.connect(thread.quit)
         worker.finished.connect(worker.deleteLater)
         thread.finished.connect(thread.deleteLater)
+        thread.finished.connect(self.stop_dsp)
         return thread
 
     def create_loading_thread(self):
@@ -144,6 +148,7 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
         # Conect the 'started' signal of the Thread
         # to the corresponding function in the worker
         thread.started.connect(lambda: worker.load(self._model))
+        thread.started.connect(self.start_loading)
         worker.send_data.connect(self._controller.set_data)
         worker.send_grid.connect(self._controller.set_grid)
         worker.send_freq_range.connect(self._controller.set_freq_range)
@@ -154,10 +159,26 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
         worker.finished.connect(self.show_project_info)
         worker.finished.connect(worker.deleteLater)
 
-        thread.finished.connect(lambda: self.dsp_thread.start())
+        thread.finished.connect(self.dsp_thread.start)
         thread.finished.connect(thread.deleteLater)
+        thread.finished.connect(self.stop_loading)
 
         return thread
+
+    def start_dsp(self):
+        print('---------------------------- HEY')
+
+    def stop_dsp(self):
+        self.statusbar.removeWidget(self.pbar)
+
+    def start_loading(self):
+        # self.statusBar = QStatusBar()
+        self.pbar = QProgressBar(self)
+        self.statusbar.addWidget(self.pbar)
+
+    def stop_loading(self):
+        print('---------------------------- HEY2')
+
     # endregion
 
     def on_open(self):
@@ -179,17 +200,20 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
         self.grid_config.setText(str(self._model.grid))
 
     # region Handlers
-
-    def handle_data_x_changed(self, value):
+    @Slot(np.ndarray)
+    def handle_data_x_changed(self, value: np.ndarray):
         pass
 
-    def handle_data_y_changed(self, value):
+    @Slot(np.ndarray)
+    def handle_data_y_changed(self, value: np.ndarray):
         pass
 
-    def handle_audio_data_changed(self, value):
+    @Slot(list)
+    def handle_audio_data_changed(self, value: list):
         pass
 
-    def handle_audio_fs_changed(self, value):
+    @Slot(int)
+    def handle_audio_fs_changed(self, value: int):
         pass
 
     @Slot(Grid)
@@ -201,6 +225,7 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
     def handle_update_status(self, value: int) -> None:
         # self.progressBar.setValue((value+1)/total_grids*100)
         self.log(f' *** Grid nº {value+1} of {self.num_of_cells}')
+        self.pbar.setValue(int((value+1)/self.num_of_cells*100))
 
     @Slot(np.ndarray)
     def display_image(self, cv_img: np.ndarray):
@@ -216,7 +241,8 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
             pt1, pt2 = self._model.grid.get_region([self.active_row,
                                                     self.active_col])
             cv_img = imb.draw_border(cv_img, pt1, pt2,
-                                     color=(0, 0, 255))
+                                     color=(255, 255, 0),
+                                     thickness=4)
 
         cv_img, self.scale_factor = imb.resize(cv_img, width=self.IMG_WIDTH,
                                                return_scale_factor=True)
@@ -296,13 +322,13 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
 
         self.active_row = value
 
-        sp = self._model.spectrum[value, self._model.col]
-        freq = self._model.freq
+        # sp = self._model.spectrum[value, self._model.col]
+        # freq = self._model.freq
 
-        if len(sp) == len(freq):
-            self.redraw(freq, sp)
-        else:
-            self.log('Error len(sp) != len(freq)')
+        # if len(sp) == len(freq):
+        # self.redraw(freq, sp)
+        # else:
+        # self.log('Error len(sp) != len(freq)')
 
     @Slot(int)
     def handle_col_changed(self, value):
@@ -323,45 +349,63 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
     def redraw(self, freq, spectrum):
         # TODO: can improve performance => just change data on the axes
 
+        if self.spl_bar is not None:
+            for ii, val in enumerate(spectrum):
+                self.spl_bar.patches[ii].set_height(val)
+            # self.spl_bar.datavalues = spectrum
+            self.sc.draw()
+            return
+
         self.sc.ax.cla()  # Clear the canvas.
 
-        xtick, xticklabel = self.get_xtick(freq)
-
-        self.sc.ax.bar(freq, spectrum, width=np.array(freq)*1/6)
+        self.spl_bar = self.sc.ax.bar(
+            freq, spectrum, width=np.array(freq)*1/6)
 
         self.sc.ax.set_xscale('log')
         self.sc.ax.set_ylim(self.min_db, self.max_db)
-        self.sc.ax.set_xlabel(r'Frequency [Hz]')  # , fontsize=12)
-        self.sc.ax.set_ylabel('Level [dB]')  # , fontsize=12)
+        self.sc.ax.set_xlabel(r'Frequency [Hz]')
+        self.sc.ax.set_ylabel('Level [dB]')
 
-        self.sc.ax.set_xticks(xtick)
-        self.sc.ax.set_xticklabels(xticklabel)
+        ticks, labels = self.get_xticks(freq)
+        self.sc.ax.set_xticks(ticks[0])
+        self.sc.ax.set_xticklabels(labels[0])
+        # self.sc.ax.set_xticks(ticks[-1], minor=True)
+        # self.sc.ax.set_xticklabels(labels[-1], minor=True)
 
-        # self.sc.ax.tick_params(axis='both', labelsize=8)
-        # plt.tight_layout()
         self.sc.fig.set_tight_layout(True)
         self.sc.draw()
 
-    def get_xtick(self, freq):
-        xtick = np.round(freq)
+    def get_xticks(self, freq):
+        freq = np.round(freq)
+        major = []
+        minor = []
 
-        # Apply freq_to_str to every-other element in freq array
-        xticklabel = [freq_to_str(f) if ii % 3 == 0 else ''
-                      for ii, f in enumerate(freq)]
+        major_label = []
+        minor_label = []
 
-        return xtick, xticklabel
+        for ii, f in enumerate(freq):
+            if ii % 3 == 0:
+                major.append(round(f))
+                major_label.append(freq_to_str(f))
+            else:
+                minor.append(round(f))
+                minor_label.append(freq_to_str(f))
+        return (major, minor), (major_label, minor_label)
 
+    @Slot(object)
     def handle_center_freq(self, freqs):
         self.freq_cb.clear()
         self.freq_cb.addItem('Full Spectrum')
         self.freq_cb.addItems(list(map(freq_to_str, freqs)))
 
-    def full_band_spec_changed(self, value):
+    @Slot(object)
+    def handle_full_band_spec_changed(self, value):
         self.active_spl = value
 
-    def spectrum_changed(self, value):
-        self.max_db = np.max(self._model.spectrum) * 1.1
-        self.min_db = np.min(self._model.spectrum) * 0.9
+    @Slot(object)
+    def handle_spectrum_changed(self, value):
+        self.max_db = np.max(value) * 1.1
+        self.min_db = np.min(value) * 0.9
 
     def handle_octave_change(self, index):
         if len(self._model.spectrum) == 0:
@@ -375,9 +419,10 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
         self.display_image(self.img)
 
     def onResize(self, e: QResizeEvent):
-        self.IMG_WIDTH = e.size().width()*0.9
+        self.IMG_WIDTH = e.size().width()
         if self.img is not None:
             self.display_image(self.img)
 
     # endregion
+
     # endregion

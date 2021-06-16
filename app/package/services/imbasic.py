@@ -101,7 +101,7 @@ def draw_filled_rectangle(img, pt1, pt2, color, alpha):
     return img
 
 
-def draw_border(img, pt1, pt2, color):
+def draw_border(img, pt1, pt2, color, thickness=2):
     x1, y1 = pt1
     x2, y2 = pt2
 
@@ -111,6 +111,6 @@ def draw_border(img, pt1, pt2, color):
              [(x2, y2), (x2, y1)]]
 
     for _pt1, _pt2 in lines:
-        img = cv2.line(img, _pt1, _pt2, color, thickness=2)
+        img = cv2.line(img, _pt1, _pt2, color, thickness=thickness)
 
     return img
