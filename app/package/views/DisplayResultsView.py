@@ -3,7 +3,7 @@ from app.package.services.load_project import LoadFilesWorker
 import numpy as np
 import cv2
 
-from PySide2.QtGui import QImage, QPixmap
+from PySide2.QtGui import QImage, QPixmap, QResizeEvent
 from PySide2.QtCore import Slot, QThread
 from PySide2.QtWidgets import QMainWindow
 
@@ -56,6 +56,8 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
         self.show()
         self.on_open()
 
+        self.gb_color_map.resizeEvent = self.onResize
+
         # self.actionOpen_Project.triggered.connect(
         # self._controller._navigator.navigate('new_project'))
 
@@ -104,6 +106,7 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
         self._model.on_spectrum_changed.connect(self.spectrum_changed)
 
     def set_default_values(self):
+        self.img = None
         self.IMG_WIDTH = 350  # pixels
         self.scale_factor = -1
         self.active_row, self.active_col = None, None
@@ -370,6 +373,11 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
             self.active_spl = self._model.spectrum[:, :, index-1]
 
         self.display_image(self.img)
+
+    def onResize(self, e: QResizeEvent):
+        self.IMG_WIDTH = e.size().width()*0.8
+        if self.img is not None:
+            self.display_image(self.img)
 
     # endregion
     # endregion
