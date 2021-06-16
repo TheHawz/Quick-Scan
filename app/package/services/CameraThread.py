@@ -153,8 +153,10 @@ class CameraThread(QThread):
         # self._grid.draw_grid(frame)
         self.process_circles(frame,
                              get_circles(get_mask(frame,
-                                                  self.open_size,
-                                                  self.close_size)))
+                                                  openSize=1,
+                                                  closeSize=25),
+                                         dp=3,
+                                         minDist=250))
 
         self.draw_rec_indicator(frame)
 
@@ -199,7 +201,7 @@ class CameraThread(QThread):
             # Degradado transparente -> verde
             alpha = t - 0.5
             imb.draw_filled_rectangle(
-                frame, pt1, pt2, (0, 255, 0), alpha)
+                frame, pt1, pt2, (255, 0, 0), alpha)
 
         return frame
 

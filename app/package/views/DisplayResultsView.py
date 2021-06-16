@@ -236,7 +236,7 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
                 img = imb.draw_filled_rectangle(img,
                                                 pt1, pt2,
                                                 lut[index],
-                                                0.33)
+                                                0.6)
         return img
 
     def handle_grid_clicked(self, event):
@@ -352,7 +352,7 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
 
         spl = self._model.spectrum[:, :, index]
         print(spl)
-        # self.draw_map(self.img, spl)
+        self.draw_map(self.img, spl)
 
     # endregion
     # endregion

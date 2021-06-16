@@ -43,12 +43,15 @@ class CalibrationWorker(QObject):
         fs = 44100
         self.log(f'Time rec: {t}')
 
-        x = sd.rec(int(t * fs), channels=2)
-        x = np.sum(x, 1)  # change
-        sd.wait()
+        # x = sd.rec(int(t * fs), channels=2)
 
-        rms = np.sqrt(np.mean(np.square(s)))
-        spl = 20*np.log10(rms/2e-5)
+        x = sd.rec(frames=int(t*fs), samplerate=fs, channels=2)
+        sd.wait()
+        x = np.sum(x, 1)  # change
+
+        # print(np.max(x))
+        # rms = np.sqrt(np.mean(np.square(x)))
+        spl = 20*np.log10(np.std(x)/2e-5)
 
         self.save_calibration_file(spl, targetSpl)
         self.finished.emit()
@@ -104,7 +107,7 @@ class CalibrateView(QMainWindow, Calibrate_ui):
     @Slot()
     def start_calibration(self):
         try:
-            spl = int(self.spl_value.text())
+            spl = float(self.spl_value.text())
         except Exception:
             self.log(f'Could not convert {self.spl_value.text()} to int')
 
