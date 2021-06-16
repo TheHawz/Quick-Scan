@@ -375,7 +375,7 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
         self.display_image(self.img)
 
     def onResize(self, e: QResizeEvent):
-        self.IMG_WIDTH = e.size().width()*0.8
+        self.IMG_WIDTH = e.size().width()*0.9
         if self.img is not None:
             self.display_image(self.img)
 
