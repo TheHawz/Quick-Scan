@@ -94,8 +94,8 @@ def get_spectrum(audio: np.ndarray, fs, limits=None):
 
         _spl, f = PyOctaveBand.octavefilter(
             audio_windowed, fs, fraction, 6, limits, False)
-        print(f)
-        print(_spl)
+        # print(f)
+        # print(_spl)
 
         spls[index] = _spl
 

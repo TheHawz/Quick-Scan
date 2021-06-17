@@ -253,10 +253,14 @@ class DspThread(QObject):
         return spectrum
 
     def save(self, sp, freq):
-        spectrum = []
-        for row in sp:
-            for col in row:
-                spectrum.append(col)
+        row, col, ii = np.array(sp).shape
+
+        spectrum = np.reshape(sp, (row*col, ii))
+
+        # spectrum = []
+        # for row in sp:
+        # for col in row:
+        # spectrum.append(col)
 
         fileutils.save_np_to_txt(spectrum, os.path.join(
             ActualProjectModel.project_location, 'Results'), 'results.spec')

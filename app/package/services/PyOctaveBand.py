@@ -7,6 +7,18 @@ import numpy as np
 from scipy import signal
 import matplotlib.pyplot as plt
 
+
+# def print_signal_info(x, name=''):
+#     print(f' - - - Signal {name} info - - - ')
+#     print(f'type: {type(x)}')
+#     print(f'length: {len(x)}')
+#     if type(x) == np.ndarray:
+#         print(f'dtype: {x.dtype}')
+#         print(f'shape: {x.shape}')
+#     print(f'max: {np.max(x)}')
+#     print(f'min: {np.max(x)}')
+
+
 # Public methods
 __all__ = ['octavefilter', 'getansifrequencies', 'normalizedfreq', '_genfreqs']
 
@@ -47,9 +59,20 @@ def octavefilter(x, fs, fraction=1, order=6, limits=None, show=0):
     # Create array with SPL for each frequency band
     spl = np.zeros([len(freq)])
     for idx in range(len(freq)):
-        sd = signal.decimate(x, factor[idx])
+        # print('\n - - - - - - - - - - - - - - ')
+        # print(f'Freq: {round(freq[idx])}')
+        # print(f'factor: {factor[idx]}')
+
+        if factor[idx] == 1:
+            sd = x
+        else:
+            sd = signal.decimate(x, factor[idx], ftype='fir')
+        # print_signal_info(x, 'x')
+        # print_signal_info(sd, 'sd')
+
         y = signal.sosfilt(sos[idx], sd)
         spl[idx] = 20 * np.log10(np.std(y) / 2e-5)
+        # input()
 
     return spl.tolist(), freq
 

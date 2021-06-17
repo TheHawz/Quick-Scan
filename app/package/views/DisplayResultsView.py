@@ -116,7 +116,7 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
         self.IMG_WIDTH = 350  # pixels
         self.scale_factor = -1
         self.active_row, self.active_col = None, None
-        self.max_db, self.min_db = 0, 100
+        # self.max_db, self.min_db = 0, 100
         self.active_spl = None
         self.spl_bar = None
         self.sc = None
@@ -278,8 +278,8 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
 
         spl = self.active_spl
         spl = np.array(spl, dtype=int)
-        min = self.min_db
-        max = self.max_db
+        min = self._model.min_db
+        max = self._model.max_db
         lut = self.create_color_map()
 
         for irow, row in enumerate(spl):
@@ -287,6 +287,7 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
                 pt1, pt2 = self._model.grid.get_region([irow, icol])
 
                 index = int((value-min)*len(lut) / (max-min)) - 1
+                index = np.clip(index, 0, 99)
                 img = imb.draw_filled_rectangle(img,
                                                 pt1, pt2,
                                                 lut[index],
@@ -337,14 +338,6 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
 
         self.active_row = value
 
-        # sp = self._model.spectrum[value, self._model.col]
-        # freq = self._model.freq
-
-        # if len(sp) == len(freq):
-        # self.redraw(freq, sp)
-        # else:
-        # self.log('Error len(sp) != len(freq)')
-
     @Slot(int)
     def handle_col_changed(self, value):
         if len(self._model.spectrum) == 0:
@@ -362,16 +355,12 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
             self.log('Error len(sp) != len(freq)')
 
     def redraw(self, freq, spectrum):
-
         if self.spl_bar is not None:
             if len(self.spl_bar.patches) > 0:
                 for ii, val in enumerate(spectrum):
                     self.spl_bar.patches[ii].set_height(val)
-                # self.spl_bar.datavalues = spectrum
                 self.sc.draw()
                 return
-
-        print('CLA and stuff')
 
         self.sc.ax.cla()  # Clear the canvas.
 
@@ -379,7 +368,8 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
             freq, spectrum, width=np.array(freq)*1/6)
 
         self.sc.ax.set_xscale('log')
-        self.sc.ax.set_ylim(self.min_db, self.max_db)
+        self.sc.ax.set_ylim(np.array(self._model.spectrum).min()*0.9,
+                            np.array(self._model.spectrum).max()*1.1)
         self.sc.ax.set_xlabel(r'Frequency [Hz]')
         self.sc.ax.set_ylabel('Level [dB]')
 
@@ -421,8 +411,7 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
 
     @Slot(object)
     def handle_spectrum_changed(self, value):
-        self.max_db = np.max(value) * 1.1
-        self.min_db = np.min(value) * 0.9
+        pass
 
     def handle_octave_change(self, index):
         if len(self._model.spectrum) == 0:

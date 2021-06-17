@@ -40,6 +40,8 @@ class DisplayResultsModel(QObject):
         self._row = -1
         self._col = -1
         self._full_band_spec = []
+        self.min_db = 40
+        self.max_db = 90
 
     # region Props & Setters
 
@@ -170,6 +172,7 @@ class DisplayResultsModel(QObject):
     @spectrum.setter
     def spectrum(self, value):
         self._spectrum = value
+        self.check_max_min()
         self.on_spectrum_changed.emit(value)
 
     # --- --- --- --- --- --- --- --- --- ---
@@ -181,8 +184,26 @@ class DisplayResultsModel(QObject):
     @full_band_spec.setter
     def full_band_spec(self, value):
         self._full_band_spec = value
+        self.check_max_min()
         self.on_full_band_spec_changed.emit(value)
 
     # --- --- --- --- --- --- --- --- --- ---
+
+    def check_max_min(self):
+
+        if len(self._full_band_spec) > 0:
+            self.min_db = np.min([self.min_db,
+                                 np.array(self._full_band_spec).min()])
+            self.max_db = np.max([self.max_db,
+                                 np.array(self._full_band_spec).max()])
+
+        if len(self._spectrum) > 0:
+            self.min_db = np.min([self.min_db,
+                                 np.array(self._spectrum).min()])
+            self.max_db = np.max([self.max_db,
+                                 np.array(self._spectrum).max()])
+
+        self.min_db = int(np.floor(self.min_db))
+        self.max_db = int(np.ceil(self.max_db))
 
     # endregion
