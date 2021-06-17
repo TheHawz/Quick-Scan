@@ -1,6 +1,6 @@
 import numpy as np
 
-from PySide2.QtCore import QObject, Slot
+from PySide2.QtCore import QCoreApplication, QObject, Slot
 from ..services.grid import Grid
 
 from app.package.models.DisplayResultsModel import DisplayResultsModel
@@ -20,6 +20,16 @@ class DisplayResultsController(QObject):
     @Slot(str)
     def navigate(self, value):
         self._navigator.navigator.emit(value)
+
+    @Slot()
+    def new_project(self):
+        self._model.clear_state()
+        self.navigate('new_project')
+
+    @Slot()
+    def quit(self):
+        self._model.clear_state()
+        QCoreApplication.quit()
 
     @Slot(np.ndarray)
     def set_data_x(self, value):

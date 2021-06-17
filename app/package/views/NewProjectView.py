@@ -5,7 +5,7 @@ import numpy as np
 
 from PySide2.QtWidgets import QMainWindow, QFileDialog
 from PySide2.QtCore import Slot
-from PySide2.QtWidgets import QMessageBox, QAction
+from PySide2.QtWidgets import QMessageBox
 
 from ..ui.NewProject_ui import Ui_MainWindow as NewProject_ui
 from ..models.ActualProjectModel import ActualProjectModel
@@ -39,6 +39,7 @@ class NewProjectView(QMainWindow, NewProject_ui):
         self.setupUi(self)
         self.connect_to_controller()
         self.connect_to_model()
+
         self.set_default_values()
 
     def open(self):
@@ -102,6 +103,7 @@ class NewProjectView(QMainWindow, NewProject_ui):
             self.ask_to_calibrate()
         else:
             calibration = np.loadtxt(file)
+            print(f'Calibration: {calibration}')
             ActualProjectModel.calibration['expected'] = calibration[0]
             ActualProjectModel.calibration['actual'] = calibration[1]
 
@@ -149,6 +151,9 @@ class NewProjectView(QMainWindow, NewProject_ui):
             self.handle_minimum_time_changed)
 
     def set_default_values(self):
+        title = "Quick Scan"
+        self.setWindowTitle(title)
+
         self._controller.change_project_location(os.path.expanduser("~"))
         self._controller.change_project_name('New Project')
 

@@ -306,7 +306,7 @@
      <string>Archive</string>
     </property>
     <addaction name="actionOpen_Project"/>
-    <addaction name="action_Quit"/>
+    <addaction name="actionQuit"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -334,7 +334,7 @@
     <string>About</string>
    </property>
   </action>
-  <action name="action_Quit">
+  <action name="actionQuit">
    <property name="text">
     <string>Quit</string>
    </property>

@@ -2,6 +2,7 @@ __all__ = ['getTimeOfRecording']
 
 from . import PyOctaveBand
 import numpy as np
+from scipy import signal
 
 
 def _getTime(B, e=0.1):
@@ -69,16 +70,13 @@ def get_num_of_windows_2(len_audio, win_size, overlap):
 
 
 def get_spectrum(audio: np.ndarray, fs, limits=None):
-    # make mono...
-    # TODO: change this!
-    print('*** *** *** -> ', audio.shape)
-    audio = audio[1]
+    print(f'Get Spectrum. Audio.shape = {audio.shape}')
 
-    win_type = 'square'
     win_size = 2**15
     overlap = 0.1
     len_audio = audio.shape[0]
     fraction = 3
+    window = signal.windows.hann(win_size)
 
     i = 0
     index = 0
@@ -91,11 +89,13 @@ def get_spectrum(audio: np.ndarray, fs, limits=None):
         start = i
         end = i+win_size
 
-        if win_type == 'square':
-            audio_windowed = audio[start:end]
+        audio_windowed = audio[start:end]
+        audio_windowed *= window
 
-        _spl, _ = PyOctaveBand.octavefilter(
+        _spl, f = PyOctaveBand.octavefilter(
             audio_windowed, fs, fraction, 6, limits, False)
+        print(f)
+        print(_spl)
 
         spls[index] = _spl
 
@@ -105,5 +105,7 @@ def get_spectrum(audio: np.ndarray, fs, limits=None):
     # print(f'max index: {index}')
 
     spl = np.mean(spls, 0)
+
+    print(spl)
 
     return spl, freq

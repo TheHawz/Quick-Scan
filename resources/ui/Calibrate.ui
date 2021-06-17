@@ -36,7 +36,7 @@
           <item>
            <widget class="QLabel" name="label">
             <property name="text">
-             <string>Sonometer medition (Full band - dB SPL value)</string>
+             <string>SPL Value of Reference (dB)</string>
             </property>
            </widget>
           </item>
@@ -66,9 +66,16 @@
         </widget>
        </item>
        <item>
+        <widget class="QLabel" name="label_5">
+         <property name="text">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt; font-weight:700;&quot;&gt;Instructions&lt;/span&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;&lt;br/&gt;&lt;/span&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt; 1. Play the reference noise audio (white or pink noise)&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt; 2. Get the SPL with a calibrated device.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt; 3. Insert the value in the corresponding field&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt; 4. Press the &amp;quot;Calibrate!&amp;quot; button.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QLabel" name="label_2">
          <property name="text">
-          <string>The user will have to recalibrate the system each time any of the following happen:</string>
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt; font-style:italic;&quot;&gt;Info:&lt;/span&gt;&lt;br/&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;The user will have to recalibrate the system each time any of the following happen:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="wordWrap">
           <bool>true</bool>
@@ -81,14 +88,14 @@
        <item>
         <widget class="QLabel" name="label_3">
          <property name="text">
-          <string> - The user change the input gain of the system.</string>
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt; - The user change the input gain of the system.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QLabel" name="label_4">
          <property name="text">
-          <string> - The user change the microphone, the audio interface or any of the components that form the recording chain.</string>
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt; - The user change the microphone, the audio interface or any of the components that form the recording chain.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="scaledContents">
           <bool>false</bool>

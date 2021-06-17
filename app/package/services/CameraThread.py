@@ -83,11 +83,14 @@ class CameraThread(QThread):
 
             self.update_frame.emit(processed_frame)
 
-        fps = 1/((time()-t1)/rec_frames)
-        cam_setup = (self.frame_size[0], self.frame_size[1], fps)
-        self.on_camera_caracteristics_detected.emit(cam_setup)
+        if rec_frames != 0:
+            fps = 1/((time()-t1)/rec_frames)
+            cam_setup = (self.frame_size[0], self.frame_size[1], fps)
+            self.on_camera_caracteristics_detected.emit(cam_setup)
 
-        location_data = {"x_data": self.x_data, "y_data": self.y_data}
+        if self.x_data is not None:
+            location_data = {"x_data": self.x_data, "y_data": self.y_data}
+
         self.on_stop_recording.emit(location_data)
         cv2.destroyAllWindows()
         cap.release()

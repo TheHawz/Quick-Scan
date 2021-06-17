@@ -96,6 +96,8 @@ class DataAcquisitionView(QMainWindow, DataAcquisition_ui):
         self._model.on_bg_img_changed.connect(self.handle_bg_img_changed)
 
     def set_default_values(self):
+        title = 'Quick Scan: Data acquisition'
+        self.setWindowTitle(title)
         self.q = queue.Queue()
         self._model.clear_state()
         self._img_saved = False

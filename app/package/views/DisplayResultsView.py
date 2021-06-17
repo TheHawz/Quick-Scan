@@ -5,7 +5,7 @@ import os
 
 from PySide2.QtGui import QImage, QPixmap, QResizeEvent
 from PySide2.QtCore import Slot, QThread
-from PySide2.QtWidgets import QMainWindow, QProgressBar, QStatusBar
+from PySide2.QtWidgets import QMainWindow, QProgressBar
 
 from ..services.grid import Grid
 from ..services import imbasic as imb
@@ -56,7 +56,7 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
     def open(self):
         self.show()
         self.on_open()
-
+        # self.set_default_values()
         self.bg_img_label.resizeEvent = self.onResize
 
         # self.actionOpen_Project.triggered.connect(
@@ -72,15 +72,18 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
     # region HELPER FUNCTIONS AND CALLBACKS
 
     def setupPlottingWidget(self):
+        if self.sc is not None:
+            return
         sc = MplCanvas(self)
 
         # Show octave spectrum
         # sc.ax.plot([0, 1, 2, 3, 4], [10, 1, 20, 3, 40])
-        sc.ax.grid(which='major')
-        sc.ax.grid(which='minor', linestyle=':')
+        sc.ax.grid(which='both')
+        sc.ax.grid(which='minor', alpha=0.3)
+        sc.ax.grid(which='major', alpha=0.6)
         sc.ax.set_xlabel(r'Frequency [Hz]')
         sc.ax.set_ylabel('Level [dB]')
-        plt.xlim(11, 25000)
+        plt.xlim(20, 20000)
 
         # we save a reference to the widget, to then modify it
         self.sc = sc
@@ -88,6 +91,8 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
 
     def connect_to_controller(self):
         self.freq_cb.currentIndexChanged.connect(self.handle_octave_change)
+        self.actionOpen_Project.triggered.connect(self.new_project)
+        self.actionQuit.triggered.connect(self._controller.quit)
 
     def connect_to_model(self):
         self._model.on_data_x_changed.connect(self.handle_data_x_changed)
@@ -114,6 +119,7 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
         self.max_db, self.min_db = 0, 100
         self.active_spl = None
         self.spl_bar = None
+        self.sc = None
 
     # region Create Threads
 
@@ -182,14 +188,23 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
     # endregion
 
     def on_open(self):
-        self.setupPlottingWidget()
+        # self.set_default_values()
 
+        self.setupPlottingWidget()
         self.dsp_thread = self.create_thread()
         self.loading_thread = self.create_loading_thread()
 
         self.loading_thread.start()
 
+    def new_project(self):
+        # self.sc.ax.cla()
+        # self.sc.ax.remove()
+        # self.sc = None
+        self._controller.new_project()
+
     def show_project_info(self):
+        self.setWindowTitle(f'{ActualProjectModel.project_name}: Resutlados')
+
         self.pr_name.setText(ActualProjectModel.project_name)
 
         self.audio_info.setText(
@@ -347,14 +362,16 @@ class DisplayResultsView(QMainWindow, DisplayResults_ui):
             self.log('Error len(sp) != len(freq)')
 
     def redraw(self, freq, spectrum):
-        # TODO: can improve performance => just change data on the axes
 
         if self.spl_bar is not None:
-            for ii, val in enumerate(spectrum):
-                self.spl_bar.patches[ii].set_height(val)
-            # self.spl_bar.datavalues = spectrum
-            self.sc.draw()
-            return
+            if len(self.spl_bar.patches) > 0:
+                for ii, val in enumerate(spectrum):
+                    self.spl_bar.patches[ii].set_height(val)
+                # self.spl_bar.datavalues = spectrum
+                self.sc.draw()
+                return
+
+        print('CLA and stuff')
 
         self.sc.ax.cla()  # Clear the canvas.
 

@@ -61,6 +61,11 @@ class Ui_MainWindow(object):
 
         self.verticalLayout.addWidget(self.frame_3)
 
+        self.label_5 = QLabel(self.frame)
+        self.label_5.setObjectName(u"label_5")
+
+        self.verticalLayout.addWidget(self.label_5)
+
         self.label_2 = QLabel(self.frame)
         self.label_2.setObjectName(u"label_2")
         self.label_2.setWordWrap(True)
@@ -122,11 +127,12 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
-        self.label.setText(QCoreApplication.translate("MainWindow", u"Sonometer medition (Full band - dB SPL value)", None))
+        self.label.setText(QCoreApplication.translate("MainWindow", u"SPL Value of Reference (dB)", None))
         self.calibrate_button.setText(QCoreApplication.translate("MainWindow", u"Calibrate!", None))
-        self.label_2.setText(QCoreApplication.translate("MainWindow", u"The user will have to recalibrate the system each time any of the following happen:", None))
-        self.label_3.setText(QCoreApplication.translate("MainWindow", u" - The user change the input gain of the system.", None))
-        self.label_4.setText(QCoreApplication.translate("MainWindow", u" - The user change the microphone, the audio interface or any of the components that form the recording chain.", None))
+        self.label_5.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-size:12pt; font-weight:700;\">Instructions</span><span style=\" font-weight:700;\"><br/></span><span style=\" font-size:10pt;\"> 1. Play the reference noise audio (white or pink noise)</span></p><p><span style=\" font-size:10pt;\"> 2. Get the SPL with a calibrated device.</span></p><p><span style=\" font-size:10pt;\"> 3. Insert the value in the corresponding field</span></p><p><span style=\" font-size:10pt;\"> 4. Press the &quot;Calibrate!&quot; button.</span></p></body></html>", None))
+        self.label_2.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-size:12pt; font-style:italic;\">Info:</span><br/><span style=\" font-size:10pt;\">The user will have to recalibrate the system each time any of the following happen:</span></p></body></html>", None))
+        self.label_3.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-size:10pt;\"> - The user change the input gain of the system.</span></p></body></html>", None))
+        self.label_4.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-size:10pt;\"> - The user change the microphone, the audio interface or any of the components that form the recording chain.</span></p></body></html>", None))
         self.go_back_button.setText(QCoreApplication.translate("MainWindow", u"Go Back", None))
     # retranslateUi
 

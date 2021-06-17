@@ -40,12 +40,12 @@ class CalibrationWorker(QObject):
         self.log(targetSpl)
 
         t = 5
-        fs = 44100
+        sd.default.samplerate = fs = 44100
         self.log(f'Time rec: {t}')
 
         # x = sd.rec(int(t * fs), channels=2)
 
-        x = sd.rec(frames=int(t*fs), samplerate=fs, channels=2)
+        x = sd.rec(frames=int(t*fs), channels=1)
         sd.wait()
         x = np.sum(x, 1)  # change
 
@@ -100,7 +100,8 @@ class CalibrateView(QMainWindow, Calibrate_ui):
         pass
 
     def set_default_values(self):
-        pass
+        title = "Quick Scan: Calibrate"
+        self.setWindowTitle(title)
 
     # region SLOTS
 

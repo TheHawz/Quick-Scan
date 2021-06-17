@@ -68,6 +68,16 @@ class LoadFilesWorker(QObject):
 
         fs, data = wavfile.read(file_path)
 
+        if not type(data) == np.ndarray:
+            raise Exception('Empty file!')
+
+        if (data.dtype == np.int16):
+            data = data.astype(np.float32) / 2**(16-1)
+        else:
+            raise Exception('Wav file format error!')
+
+        print(data.shape)
+
         self.log(f'[Audio] fs = {fs}')
         self.log(f'[Audio] l = {round(len(data)/fs,2)} s')
 

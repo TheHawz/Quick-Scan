@@ -37,19 +37,33 @@ class DspThread(QObject):
 
         model.freq, model.spectrum = self.analyze(model, audio_segments)
         model.full_band_spec = self.get_full_band(model, audio_segments)
-        print(model.full_band_spec)
+        self.log(f'Full band Spectrum: {model.full_band_spec}')
+
         self.finished.emit()
 
     def calibrate_audio(self, model):
+        audio = model.audio_data
+
+        # Check number of channels
+        channels = audio.shape[1]
+        if channels == 2:
+            # Convert to mono
+            audio = np.sum(audio, axis=1) * np.power(10, -6/20)
+        elif channels > 2:
+            raise Exception('We do not other than mono and stereo')
+
         expected = ActualProjectModel.calibration['expected']
         actual = ActualProjectModel.calibration['actual']
 
-        if expected != -1 and actual != -1:
-            calibration_db = expected - actual
-            calibration_factor = np.power(10, calibration_db/20)
-            model.audio_data = model.audio_data.astype(
-                np.float64) * calibration_factor.astype(np.float64)
-        self.log('No data to calibrate this project. Continuing.')
+        if expected == -1 or actual == -1:
+            self.log('No data to calibrate this project. Continuing.')
+            return
+
+        calibration_db = expected - actual
+        calibration_factor = np.power(10, calibration_db/20)
+        print(f'Calibration dB: {calibration_db}')
+
+        model.audio_data = audio*calibration_factor
 
     def trim_audio(self, model) -> np.ndarray:
         audio_len = len(model.audio_data)
@@ -174,6 +188,7 @@ class DspThread(QObject):
     def segment_audio(self, model,
                       segmentation: dict[tuple, list[tuple]]
                       ) -> dict[tuple, list[tuple]]:
+        self.log(' ***  ***  ***  ***  *** Segmenting audio...')
         fps = model.fps
         fs = model.audio_fs
         conversion_ratio = fs / fps
@@ -207,7 +222,7 @@ class DspThread(QObject):
             # self.log(f'Processing grid: {key}')
             self.update_status.emit(index)
 
-            audio = np.transpose(audio_segments[key])
+            audio = np.array(audio_segments[key])
 
             if len(audio) == 0:
                 self.log('Len audio == 0. Continuing...')
