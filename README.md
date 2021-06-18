@@ -1,1 +1,1 @@
-# A possible (and cheep) implementation of Scan&Paint
+# Quick Scan: a sound pressure mapping technique implementation.
