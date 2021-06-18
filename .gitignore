@@ -5,7 +5,9 @@ __pycache__/
 *.pyc
 dist/
 build/app*
-build/sphinx/doctrees*
+build/sphinx/doctrees/
+*.pickle
+*.doctree
 *.egg-info
 .venv
 env/
