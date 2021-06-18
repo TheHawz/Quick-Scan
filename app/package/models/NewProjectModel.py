@@ -1,5 +1,5 @@
 from PySide2.QtCore import QObject, Signal
-from ..services.dsp import getTimeOfRecording
+from ..services.dsp import get_time_of_recording
 
 
 class NewProjectModel(QObject):
@@ -121,7 +121,7 @@ class NewProjectModel(QObject):
         if value >= self._high_freq:
             self.high_freq_forced.emit(value)
         self.low_freq_changed.emit(value)
-        self.minimum_time_changed.emit(getTimeOfRecording(value))
+        self.minimum_time_changed.emit(get_time_of_recording(value))
 
     @property
     def high_freq(self):

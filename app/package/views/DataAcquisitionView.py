@@ -12,7 +12,7 @@ from ..services.CameraThread import CameraThread
 from ..services.MicWorker import MicWorker
 from ..models.ActualProjectModel import ActualProjectModel
 from ..services import file as fileutils
-from ..services.dsp import getTimeOfRecording
+from ..services.dsp import get_time_of_recording
 from ..services.imbasic import resize
 
 from ..controllers.DataAcquisitionController import DataAcquisitionController
@@ -51,7 +51,7 @@ class DataAcquisitionView(QMainWindow, DataAcquisition_ui):
 
         # Create and start threads
         self.create_threads()
-        min_time = getTimeOfRecording(ActualProjectModel.low_freq)
+        min_time = get_time_of_recording(ActualProjectModel.low_freq)
         self._controller.start_cam_thread(min_time)
         self._controller.start_mic_thread()
 

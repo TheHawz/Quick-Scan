@@ -1,4 +1,4 @@
-__all__ = ['getTimeOfRecording']
+__all__ = ['get_time_of_recording']
 
 from . import PyOctaveBand
 import numpy as np
@@ -17,37 +17,25 @@ def _getSmallestBandwidth(low_freq, frac=3, fs=48000):
     return smallest_bandwidth
 
 
-def getTimeOfRecording(lowest_freq, e=0.1, frac=3, fs=48000):
+def get_time_of_recording(lowest_freq, e=0.1, frac=3, fs=48000):
     sb = _getSmallestBandwidth(lowest_freq, frac, fs)
     return _getTime(sb, e)
 
 
 def get_num_of_windows(len_audio, win_size, overlap):
-    i = 0
-    num_of_win = 0
-
-    while i+win_size < len_audio:
-        num_of_win += 1
-        i += round(win_size-win_size*overlap)
-
-    return num_of_win
-
-
-def get_num_of_windows_2(len_audio, win_size, overlap):
-    """Calculate the number of windows of size Ws that fit into an
-    audio signal of length L with an overlap in a range of [0, 1).
+    """returns the number of windows of size Ws that fit into an
+    audio signal of length L with overlap.
 
     The while loop that can do this without knowing in advance the
     number of windows is the following:
 
     while i+win_size < len_audio:
-        num_of_win += 1
+        ...
         i += round(win_size-win_size*overlap)
 
     So we can deduce N from this inequations:
-     -> L <= 0 + N*Ws - N*round(Ws*overlap) + Ws
-     -> L <= N(Ws - round(Ws*overlap)) + Ws
-     -> N >= L / (2*Ws - round(Ws+overlap))
+     -> L <= 0 + N * (Ws - round(Ws*overlap)) + Ws
+     -> N >= (L-Ws) / (Ws - round(Ws+overlap))
 
     Args:
         len_audio (int):
@@ -59,10 +47,7 @@ def get_num_of_windows_2(len_audio, win_size, overlap):
             over a range of [0, 1)
 
     Returns:
-        N (int):
-            The number of windows, or in other words, the
-            rows that we have to pre-allocate or the size
-            of the loop that will iterate over it.
+        int: the number of windows
     """
 
     N = (len_audio-win_size) / (win_size - round(win_size*overlap))
@@ -86,26 +71,17 @@ def get_spectrum(audio: np.ndarray, fs, limits=None):
     spls = np.zeros([num_of_win, len(freq)])
 
     while i+win_size < len_audio:
-        start = i
-        end = i+win_size
+        start, end = i, i+win_size
 
-        audio_windowed = audio[start:end]
-        audio_windowed *= window
+        audio_windowed = audio[start:end] * window
 
         _spl, f = PyOctaveBand.octavefilter(
             audio_windowed, fs, fraction, 6, limits, False)
-        # print(f)
-        # print(_spl)
 
         spls[index] = _spl
 
         index += 1
         i += round(win_size-win_size*overlap)
 
-    # print(f'max index: {index}')
-
     spl = np.mean(spls, 0)
-
-    print(spl)
-
     return spl, freq

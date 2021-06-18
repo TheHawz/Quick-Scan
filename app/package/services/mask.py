@@ -6,7 +6,7 @@ Created on Fri Feb 26 13:06:42 2021
 """
 
 import cv2
-from . import colorSegmentation as cs
+from . import ColorSegmentation as cs
 from .imbasic import resize
 
 # TODO: move to own config file
