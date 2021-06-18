@@ -21,7 +21,7 @@ times = []
 for i in range(2):
     t = time.time()
     white_noise = np.random.rand(num_channels, len_audio) * 2 - 1
-    spl, freq = PyOctaveBand.octavefilter(white_noise, fs, fraction=1)
+    spl, freq = PyOctaveBand.octavefilter(white_noise, fs, fraction=3, show=1)
     print(spl)
     times.append(time.time()-t)
 

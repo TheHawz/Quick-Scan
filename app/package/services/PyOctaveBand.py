@@ -121,17 +121,21 @@ def _showfilter(sos, freq, freq_u, freq_d, fs, factor):
             fs=fsd)
 
     fig, ax = plt.subplots()
-    ax.semilogx(w, 20 * np.log10(abs(h) + np.finfo(float).eps), 'b')
+    ax.semilogx(w, 20 * np.log10(abs(h) + np.finfo(float).eps),
+                color='#008fd5')
     ax.grid(which='major')
     ax.grid(which='minor', linestyle=':')
     ax.set_xlabel(r'Frequency [Hz]')
     ax.set_ylabel('Amplitude [dB]')
     ax.set_title('Second-Order Sections - Butterworth Filter')
     plt.xlim(freq_d[0] * 0.8, freq_u[-1] * 1.2)
-    plt.ylim(-4, 1)
+    plt.ylim(-8, 1)
     ax.set_xticks([16, 31.5, 63, 125, 250, 500, 1000, 2000, 4000, 8000, 16000])
     ax.set_xticklabels(['16', '31.5', '63', '125', '250', '500',
                         '1k', '2k', '4k', '8k', '16k'])
+
+    plt.tight_layout()
+    plt.savefig('1-3-octave-filter-response.svg')
     plt.show()
 
 
