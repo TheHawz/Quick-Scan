@@ -1,7 +1,0 @@
-PySide2
-numpy
-sounddevice
-soundfile
-opencv-python
-matplotlib
-scipy

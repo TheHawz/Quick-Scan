@@ -1,8 +1,0 @@
-pyqt-distutils
-PyInstaller
-Sphinx
-sphinx_rtd_theme
-flake8
-autopep8
-pytest
-ipykernel
