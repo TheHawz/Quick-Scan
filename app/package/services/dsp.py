@@ -1,4 +1,8 @@
-__all__ = ['get_time_of_recording']
+"""Module for digital signal processing related functions.
+
+
+"""
+__all__ = ['get_time_of_recording', 'get_spectrum']
 
 from . import PyOctaveBand
 import numpy as np
@@ -22,7 +26,7 @@ def get_time_of_recording(lowest_freq, e=0.1, frac=3, fs=48000):
     return _getTime(sb, e)
 
 
-def get_num_of_windows(len_audio, win_size, overlap):
+def _get_num_of_windows(len_audio, win_size, overlap):
     """returns the number of windows of size Ws that fit into an
     audio signal of length L with overlap.
 
@@ -54,11 +58,29 @@ def get_num_of_windows(len_audio, win_size, overlap):
     return int(np.ceil(N))
 
 
-def get_spectrum(audio: np.ndarray, fs, limits=None):
+def get_spectrum(audio: np.ndarray,
+                 fs: int,
+                 limits=[12, 20000]
+                 ) -> tuple[list, list]:
+    """Function that returns one third-octave spectrum analysis of a signal
+
+    It does so while windowing the signal with a Hannin window of size
+    2^15 samples, with an overlap of 50%
+
+    Args:
+        audio (np.ndarray): Audio two-dimensional array. First dimension:
+        number of channels. Second dimension: length of the audio
+        fs (int): sampling rate
+        limits (list, optional): Limits for the frequency
+        spectrum analysis. Defaults to None.
+
+    Returns:
+        tuple[list, list]: Returns the spectrum values and the frequency array.
+    """
     print(f'Get Spectrum. Audio.shape = {audio.shape}')
 
-    win_size = 2**15
-    overlap = 0.1
+    win_size = 2**16
+    overlap = 0.5
     len_audio = audio.shape[0]
     fraction = 3
     window = signal.windows.hann(win_size)
@@ -67,7 +89,7 @@ def get_spectrum(audio: np.ndarray, fs, limits=None):
     index = 0
 
     freq, _, _ = PyOctaveBand._genfreqs(limits, fraction, fs)
-    num_of_win = get_num_of_windows(len_audio, win_size, overlap)
+    num_of_win = _get_num_of_windows(len_audio, win_size, overlap)
     spls = np.zeros([num_of_win, len(freq)])
 
     while i+win_size < len_audio:

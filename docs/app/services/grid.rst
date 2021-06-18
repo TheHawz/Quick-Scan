@@ -1,8 +1,8 @@
-=========
-Calibrate
-=========
+=================================
+Planar Grid Discretization Method
+=================================
 
-.. automodule:: app.package.views.Calibrate_view
+.. automodule:: app.package.services.grid
     :members:
 
 

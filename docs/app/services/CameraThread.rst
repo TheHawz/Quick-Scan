@@ -1,8 +1,8 @@
-=========
-Calibrate
-=========
+================================
+Camera Data Acquisition (Thread)
+================================
 
-.. automodule:: app.package.views.Calibrate_view
+.. automodule:: app.package.services.CameraThread
     :members:
 
 

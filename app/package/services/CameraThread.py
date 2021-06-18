@@ -125,14 +125,11 @@ class CameraThread(QThread):
             frame (np.ndarray): Image in numpy format
             circles (np.ndarray): Circles in array format
         """
-        if circles is None:
 
-            # if len(self.x_data) != 0:
+        if circles is None:
             self.x_data.append(np.nan)
             self.y_data.append(np.nan)
         else:
-            # todo: Improve circle selection => select the one which is closer
-            # todo: to the previous detection
             circles = np.round(circles[0, :]).astype("int")
 
             x, y, r = circles[0]

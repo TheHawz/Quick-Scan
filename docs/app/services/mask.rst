@@ -1,8 +1,8 @@
-=========
-Mask
-=========
+======================
+Microphone Mask Module
+======================
 
-.. automodule:: app.package.views.Mask
+.. automodule:: app.package.services.mask
     :members:
 
 

@@ -2,7 +2,7 @@
 Calibrate
 =========
 
-.. automodule:: app.package.views.Calibrate_view
+.. automodule:: app.package.services.ColorSegmentation
     :members:
 
 

@@ -1,8 +1,8 @@
-=========
-Calibrate
-=========
+===========================
+Basic Image Managing Module
+===========================
 
-.. automodule:: app.package.views.Calibrate_view
+.. automodule:: app.package.services.imbasic
     :members:
 
 
