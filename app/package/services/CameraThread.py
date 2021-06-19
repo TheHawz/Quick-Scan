@@ -1,4 +1,5 @@
-# This Python file uses the following encoding: utf-8
+# -*- coding: utf-8 -*-
+
 import cv2
 import numpy as np
 from time import time
@@ -12,28 +13,39 @@ from . import imbasic as imb
 from .mask import get_mask, get_circles
 
 
-def invert(x):
-    if x != 0:
-        return 1/x
-    else:
-        return 0
-
-
 class CameraThread(QThread):
+    """Thread that provides the functionality to capture image from the Camera.
+
+    Attributes:
+        update_frame (QtCore.Signal): send a new frame to the UI
+        on_stop_recording (QtCore.Signal): Event triggered when the main
+            function ends.
+        on_camera_caracteristics_detected (QtCore.Signal): Send information
+            about the camera caracteristics to the main thread.
+        on_handle_all_regions_rec (QtCore.Signal): Event triggered when all
+            the regions have enough time recorded.
+        open_size (Literal[int]): configuration for the color segmenting
+            functions.
+        close_size (Literal[int]): configuration for the color segmenting
+            functions.
+    """
+
     update_frame = Signal(np.ndarray)
     on_stop_recording = Signal(object)
     on_camera_caracteristics_detected = Signal(tuple)
     on_handle_all_regions_rec = Signal()
 
     # Mic location estimation
-    open_size = 3
-    close_size = 23
+    open_size = 1
+    close_size = 25
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.init_values()
 
     def init_values(self):
+        """Function that initializes all of the necessary values.
+        """
         self.x_data = []
         self.y_data = []
         self.x = -1
@@ -44,10 +56,10 @@ class CameraThread(QThread):
         self.padding = -1
         self.last_frame = None
 
-    def set_min_time(self, time_of_rec):
-        self.min_time_rec = time_of_rec
-
     def run(self):
+        """Thread's main loop of execution.
+        """
+
         print('[CAM] Running!')
         self._running = True
         self._rec = False
@@ -96,6 +108,15 @@ class CameraThread(QThread):
         cap.release()
 
     def setup_camera(self):
+        """Settin up the camera
+
+        It tries to use the DSHOW drive, if it fails, it falls back to the
+        normal one.
+
+        Returns:
+            VideoCapture: the VideoCapture object ready to use.
+        """
+
         # Trying DSHOW driver
         cap = cv2.VideoCapture(ActualProjectModel.video_device + cv2.CAP_DSHOW)
         ret, _ = cap.read()
@@ -109,21 +130,15 @@ class CameraThread(QThread):
         self._grid = Grid(self.frame_size, self.rows,
                           self.cols, padding=self.padding)
 
-        # _, frame = cap.read()
-        # self.on_camera_caracteristics_detected.emit(
-        # (frame.shape[0], frame.shape[1]))
-
         return cap
 
     def process_circles(self, frame, circles):
         """Appends data to the arrays and draws circles in the frame
 
-           DOC: habrá un subarray de 'np.nan' al principio de cada x_data y
-           y_data. De esta forma se tendrá sincronizado el momento en el
-           que el micro se coloca en posición
         Args:
-            frame (np.ndarray): Image in numpy format
-            circles (np.ndarray): Circles in array format
+            frame (np.ndarray): the iamge
+            circles (np.ndarray): Circles in array format, as they come
+                from Hough Circles.
         """
 
         if circles is None:
@@ -141,22 +156,21 @@ class CameraThread(QThread):
             frame = cv2.rectangle(
                 frame, (x - 5, y - 5), (x + 5, y + 5), (0, 128, 255), -1)
 
-    def process_frame(self, frame):
+    def process_frame(self, frame: np.ndarray) -> np.ndarray:
         """Process each frame
 
         Args:
-            frame ([type]): [description]
+            frame (np.ndarray): the image
 
         Returns:
-            [type]: [description]
+            np.ndarray: the image with all the necessary changes.
         """
-        # self._grid.draw_grid(frame)
-        self.process_circles(frame,
-                             get_circles(get_mask(frame,
-                                                  openSize=1,
-                                                  closeSize=25),
-                                         dp=3,
-                                         minDist=250))
+
+        self.process_circles(frame, get_circles(get_mask(frame,
+                                                         self.open_size,
+                                                         self.close_size),
+                                                dp=3,
+                                                minDist=350))
 
         self.draw_rec_indicator(frame)
 
@@ -173,11 +187,36 @@ class CameraThread(QThread):
 
         return color_frame
 
-    def draw_rec_indicator(self, frame):
+    def draw_rec_indicator(self, frame: np.ndarray) -> None:
+        """Function to draw the recording indicator on the upper-right corner.
+
+        Args:
+            frame (np.ndarray): the image]
+        """
         cv2.circle(
             frame, (self._grid.size_of_frame[1]-30, 30), 8, (0, 0, 255), -1)
 
-    def draw_color_display(self, frame, times: np.ndarray, grid: Grid):
+    def draw_color_display(self,
+                           frame: np.ndarray,
+                           times: np.ndarray,
+                           grid: Grid
+                           ) -> np.ndarray:
+        """Function to draw the color overlay to the image.
+
+        It is usefull to know how much time left of recording we have, per
+        region.
+
+        Args:
+            frame (np.ndarray): the image.
+            times (np.ndarray): the matrix with the times recorded.
+                Size: [rows, cols]
+            grid (Grid): the Grid object needed to know where the grid region
+                starts.
+
+        Returns:
+            np.ndarray: the image, with the color overlay.
+        """
+
         alpha = np.clip(times/ActualProjectModel.time_of_rec, 0, 1)
 
         if (alpha == 1).all():
@@ -186,11 +225,28 @@ class CameraThread(QThread):
         for irow, row in enumerate(alpha):
             for icol, a in enumerate(row):
                 pt1, pt2 = grid.get_region([irow, icol])
-                self.draw_overlay(frame, a, pt1, pt2)
+                self.draw_rectangle(frame, a, pt1, pt2)
 
         return frame
 
-    def draw_overlay(self, frame, t, pt1, pt2):
+    def draw_rectangle(self, frame: np.ndarray,
+                       t: float, pt1: list, pt2: list
+                       ) -> np.ndarray:
+        """Function to draw the color rectangle on top of a region of the img.
+
+        The rectangle will be one shade of red if if doesnt have half of the
+        recording time, or blue if it has more than 50%.
+
+        Args:
+            frame (np.ndarray): the image
+            t (np.ndarary): the time matrix, same size as the grid (rows, cols)
+            pt1 (list): upper-left corner
+            pt2 (list): lower-right corner
+
+        Returns:
+            np-ndarray: the image with the overlay drown on-top.
+        """
+
         if t < 0.5:
             # Degradado rojo -> transparente
             alpha = 0.5 - t
@@ -206,15 +262,23 @@ class CameraThread(QThread):
         return frame
 
     def bypass(self, frame):
-        # TODO: quitar flip en prod.
-        # frame = cv2.flip(frame, 1)
+        """Function that handles the frame while not recording.
+
+        Args:
+            frame (np.ndarray): the image.
+
+        Returns:
+            np.ndarray: the image without any change
+        """
 
         self.last_frame = np.copy(frame)
 
-        # self._grid.draw_grid(frame)
         return frame
 
     def rec(self):
+        """Start recording
+        """
+
         self._rec = True
         print("[CamThread] Start recording!")
 
@@ -222,6 +286,15 @@ class CameraThread(QThread):
         self._rec = False
         self._running = False
         print("[CamThread] Stop recording!")
+
+    def stop(self):
+        """Sets run flag to False and waits for thread to finish
+        """
+
+        self.stop_rec()
+        self.wait()
+
+    # region Setters
 
     def setRows(self, value):
         self.rows = value
@@ -232,8 +305,7 @@ class CameraThread(QThread):
     def setPadding(self, value):
         self.padding = value
 
-    def stop(self):
-        """Sets run flag to False and waits for thread to finish"""
-        self._rec = False
-        self._running = False
-        self.wait()
+    def set_min_time(self, time_of_rec):
+        self.min_time_rec = time_of_rec
+
+    # enregion

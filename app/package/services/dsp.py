@@ -1,8 +1,10 @@
+# -*- coding: utf-8 -*-
 """Module for digital signal processing related functions.
 
-
+This module is needed for knowing the minimum time of recording per
+region for the Scan&Paint method and to actualy get the spectrum
+analysis for a single audio signal.
 """
-__all__ = ['get_time_of_recording', 'get_spectrum']
 
 from . import PyOctaveBand
 import numpy as np
@@ -10,18 +12,38 @@ from scipy import signal
 
 
 def _getTime(B, e=0.1):
-    #   e = 1 / (B*T)^(1/2)
     return 1/(B*e**2)
 
 
 def _getSmallestBandwidth(low_freq, frac=3, fs=48000):
-    freq, freq_d, freq_u = PyOctaveBand._genfreqs((low_freq, 10000), frac, fs)
+    _, freq_d, freq_u = PyOctaveBand._genfreqs((low_freq, 10000), frac, fs)
     smallest_bandwidth = freq_u[0]-freq_d[0]
 
     return smallest_bandwidth
 
 
 def get_time_of_recording(lowest_freq, e=0.1, frac=3, fs=48000):
+    """Function that returns the minimum time of recording for a
+    given frequency range.
+
+    There is an error related to analyzing random data signals, called
+    the Normalized Random Error. If this error is less than 20 %, it can
+    be approximated as a function of the bandwidth and the time of recording.
+
+    If we perform a one third-octave spectrum analysis over a signal,
+    the maximum error will be directly related to the bandwidth of the
+    lowest band.
+
+    Args:
+        lowest_freq (float): The lowest frequency considered for the analysis
+        e (float, optional): Maximum error tolerated. Defaults to 0.1.
+        frac (int, optional): Fraction for the 1/x octave spectrum analysis. 
+            Defaults to 3.
+        fs (int, optional): Audio sampling frequency. Defaults to 48000.
+
+    Returns:
+        float: Minimum time of recording per area to analyze.
+    """
     sb = _getSmallestBandwidth(lowest_freq, frac, fs)
     return _getTime(sb, e)
 
@@ -69,7 +91,7 @@ def get_spectrum(audio: np.ndarray,
 
     Args:
         audio (np.ndarray): Audio two-dimensional array. First dimension:
-        number of channels. Second dimension: length of the audio
+            number of channels. Second dimension: length of the audio
         fs (int): sampling rate
         limits (list, optional): Limits for the frequency
         spectrum analysis. Defaults to None.

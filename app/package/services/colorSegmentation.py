@@ -1,43 +1,30 @@
 # -*- coding: utf-8 -*-
+"""Module for Color Segmentation functions.
+
+Used for segmenting a color object of a frame, and improving the resultant
+mask.
+
+
+Author: Lara Blanco Freire
+Modified by: Pablo Losada Rodríguez
+"""
 
 import cv2
-import colorsys
 
 
 def getColorMask(img, bottom_thres, top_thres):
-    """
-    Parameters
-    ----------
-    img : ARRAY OF UINT8
-        THE FUNCTION APPLIES TWO THRESHOLDS.
+    """Returns a mask with the pixels whose values are between the thresholds.
 
-    Returns
-    -------
-    mask : ARRAY OF UINT8
-        MASK OF PIXELS WITH HIGH SATURATION.
+    Args:
+        img (np.ndarray, dtype=uint8): Image for processing.
+        bottom_thres (list): Threshold in HSV form.
+        top_thres (list): Threshold in HSV form.
 
+    Returns:
+        np.ndarray: output array of the same size as img and CV_8U type
     """
 
     hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
     mask = cv2.inRange(hsv, bottom_thres, top_thres)
+
     return mask
-
-
-def getColor(img, mask):
-
-    hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
-    b_w = cv2.inRange(hsv, (0, 120, 70), (179, 255, 250))
-    maskb = cv2.bitwise_and(mask, b_w)
-
-    mean = cv2.mean(img, mask=maskb)
-    hsv = colorsys.rgb_to_hsv(mean[2] / 179, mean[1] / 255, mean[0] / 255)
-    h = hsv[0] * 179
-
-    if (h < 10 or h >= 128):
-        return 'o'
-    elif (h >= 50 and h < 127):
-        return 'b'
-    elif (h >= 10 and h < 40):
-        return 'y'
-    else:
-        return None

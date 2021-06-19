@@ -6,7 +6,8 @@ from datetime import datetime
 sys.path.append(abspath(join(dirname(__file__), '..')))
 
 # extensions
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.napoleon']
+extensions = ['sphinx.ext.autodoc',
+              'sphinx.ext.napoleon', 'sphinx.ext.githubpages']
 
 # version
 with open(join('..', 'app', '__init__.py')) as f:
@@ -22,17 +23,17 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # html
-html_static_path = ['_static']
-html_theme = 'sphinx_rtd_theme'
+# html_static_path = ['_static']
+html_theme = 'furo'
 # html_logo = '_static/images/logo.svg'
-html_theme_options = {
-    'display_version': False
-}
+# html_theme_options = {
+#     'display_version': False
+# }
 
 
 def setup(app):
-    pass
     # app.add_stylesheet('css/custom.css')
+    pass
 
 
 # others

@@ -17,7 +17,7 @@ pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
 exe = EXE(pyz,
           a.scripts,
           exclude_binaries=True,
-          name='app',
+          name='Quick Scan',
           debug=True,
           strip=False,
           upx=True,
@@ -30,9 +30,9 @@ coll = COLLECT(exe,
                a.datas,
                strip=False,
                upx=True,
-               name='app')
+               name='Quick Scan')
 
 app = BUNDLE(coll,
-             name='App.app',
+             name='Quick Scan.app',
              icon='resources/icons/app.icns',
              bundle_identifier=None)

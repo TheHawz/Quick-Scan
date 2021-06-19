@@ -76,12 +76,14 @@ CURDIR = os.path.dirname(os.path.abspath(__file__))
 with open(os.path.join(CURDIR, "requirements.txt")) as requirements:
     REQUIREMENTS = requirements.read().splitlines()
 
+description = "Sistema de bajo coste para mapeado de" + \
+    "campos acústicos estacionarios"
 
 setup(
-    name="Scan&Paint-clone",
+    name="Quick Scan",
     version=_version,
     packages=find_packages(),
-    description="Sistema de bajo coste para mapeado de campos acústicos estacionarios",
+    description=description,
     author="Pablo Losada Rodriguez",
     author_email="plosada.rguez@gmail.com",
     license="MIT",
