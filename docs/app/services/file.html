@@ -2,10 +2,10 @@
 <html class="no-js">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" /><link rel="next" title="Microphone Mask Module" href="mask.html" /><link rel="prev" title="Planar Grid Discretization Method" href="grid.html" />
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" /><link rel="next" title="Planar Grid Discretization Method" href="grid.html" /><link rel="prev" title="Digital Signal Processing (DSP)" href="dsp.html" />
 
     <meta name="generator" content="sphinx-3.5.4, furo 2021.04.11.beta34"/>
-        <title>Basic Image Managing Module - app documentation</title>
+        <title>File Utils - app documentation</title>
       <link rel="stylesheet" href="../../_static/styles/furo.css?digest=59ab60ac09ea94ccfe6deddff6d715cce948a6fc">
     <link rel="stylesheet" href="../../_static/pygments.css">
     <link media="(prefers-color-scheme: dark)" rel="stylesheet" href="../../_static/pygments_dark.css">
@@ -118,9 +118,9 @@
 <li class="toctree-l3"><a class="reference internal" href="DspThread.html">DSP Worker</a></li>
 <li class="toctree-l3"><a class="reference internal" href="MicWorker.html">Microphone Data Acquisition (Thread)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="dsp.html">Digital Signal Processing (DSP)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="file.html">File Utils</a></li>
+<li class="toctree-l3 current current-page"><a class="current reference internal" href="#">File Utils</a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.html">Planar Grid Discretization Method</a></li>
-<li class="toctree-l3 current current-page"><a class="current reference internal" href="#">Basic Image Managing Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="imbasic.html">Basic Image Managing Module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="mask.html">Microphone Mask Module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="path.html">Path helper tools</a></li>
 </ul>
@@ -141,70 +141,48 @@
         <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
           <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
         </label>
-        <div class="section" id="module-app.package.services.imbasic">
-<span id="basic-image-managing-module"></span><h1>Basic Image Managing Module<a class="headerlink" href="#module-app.package.services.imbasic" title="Permalink to this headline">¶</a></h1>
-<p>Basic package for image processing.</p>
-<p>It is basicaly a OpenCV “wrapper” that allows the users to add functionality
-on top of the basic OpenCv functions-</p>
-<dl class="py class">
-<dt id="app.package.services.imbasic.Borders">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">app.package.services.imbasic.</span></code><code class="sig-name descname"><span class="pre">Borders</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#app.package.services.imbasic.Borders" title="Permalink to this definition">¶</a></dt>
-<dd><p>An enumeration.</p>
+        <div class="section" id="module-app.package.services.file">
+<span id="file-utils"></span><h1>File Utils<a class="headerlink" href="#module-app.package.services.file" title="Permalink to this headline">¶</a></h1>
+<p>Set of utils for the creation and management of files.</p>
+<dl class="py function">
+<dt id="app.package.services.file.check_for_empty">
+<code class="sig-prename descclassname"><span class="pre">app.package.services.file.</span></code><code class="sig-name descname"><span class="pre">check_for_empty</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> → <span class="pre">bool</span><a class="headerlink" href="#app.package.services.file.check_for_empty" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if a Directory is empty and also check exceptional situations.</p>
 </dd></dl>
 <dl class="py function">
-<dt id="app.package.services.imbasic.draw_border">
-<code class="sig-prename descclassname"><span class="pre">app.package.services.imbasic.</span></code><code class="sig-name descname"><span class="pre">draw_border</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pt1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pt2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thickness</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#app.package.services.imbasic.draw_border" title="Permalink to this definition">¶</a></dt>
-<dd><p>Draw the border of a rectangle defined by its upper-left and lower-right
-corners.</p>
+<dt id="app.package.services.file.check_for_existance">
+<code class="sig-prename descclassname"><span class="pre">app.package.services.file.</span></code><code class="sig-name descname"><span class="pre">check_for_existance</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span> → <span class="pre">tuple</span><a class="headerlink" href="#app.package.services.file.check_for_existance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks for existance of a file or a dir</p>
+<p>If it is a dir =&gt; True. If not =&gt; check for file and return that.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>img</strong> (<em>np.ndarray</em>) – the image</p></li>
-<li><p><strong>pt1</strong> (<em>list</em>) – upper-left corner</p></li>
-<li><p><strong>pt2</strong> (<em>list</em>) – lower-right corner</p></li>
-<li><p><strong>color</strong> (<em>list</em>) – the color in BGR</p></li>
-<li><p><strong>thickness</strong> (<em>int</em><em>, </em><em>optional</em>) – The thickness of the lines. Defaults to 2.</p></li>
-</ul>
+<dd class="field-odd"><p><strong>path</strong> (<em>str</em>) – Path to the desired file or dir</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>the image with the borders.</p>
+<dd class="field-even"><p>Whether it exist or not
+bool: if it is a file or not (it is a dir)</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>np.ndarray</p>
+<dd class="field-odd"><p>bool</p>
 </dd>
 </dl>
 </dd></dl>
 <dl class="py function">
-<dt id="app.package.services.imbasic.draw_filled_rectangle">
-<code class="sig-prename descclassname"><span class="pre">app.package.services.imbasic.</span></code><code class="sig-name descname"><span class="pre">draw_filled_rectangle</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pt1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pt2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#app.package.services.imbasic.draw_filled_rectangle" title="Permalink to this definition">¶</a></dt>
-<dd><p>Draw a color rectangle in img from pt1 to pt2 of color “Gray” with
-alpha of “alpha”</p>
-<p>For efficiency we are extracting the rectangle from the main image,
-creating the color rectangle then use cv2.addWeighted to merge the
-rectangle with the color rectangle, then replacing the pixels in the
-main image with the subimage we’ve just build.</p>
+<dt id="app.package.services.file.save_np_to_txt">
+<code class="sig-prename descclassname"><span class="pre">app.package.services.file.</span></code><code class="sig-name descname"><span class="pre">save_np_to_txt</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'data.txt'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#app.package.services.file.save_np_to_txt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save a NumPy ndarray to disk.</p>
+<p>It creates the folder if it does not exists and then writes it using
+NumPy’s functions.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>img</strong> (<em>np.ndarray</em>) – the image.</p></li>
-<li><p><strong>pt1</strong> (<em>list | np.array | tuple</em>) – [x1, y1]</p></li>
-<li><p><strong>pt2</strong> (<em>list | np.array | tuple</em>) – [x2, y2]</p></li>
-<li><p><strong>color</strong> (<em>list</em>) – The color of the rectangle in BGR</p></li>
-<li><p><strong>alpha</strong> (<em>float</em>) – The transparency, between 0 and 1.</p></li>
+<li><p><strong>data</strong> (<em>np.ndarray</em>) – the data to save</p></li>
+<li><p><strong>path</strong> (<em>str</em>) – the path to the file</p></li>
+<li><p><strong>file_name</strong> (<em>str</em><em>, </em><em>optional</em>) – The name of the file.
+Defaults to “data.txt”.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>the image with the rectangle drawn.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>np.ndarray</p>
-</dd>
 </dl>
-</dd></dl>
-<dl class="py function">
-<dt id="app.package.services.imbasic.is_image">
-<code class="sig-prename descclassname"><span class="pre">app.package.services.imbasic.</span></code><code class="sig-name descname"><span class="pre">is_image</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame</span></span></em><span class="sig-paren">)</span> → <span class="pre">bool</span><a class="headerlink" href="#app.package.services.imbasic.is_image" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns where the object is a image or not.</p>
 </dd></dl>
 </div>
 
@@ -212,23 +190,23 @@ main image with the subimage we’ve just build.</p>
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="mask.html">
+          <a class="next-page" href="grid.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Microphone Mask Module</div>
+                <div class="title">Planar Grid Discretization Method</div>
               </div>
               <svg><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="grid.html">
+          <a class="prev-page" href="dsp.html">
               <svg><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Planar Grid Discretization Method</div>
+                <div class="title">Digital Signal Processing (DSP)</div>
                 
               </div>
             </a>
@@ -242,7 +220,7 @@ main image with the subimage we’ve just build.</p>
               <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
               <a href="https://github.com/pradyunsg/furo">Furo theme</a>.
             |
-            <a class="muted-link" href="../../_sources/app/services/imbasic.rst.txt"
+            <a class="muted-link" href="../../_sources/app/services/file.rst.txt"
                rel="nofollow">
               Show Source
             </a>

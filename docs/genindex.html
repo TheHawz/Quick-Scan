@@ -117,6 +117,7 @@
 <li class="toctree-l3"><a class="reference internal" href="app/services/DspThread.html">DSP Worker</a></li>
 <li class="toctree-l3"><a class="reference internal" href="app/services/MicWorker.html">Microphone Data Acquisition (Thread)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="app/services/dsp.html">Digital Signal Processing (DSP)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="app/services/file.html">File Utils</a></li>
 <li class="toctree-l3"><a class="reference internal" href="app/services/grid.html">Planar Grid Discretization Method</a></li>
 <li class="toctree-l3"><a class="reference internal" href="app/services/imbasic.html">Basic Image Managing Module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="app/services/mask.html">Microphone Mask Module</a></li>
@@ -177,14 +178,21 @@
 </li>
         </ul></li>
         <li>
+    app.package.services.file
+
+        <ul>
+          <li><a href="app/services/file.html#module-app.package.services.file">module</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li>
     app.package.services.grid
 
         <ul>
           <li><a href="app/services/grid.html#module-app.package.services.grid">module</a>
 </li>
         </ul></li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li>
     app.package.services.imbasic
 
@@ -239,8 +247,12 @@
 </li>
         <li><a href="app/services/CameraThread.html#app.package.services.CameraThread.CameraThread">CameraThread (class in app.package.services.CameraThread)</a>
 </li>
+        <li><a href="app/services/file.html#app.package.services.file.check_for_empty">check_for_empty() (in module app.package.services.file)</a>
+</li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="app/services/file.html#app.package.services.file.check_for_existance">check_for_existance() (in module app.package.services.file)</a>
+</li>
         <li><a href="app/services/CameraThread.html#app.package.services.CameraThread.CameraThread.close_size">close_size (app.package.services.CameraThread.CameraThread attribute)</a>
 </li>
         <li><a href="app/services/grid.html#app.package.services.grid.Grid.config">config() (app.package.services.grid.Grid method)</a>
@@ -255,14 +267,16 @@
   <h2>D</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="app/services/imbasic.html#app.package.services.imbasic.draw_border">draw_border() (in module app.package.services.imbasic)</a>
+</li>
         <li><a href="app/services/CameraThread.html#app.package.services.CameraThread.CameraThread.draw_color_display">draw_color_display() (app.package.services.CameraThread.CameraThread method)</a>
 </li>
         <li><a href="app/services/imbasic.html#app.package.services.imbasic.draw_filled_rectangle">draw_filled_rectangle() (in module app.package.services.imbasic)</a>
 </li>
-        <li><a href="app/services/grid.html#app.package.services.grid.Grid.draw_grid">draw_grid() (app.package.services.grid.Grid method)</a>
-</li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="app/services/grid.html#app.package.services.grid.Grid.draw_grid">draw_grid() (app.package.services.grid.Grid method)</a>
+</li>
         <li><a href="app/services/CameraThread.html#app.package.services.CameraThread.CameraThread.draw_rec_indicator">draw_rec_indicator() (app.package.services.CameraThread.CameraThread method)</a>
 </li>
         <li><a href="app/services/CameraThread.html#app.package.services.CameraThread.CameraThread.draw_rectangle">draw_rectangle() (app.package.services.CameraThread.CameraThread method)</a>
@@ -315,6 +329,8 @@
     <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="app/services/path.html#app.package.services.path.interpolate_coords">interpolate_coords() (in module app.package.services.path)</a>
 </li>
+        <li><a href="app/services/imbasic.html#app.package.services.imbasic.is_image">is_image() (in module app.package.services.imbasic)</a>
+</li>
     </ul></td>
   </tr></table>
 </section>
@@ -346,6 +362,8 @@
           <li><a href="app/services/dsp.html#module-app.package.services.dsp">app.package.services.dsp</a>
 </li>
           <li><a href="app/services/DspThread.html#module-app.package.services.DspThread">app.package.services.DspThread</a>
+</li>
+          <li><a href="app/services/file.html#module-app.package.services.file">app.package.services.file</a>
 </li>
           <li><a href="app/services/grid.html#module-app.package.services.grid">app.package.services.grid</a>
 </li>
@@ -430,6 +448,8 @@
   <h2>S</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="app/services/file.html#app.package.services.file.save_np_to_txt">save_np_to_txt() (in module app.package.services.file)</a>
+</li>
         <li><a href="app/services/CameraThread.html#app.package.services.CameraThread.CameraThread.setup_camera">setup_camera() (app.package.services.CameraThread.CameraThread method)</a>
 </li>
     </ul></td>
