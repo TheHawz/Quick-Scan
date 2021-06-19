@@ -5,9 +5,6 @@ Welcome to the App documentation!
 User Manual
 -----------
 
-This section is intended for general documentation such as tutorials,
-development procedures, etc.
-
 .. toctree::
     :maxdepth: 2
 
