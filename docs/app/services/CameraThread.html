@@ -146,51 +146,204 @@
 <dt id="app.package.services.CameraThread.CameraThread">
 <em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">app.package.services.CameraThread.</span></code><code class="sig-name descname"><span class="pre">CameraThread</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#app.package.services.CameraThread.CameraThread" title="Permalink to this definition">¶</a></dt>
 <dd><p>Thread that provides the functionality to capture image from the Camera.</p>
-<dl class="simple">
-<dt>params:</dt><dd><p>update_frame
-on_stop_recording
-on_camera_caracteristics_detected
-on_handle_all_regions_rec</p>
+<dl class="py attribute">
+<dt id="app.package.services.CameraThread.CameraThread.update_frame">
+<code class="sig-name descname"><span class="pre">update_frame</span></code><a class="headerlink" href="#app.package.services.CameraThread.CameraThread.update_frame" title="Permalink to this definition">¶</a></dt>
+<dd><p>send a new frame to the UI</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>QtCore.Signal</p>
 </dd>
 </dl>
+</dd></dl>
+<dl class="py attribute">
+<dt id="app.package.services.CameraThread.CameraThread.on_stop_recording">
+<code class="sig-name descname"><span class="pre">on_stop_recording</span></code><a class="headerlink" href="#app.package.services.CameraThread.CameraThread.on_stop_recording" title="Permalink to this definition">¶</a></dt>
+<dd><p>Event triggered when the main
+function ends.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>QtCore.Signal</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py attribute">
+<dt id="app.package.services.CameraThread.CameraThread.on_camera_caracteristics_detected">
+<code class="sig-name descname"><span class="pre">on_camera_caracteristics_detected</span></code><a class="headerlink" href="#app.package.services.CameraThread.CameraThread.on_camera_caracteristics_detected" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send information
+about the camera caracteristics to the main thread.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>QtCore.Signal</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py attribute">
+<dt id="app.package.services.CameraThread.CameraThread.on_handle_all_regions_rec">
+<code class="sig-name descname"><span class="pre">on_handle_all_regions_rec</span></code><a class="headerlink" href="#app.package.services.CameraThread.CameraThread.on_handle_all_regions_rec" title="Permalink to this definition">¶</a></dt>
+<dd><p>Event triggered when all
+the regions have enough time recorded.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>QtCore.Signal</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py attribute">
+<dt id="app.package.services.CameraThread.CameraThread.open_size">
+<code class="sig-name descname"><span class="pre">open_size</span></code><a class="headerlink" href="#app.package.services.CameraThread.CameraThread.open_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>configuration for the color segmenting
+functions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>Literal[int]</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py attribute">
+<dt id="app.package.services.CameraThread.CameraThread.close_size">
+<code class="sig-name descname"><span class="pre">close_size</span></code><a class="headerlink" href="#app.package.services.CameraThread.CameraThread.close_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>configuration for the color segmenting
+functions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>Literal[int]</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt id="app.package.services.CameraThread.CameraThread.bypass">
+<code class="sig-name descname"><span class="pre">bypass</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#app.package.services.CameraThread.CameraThread.bypass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function that handles the frame while not recording.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>frame</strong> (<em>np.ndarray</em>) – the image.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the image without any change</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt id="app.package.services.CameraThread.CameraThread.draw_color_display">
+<code class="sig-name descname"><span class="pre">draw_color_display</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">times</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="grid.html#app.package.services.grid.Grid" title="app.package.services.grid.Grid"><span class="pre">app.package.services.grid.Grid</span></a></span></em><span class="sig-paren">)</span> → <span class="pre">numpy.ndarray</span><a class="headerlink" href="#app.package.services.CameraThread.CameraThread.draw_color_display" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to draw the color overlay to the image.</p>
+<p>It is usefull to know how much time left of recording we have, per
+region.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>frame</strong> (<em>np.ndarray</em>) – the image.</p></li>
+<li><p><strong>times</strong> (<em>np.ndarray</em>) – the matrix with the times recorded.
+Size: [rows, cols]</p></li>
+<li><p><strong>grid</strong> (<a class="reference internal" href="grid.html#app.package.services.grid.Grid" title="app.package.services.grid.Grid"><em>Grid</em></a>) – the Grid object needed to know where the grid region
+starts.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the image, with the color overlay.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt id="app.package.services.CameraThread.CameraThread.draw_rec_indicator">
+<code class="sig-name descname"><span class="pre">draw_rec_indicator</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">numpy.ndarray</span></span></em><span class="sig-paren">)</span> → <span class="pre">None</span><a class="headerlink" href="#app.package.services.CameraThread.CameraThread.draw_rec_indicator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to draw the recording indicator on the upper-right corner.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>frame</strong> (<em>np.ndarray</em>) – the image]</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt id="app.package.services.CameraThread.CameraThread.draw_rectangle">
+<code class="sig-name descname"><span class="pre">draw_rectangle</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pt1</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pt2</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span> → <span class="pre">numpy.ndarray</span><a class="headerlink" href="#app.package.services.CameraThread.CameraThread.draw_rectangle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to draw the color rectangle on top of a region of the img.</p>
+<p>The rectangle will be one shade of red if if doesnt have half of the
+recording time, or blue if it has more than 50%.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>frame</strong> (<em>np.ndarray</em>) – the image</p></li>
+<li><p><strong>t</strong> (<em>np.ndarary</em>) – the time matrix, same size as the grid (rows, cols)</p></li>
+<li><p><strong>pt1</strong> (<em>list</em>) – upper-left corner</p></li>
+<li><p><strong>pt2</strong> (<em>list</em>) – lower-right corner</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the image with the overlay drown on-top.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np-ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt id="app.package.services.CameraThread.CameraThread.init_values">
+<code class="sig-name descname"><span class="pre">init_values</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#app.package.services.CameraThread.CameraThread.init_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function that initializes all of the necessary values.</p>
+</dd></dl>
 <dl class="py method">
 <dt id="app.package.services.CameraThread.CameraThread.process_circles">
 <code class="sig-name descname"><span class="pre">process_circles</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">circles</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#app.package.services.CameraThread.CameraThread.process_circles" title="Permalink to this definition">¶</a></dt>
 <dd><p>Appends data to the arrays and draws circles in the frame</p>
-<blockquote>
-<div><p>DOC: habrá un subarray de ‘np.nan’ al principio de cada x_data y
-y_data. De esta forma se tendrá sincronizado el momento en el
-que el micro se coloca en posición</p>
-</div></blockquote>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>frame</strong> (<em>np.ndarray</em>) – Image in numpy format</p></li>
-<li><p><strong>circles</strong> (<em>np.ndarray</em>) – Circles in array format</p></li>
+<li><p><strong>frame</strong> (<em>np.ndarray</em>) – the iamge</p></li>
+<li><p><strong>circles</strong> (<em>np.ndarray</em>) – Circles in array format, as they come
+from Hough Circles.</p></li>
 </ul>
 </dd>
 </dl>
 </dd></dl>
 <dl class="py method">
 <dt id="app.package.services.CameraThread.CameraThread.process_frame">
-<code class="sig-name descname"><span class="pre">process_frame</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#app.package.services.CameraThread.CameraThread.process_frame" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">process_frame</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">numpy.ndarray</span></span></em><span class="sig-paren">)</span> → <span class="pre">numpy.ndarray</span><a class="headerlink" href="#app.package.services.CameraThread.CameraThread.process_frame" title="Permalink to this definition">¶</a></dt>
 <dd><p>Process each frame</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>frame</strong> (<em>[</em><em>type</em><em>]</em>) – [description]</p>
+<dd class="field-odd"><p><strong>frame</strong> (<em>np.ndarray</em>) – the image</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>[description]</p>
+<dd class="field-even"><p>the image with all the necessary changes.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>[type]</p>
+<dd class="field-odd"><p>np.ndarray</p>
 </dd>
 </dl>
 </dd></dl>
 <dl class="py method">
+<dt id="app.package.services.CameraThread.CameraThread.rec">
+<code class="sig-name descname"><span class="pre">rec</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#app.package.services.CameraThread.CameraThread.rec" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start recording</p>
+</dd></dl>
+<dl class="py method">
 <dt id="app.package.services.CameraThread.CameraThread.run">
-<code class="sig-name descname"><span class="pre">run</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span> → <span class="pre">None</span><a class="headerlink" href="#app.package.services.CameraThread.CameraThread.run" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="sig-name descname"><span class="pre">run</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#app.package.services.CameraThread.CameraThread.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Thread’s main loop of execution.</p>
+</dd></dl>
+<dl class="py method">
+<dt id="app.package.services.CameraThread.CameraThread.setup_camera">
+<code class="sig-name descname"><span class="pre">setup_camera</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#app.package.services.CameraThread.CameraThread.setup_camera" title="Permalink to this definition">¶</a></dt>
+<dd><p>Settin up the camera</p>
+<p>It tries to use the DSHOW drive, if it fails, it falls back to the
+normal one.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>the VideoCapture object ready to use.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>VideoCapture</p>
+</dd>
+</dl>
+</dd></dl>
 <dl class="py method">
 <dt id="app.package.services.CameraThread.CameraThread.stop">
 <code class="sig-name descname"><span class="pre">stop</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#app.package.services.CameraThread.CameraThread.stop" title="Permalink to this definition">¶</a></dt>
