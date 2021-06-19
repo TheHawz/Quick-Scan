@@ -13,8 +13,8 @@ from ..services import file as fileutils
 
 
 class LoadFilesWorker(QObject):
-    finished = Signal()
 
+    finished = Signal()
     send_data = Signal(tuple)
     send_grid = Signal(object)
     send_freq_range = Signal(list)

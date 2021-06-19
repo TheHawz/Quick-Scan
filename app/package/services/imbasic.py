@@ -1,4 +1,9 @@
 # -*- coding: utf-8 -*-
+"""Basic package for image processing.
+
+It is basicaly a OpenCV "wrapper" that allows the users to add functionality
+on top of the basic OpenCv functions-
+"""
 
 from enum import Enum
 import numpy as np
@@ -18,11 +23,14 @@ def to_tuple(a):
         return a
 
 
-def is_image(frame):
+def is_image(frame) -> bool:
+    """Returns where the object is a image or not.
+    """
+
     return np.shape(frame) != ()
 
 
-def remove_borders(frame, amount, borders=Borders.ALL):
+def remove_borders(frame: np.ndarray, amount: int, borders=Borders.ALL):
     if not is_image(frame):
         raise Exception("Param. FRAME is not an image.")
 
@@ -74,25 +82,32 @@ def draw_filled_rectangle(img, pt1, pt2, color, alpha):
     """Draw a color rectangle in img from pt1 to pt2 of color "Gray" with
     alpha of "alpha"
 
+    For efficiency we are extracting the rectangle from the main image,
+    creating the color rectangle then use cv2.addWeighted to merge the
+    rectangle with the color rectangle, then replacing the pixels in the
+    main image with the subimage we've just build.
+
     Args:
-        img ([type]): [description]
+        img (np.ndarray): the image.
         pt1 (list | np.array | tuple): [x1, y1]
         pt2 (list | np.array | tuple): [x2, y2]
-        gray ([type]): [description]
-        alpha ([type]): [description]
+        color (list): The color of the rectangle in BGR
+        alpha (float): The transparency, between 0 and 1.
 
     Returns:
-        [type]: [description]
+        np.ndarray: the image with the rectangle drawn.
     """
+
     # First we crop the sub-rect from the image
     x1, y1 = pt1
     x2, y2 = pt2
-
     sub_img = img[y1:y2, x1:x2]
+
+    # Create the colored rectangle.
     white_rect = np.ones(sub_img.shape, dtype=np.uint8) * \
         np.array(color, dtype=np.uint8)
 
-    # Added with the form:
+    # Add both subimages with a certain alpha.:
     res = cv2.addWeighted(sub_img, 1-alpha, white_rect,
                           alpha, 0.0, dtype=8)
 
@@ -102,13 +117,28 @@ def draw_filled_rectangle(img, pt1, pt2, color, alpha):
 
 
 def draw_border(img, pt1, pt2, color, thickness=2):
+    """Draw the border of a rectangle defined by its upper-left and lower-right
+    corners.
+
+    Args:
+        img (np.ndarray): the image
+        pt1 (list): upper-left corner
+        pt2 (list): lower-right corner
+        color (list): the color in BGR
+        thickness (int, optional): The thickness of the lines. Defaults to 2.
+
+    Returns:
+        np.ndarray: the image with the borders.
+    """
+
     x1, y1 = pt1
     x2, y2 = pt2
 
-    lines = [[(x1, y1), (x1, y2)],
-             [(x1, y1), (x2, y1)],
-             [(x2, y2), (x1, y2)],
-             [(x2, y2), (x2, y1)]]
+    # Define the 4 lines of the rectangle.
+    lines = [[(x1, y1), (x1, y2)],  # left
+             [(x1, y1), (x2, y1)],  # top
+             [(x2, y2), (x1, y2)],  # right
+             [(x2, y2), (x2, y1)]]  # botom
 
     for _pt1, _pt2 in lines:
         img = cv2.line(img, _pt1, _pt2, color, thickness=thickness)
