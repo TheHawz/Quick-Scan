@@ -136,7 +136,7 @@ class CameraThread(QThread):
         """Appends data to the arrays and draws circles in the frame
 
         Args:
-            frame (np.ndarray): the iamge
+            frame (np.ndarray): the image
             circles (np.ndarray): Circles in array format, as they come
                 from Hough Circles.
         """
